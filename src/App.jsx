@@ -29,19 +29,17 @@ const MainAppContent = () => {
   const { currentUser, role, isHR } = useAuth();
   const { showToast } = useToast();
 
-  // Active Screen Route
+  // Active Screen Route (Must login before entering portal)
   const [currentRoute, setCurrentRoute] = useState(() => {
+    if (!currentUser) return 'signin';
     return isHR ? 'admin-dashboard' : 'employee-dashboard';
   });
 
   const [isNotifDrawerOpen, setIsNotifDrawerOpen] = useState(false);
   const [isCommandPaletteOpen, setIsCommandPaletteOpen] = useState(false);
 
-  // Auto-start guided product tour for evaluator on first load
-  const [isTourOpen, setIsTourOpen] = useState(() => {
-    const isDismissed = sessionStorage.getItem('dayflow_tour_session_dismissed');
-    return !isDismissed;
-  });
+  // Guided product tour state
+  const [isTourOpen, setIsTourOpen] = useState(false);
 
   // Global Ctrl+K / Cmd+K listener
   useEffect(() => {

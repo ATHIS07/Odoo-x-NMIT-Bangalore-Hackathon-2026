@@ -7,16 +7,16 @@ const AuthContext = createContext(null);
 export const AuthProvider = ({ children }) => {
   const { showToast, showSNSToast } = useToast();
   
-  // Stored active user or default Sophia (Employee)
+  // User authentication state (Default null -> Login page required first)
   const [currentUser, setCurrentUser] = useState(() => {
-    const saved = localStorage.getItem('odoo_auth_user') || localStorage.getItem('dayflow_auth_user');
+    const saved = localStorage.getItem('odoo_auth_user');
     if (saved) {
       try {
         const parsed = JSON.parse(saved);
         if (parsed && parsed.id) return parsed;
       } catch (e) { /* ignore */ }
     }
-    return INITIAL_USERS[0]; // Default Sophia Vance (Employee)
+    return null; // Only show portal after successful login
   });
 
   const [pendingVerification, setPendingVerification] = useState(null);

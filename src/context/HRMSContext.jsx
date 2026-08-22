@@ -143,23 +143,40 @@ export const HRMSProvider = ({ children }) => {
       const todayStr = '2026-08-22';
       const nowTimeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
 
-      setAttendance((prev) =>
-        prev.map((rec) => {
-          if (rec.userId === userId && rec.date === todayStr) {
-            return {
-              ...rec,
-              checkOut: nowTimeStr,
-              duration: formattedDuration || '8h 02m (Completed)',
-              notes: 'Shift completed normally via Employee Portal'
-            };
-          }
-          return rec;
-        })
-      );
+      setAttendance((prev) => {
+        const hasExisting = prev.some((rec) => rec.userId === userId && rec.date === todayStr);
+        if (hasExisting) {
+          return prev.map((rec) => {
+            if (rec.userId === userId && rec.date === todayStr) {
+              return {
+                ...rec,
+                checkOut: nowTimeStr,
+                duration: formattedDuration || '8h 02m',
+                status: 'present',
+                notes: 'Shift completed & checked out via Employee Portal'
+              };
+            }
+            return rec;
+          });
+        } else {
+          const newRecord = {
+            id: `att_${Date.now()}`,
+            userId,
+            date: todayStr,
+            checkIn: '09:24 AM',
+            checkOut: nowTimeStr,
+            duration: formattedDuration || '8h 02m',
+            status: 'present',
+            location: 'Bangalore HQ (Outer Ring Road Tech Center)',
+            notes: 'Shift completed & checked out via Employee Portal'
+          };
+          return [newRecord, ...prev];
+        }
+      });
 
       showToast({
         title: 'Shift Clocked Out',
-        message: `Check-out punch recorded at ${nowTimeStr} IST. Total shift logged: ${formattedDuration || '8h 02m'}.`,
+        message: `Check-out punch recorded at ${nowTimeStr} IST. Shift duration: ${formattedDuration || '8h 02m'}.`,
         type: 'info'
       });
     });

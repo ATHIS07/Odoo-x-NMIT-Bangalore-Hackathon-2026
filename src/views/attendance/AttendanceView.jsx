@@ -48,6 +48,15 @@ export const AttendanceView = () => {
   const todayRecord = getTodayAttendance(activeUser.id);
   const isClockedIn = todayRecord && !todayRecord.checkOut;
 
+  // Live workforce attendance metrics for today
+  const todayDateStr = '2026-08-22';
+  const todayAttendanceRecords = attendance.filter((a) => a.date === todayDateStr);
+  const liveInSessionCount = todayAttendanceRecords.filter((a) => a.checkIn && !a.checkOut).length;
+  const checkedOutCount = todayAttendanceRecords.filter((a) => a.checkOut).length;
+  const onLeaveCount = todayAttendanceRecords.filter((a) => a.status === 'leave').length;
+  const totalPresentToday = todayAttendanceRecords.filter((a) => a.checkIn || a.status === 'present').length;
+  const orgAttendanceRate = users.length > 0 ? Math.round((totalPresentToday / users.length) * 100) : 0;
+
   // Filter records based on role and filters
   const displayRecords = attendance.filter((rec) => {
     // Role gating: Employee sees only their own; Admin sees all
@@ -101,12 +110,17 @@ export const AttendanceView = () => {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+    showToast({
+      title: 'Export Generated',
+      message: `${displayRecords.length} attendance rows exported to CSV.`,
+      type: 'info'
+    });
   };
 
   return (
     <div className="page-wrapper">
       {/* Header */}
-      <div className="page-header" data-tour="attendance-header">
+      <div className="page-header">
         <div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.25rem' }}>
             <span style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--primary-600)', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
@@ -123,18 +137,14 @@ export const AttendanceView = () => {
           </p>
         </div>
 
-        <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
+        {/* Header Action Buttons */}
+        <div style={{ display: 'flex', gap: '0.75rem' }}>
           <Button variant="secondary" icon={Download} onClick={exportCSV}>
-            Export CSV
+            Export Log
           </Button>
           {!isHRorAdmin && (
-            <Button
-              variant="secondary"
-              icon={CalendarDays}
-              data-tour="attendance-regularize-btn"
-              onClick={() => setIsRegularizeModalOpen(true)}
-            >
-              Request Regularization
+            <Button variant="secondary" icon={CalendarDays} onClick={() => setIsRegularizeModalOpen(true)}>
+              Regularize Attendance
             </Button>
           )}
           {!isHRorAdmin && (
@@ -153,42 +163,84 @@ export const AttendanceView = () => {
 
       {/* KPI Metrics */}
       <div className="grid-4" data-tour="attendance-metrics" style={{ marginBottom: '1.5rem' }}>
-        <MetricCard
-          label="Today's Shift Punch"
-          value={todayRecord?.checkIn ? todayRecord.checkIn : 'Not Clocked In'}
-          subtitle={todayRecord?.checkOut ? `Checked out at ${todayRecord.checkOut}` : isClockedIn ? 'Active Work Session' : 'Shift Starts 09:30 AM IST'}
-          icon={Clock}
-          iconColor={isClockedIn ? 'var(--emerald-600)' : 'var(--text-secondary)'}
-          iconBg={isClockedIn ? 'var(--emerald-50)' : 'var(--bg-surface-subtle)'}
-        />
+        {isHRorAdmin ? (
+          <>
+            <MetricCard
+              label="Live In-Session"
+              value={`${liveInSessionCount} Active`}
+              subtitle="Punched in and currently working"
+              icon={Clock}
+              iconColor="var(--emerald-600)"
+              iconBg="var(--emerald-50)"
+            />
 
-        <MetricCard
-          label="August Present Rate"
-          value="96.2%"
-          subtitle="20 Days Logged • 1 Half-Day"
-          icon={CheckCircle2}
-          iconColor="var(--emerald-600)"
-          iconBg="var(--emerald-50)"
-          trend={{ value: '+2.1%', isPositive: true, text: 'vs July' }}
-        />
+            <MetricCard
+              label="Shift Completed"
+              value={`${checkedOutCount} Checked Out`}
+              subtitle="Shift completed & checked out"
+              icon={CheckCircle2}
+              iconColor="var(--color-primary)"
+              iconBg="var(--primary-50)"
+            />
 
-        <MetricCard
-          label="Average Daily Hours"
-          value="8h 42m"
-          subtitle="Target: 8h 00m standard shift"
-          icon={Clock}
-          iconColor="var(--primary-600)"
-          iconBg="var(--primary-50)"
-        />
+            <MetricCard
+              label="On Approved Leave"
+              value={`${onLeaveCount} Employees`}
+              subtitle="Approved time off today"
+              icon={Calendar}
+              iconColor="var(--color-warning)"
+              iconBg="var(--color-warning-bg)"
+            />
 
-        <MetricCard
-          label="Shift Timing"
-          value="09:30 AM - 06:00 PM"
-          subtitle="General Shift (Bangalore HQ)"
-          icon={MapPin}
-          iconColor="#8B5CF6"
-          iconBg="#F5F3FF"
-        />
+            <MetricCard
+              label="Today's Attendance Rate"
+              value={`${orgAttendanceRate}%`}
+              subtitle={`${totalPresentToday} of ${users.length} Total Headcount`}
+              icon={User}
+              iconColor="#8B5CF6"
+              iconBg="#F5F3FF"
+            />
+          </>
+        ) : (
+          <>
+            <MetricCard
+              label="Today's Shift Punch"
+              value={todayRecord?.checkOut ? 'Shift Completed' : todayRecord?.checkIn ? todayRecord.checkIn : 'Not Clocked In'}
+              subtitle={todayRecord?.checkOut ? `Checked out at ${todayRecord.checkOut} • Total ${todayRecord.duration}` : isClockedIn ? 'Active Work Session' : 'Shift Starts 09:30 AM IST'}
+              icon={Clock}
+              iconColor={todayRecord?.checkOut ? 'var(--color-primary)' : isClockedIn ? 'var(--emerald-600)' : 'var(--text-secondary)'}
+              iconBg={todayRecord?.checkOut ? 'var(--primary-50)' : isClockedIn ? 'var(--emerald-50)' : 'var(--bg-surface-subtle)'}
+            />
+
+            <MetricCard
+              label="August Present Rate"
+              value="96.2%"
+              subtitle="20 Days Logged • 1 Half-Day"
+              icon={CheckCircle2}
+              iconColor="var(--emerald-600)"
+              iconBg="var(--emerald-50)"
+              trend={{ value: '+2.1%', isPositive: true, text: 'vs July' }}
+            />
+
+            <MetricCard
+              label="Average Daily Hours"
+              value="8h 42m"
+              subtitle="Target: 8h 00m standard shift"
+              icon={Clock}
+              iconColor="var(--primary-600)"
+              iconBg="var(--primary-50)"
+            />
+
+            <MetricCard
+              label="Shift Timing"
+              value="09:30 AM - 06:00 PM"
+              subtitle="General Shift (Bangalore HQ)"
+              icon={MapPin}
+              iconColor="#8B5CF6"
+              iconBg="#F5F3FF"
+            />
+          </>
+        )}
       </div>
 
       {/* Control Bar: View Switcher, Filter & Search */}
@@ -342,14 +394,32 @@ export const AttendanceView = () => {
                         <td style={{ fontFamily: 'var(--font-mono)', color: rec.checkIn ? 'var(--emerald-600)' : 'var(--text-tertiary)', fontWeight: 600 }}>
                           {rec.checkIn || '—'}
                         </td>
-                        <td style={{ fontFamily: 'var(--font-mono)', color: rec.checkOut ? 'var(--text-primary)' : 'var(--text-tertiary)' }}>
-                          {rec.checkOut || (rec.checkIn && rec.date === '2026-08-22' ? 'Active' : '—')}
+                        <td style={{ fontFamily: 'var(--font-mono)' }}>
+                          {rec.checkOut ? (
+                            <span style={{ fontWeight: 700, color: 'var(--color-primary)' }}>{rec.checkOut}</span>
+                          ) : rec.checkIn && rec.date === '2026-08-22' ? (
+                            <span style={{ color: 'var(--emerald-600)', fontWeight: 600, fontSize: '0.75rem', backgroundColor: 'var(--emerald-50)', padding: '2px 6px', borderRadius: '4px' }}>
+                              ● Live Active
+                            </span>
+                          ) : (
+                            <span style={{ color: 'var(--text-tertiary)' }}>—</span>
+                          )}
                         </td>
                         <td style={{ fontFamily: 'var(--font-mono)', fontWeight: 700 }}>
                           {rec.duration}
                         </td>
                         <td>
-                          <Badge variant={rec.status}>{rec.status}</Badge>
+                          {rec.checkOut ? (
+                            <Badge variant="present">Shift Done</Badge>
+                          ) : rec.checkIn && rec.date === '2026-08-22' ? (
+                            <Badge variant="present">Clocked In</Badge>
+                          ) : rec.status === 'leave' ? (
+                            <Badge variant="leave">On Leave</Badge>
+                          ) : rec.status === 'half-day' ? (
+                            <Badge variant="warning">Half Day</Badge>
+                          ) : (
+                            <Badge variant="absent">Not Punched</Badge>
+                          )}
                         </td>
                         <td style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>
                           {rec.location || 'Bangalore HQ Terminal'}

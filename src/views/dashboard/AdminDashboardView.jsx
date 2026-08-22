@@ -34,9 +34,13 @@ export const AdminDashboardView = ({ onNavigate }) => {
 
   // Stats calculation
   const totalEmployees = users.length;
-  const presentToday = attendance.filter((a) => a.date === '2026-08-22' && a.status === 'present').length;
-  const onLeaveToday = attendance.filter((a) => a.date === '2026-08-22' && a.status === 'leave').length;
-  const attendanceRate = Math.round((presentToday / totalEmployees) * 100);
+  const todayStr = '2026-08-22';
+  const todayRecords = attendance.filter((a) => a.date === todayStr);
+  const presentToday = todayRecords.filter((a) => a.checkIn || a.status === 'present').length;
+  const checkedOutToday = todayRecords.filter((a) => a.checkOut).length;
+  const liveActiveToday = todayRecords.filter((a) => a.checkIn && !a.checkOut).length;
+  const onLeaveToday = todayRecords.filter((a) => a.status === 'leave').length;
+  const attendanceRate = totalEmployees > 0 ? Math.round((presentToday / totalEmployees) * 100) : 0;
 
   // Filtered employees
   const filteredUsers = users.filter((u) => {
@@ -102,11 +106,11 @@ export const AdminDashboardView = ({ onNavigate }) => {
         <MetricCard
           label="Attendance Today"
           value={`${attendanceRate}%`}
-          subtitle={`${presentToday} Present • ${onLeaveToday} On Approved Leave`}
+          subtitle={`${liveActiveToday} In-Session • ${checkedOutToday} Checked Out • ${onLeaveToday} On Leave`}
           icon={Clock}
           iconColor="var(--color-success)"
           iconBg="var(--color-success-bg)"
-          trend={{ value: '+3.2%', isPositive: true, text: 'vs Last Week' }}
+          trend={{ value: '+3.2%', isPositive: true, text: 'Live Roster' }}
         />
 
         <MetricCard
@@ -271,40 +275,60 @@ export const AdminDashboardView = ({ onNavigate }) => {
                 <th>Department</th>
                 <th>Role Designation</th>
                 <th>Location</th>
-                <th>Status</th>
+                <th>Today's Shift Status</th>
                 <th style={{ textAlign: 'right' }}>Actions</th>
               </tr>
             </thead>
             <tbody>
-              {filteredUsers.map((u) => (
-                <tr key={u.id}>
-                  <td>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                      <img
-                        src={u.avatar}
-                        alt={u.name}
-                        style={{ width: '36px', height: '36px', borderRadius: '50%', objectFit: 'cover' }}
-                      />
-                      <div>
-                        <div style={{ fontWeight: 700, color: 'var(--text-primary)' }}>{u.name}</div>
-                        <div style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)', fontFamily: 'var(--font-mono)' }}>
-                          {u.employeeId} • {u.email}
+              {filteredUsers.map((u) => {
+                const userTodayAtt = attendance.find((a) => a.userId === u.id && a.date === '2026-08-22');
+                return (
+                  <tr key={u.id}>
+                    <td>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                        <img
+                          src={u.avatar}
+                          alt={u.name}
+                          style={{ width: '36px', height: '36px', borderRadius: '50%', objectFit: 'cover' }}
+                        />
+                        <div>
+                          <div style={{ fontWeight: 700, color: 'var(--text-primary)' }}>{u.name}</div>
+                          <div style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)', fontFamily: 'var(--font-mono)' }}>
+                            {u.employeeId} • {u.email}
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  </td>
-                  <td>
-                    <span style={{ fontSize: '0.8125rem', fontWeight: 600 }}>{u.department}</span>
-                  </td>
-                  <td>
-                    <span style={{ fontSize: '0.8125rem', color: 'var(--text-secondary)' }}>{u.designation}</span>
-                  </td>
-                  <td>
-                    <span style={{ fontSize: '0.8125rem', color: 'var(--text-secondary)' }}>{u.location}</span>
-                  </td>
-                  <td>
-                    <Badge variant={u.status === 'active' ? 'active' : 'pending'}>{u.status}</Badge>
-                  </td>
+                    </td>
+                    <td>
+                      <span style={{ fontSize: '0.8125rem', fontWeight: 600 }}>{u.department}</span>
+                    </td>
+                    <td>
+                      <span style={{ fontSize: '0.8125rem', color: 'var(--text-secondary)' }}>{u.designation}</span>
+                    </td>
+                    <td>
+                      <span style={{ fontSize: '0.8125rem', color: 'var(--text-secondary)' }}>{u.location}</span>
+                    </td>
+                    <td>
+                      {userTodayAtt?.checkOut ? (
+                        <div>
+                          <Badge variant="present">Shift Done</Badge>
+                          <div style={{ fontSize: '0.6875rem', color: 'var(--color-primary)', fontWeight: 600, fontFamily: 'var(--font-mono)', marginTop: '2px' }}>
+                            Out: {userTodayAtt.checkOut}
+                          </div>
+                        </div>
+                      ) : userTodayAtt?.checkIn ? (
+                        <div>
+                          <Badge variant="present">Clocked In</Badge>
+                          <div style={{ fontSize: '0.6875rem', color: 'var(--emerald-600)', fontWeight: 600, fontFamily: 'var(--font-mono)', marginTop: '2px' }}>
+                            In: {userTodayAtt.checkIn}
+                          </div>
+                        </div>
+                      ) : userTodayAtt?.status === 'leave' ? (
+                        <Badge variant="leave">On Leave</Badge>
+                      ) : (
+                        <Badge variant="absent">Not Punched</Badge>
+                      )}
+                    </td>
                   <td style={{ textAlign: 'right' }}>
                     <div style={{ display: 'inline-flex', gap: '0.5rem' }}>
                       <Button
@@ -329,8 +353,9 @@ export const AdminDashboardView = ({ onNavigate }) => {
                     </div>
                   </td>
                 </tr>
-              ))}
-            </tbody>
+              );
+            })}
+          </tbody>
           </table>
         </div>
       </Card>
