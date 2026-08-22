@@ -25,7 +25,8 @@ import {
   ExternalLink,
   Users,
   Briefcase,
-  PieChart
+  PieChart,
+  HelpCircle as QuestionIcon
 } from 'lucide-react';
 
 // ==========================================
@@ -649,19 +650,29 @@ export const ProductTour = ({ isOpen, onClose, onFinish, currentRoute = 'employe
     ];
   }, [role]);
 
+  // Initial Welcome Prompt Modal State
+  const [showPrompt, setShowPrompt] = useState(true);
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
   const [targetRect, setTargetRect] = useState(null);
 
-  // Reset to step 0 when route or role changes
+  // Reset prompt & step when opening or switching role
+  useEffect(() => {
+    if (isOpen) {
+      setShowPrompt(true);
+      setCurrentStepIndex(0);
+    }
+  }, [isOpen, role]);
+
+  // Reset step index on route change
   useEffect(() => {
     setCurrentStepIndex(0);
-  }, [currentRoute, role]);
+  }, [currentRoute]);
 
   const step = activeSteps[currentStepIndex] || activeSteps[0] || null;
 
   // Measure target element position and scroll into view with fluid spring easing
   const updateTargetPosition = useCallback(() => {
-    if (!step) return;
+    if (!step || showPrompt) return;
     const element = document.querySelector(step.target);
     if (element) {
       element.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'nearest' });
@@ -692,10 +703,10 @@ export const ProductTour = ({ isOpen, onClose, onFinish, currentRoute = 'employe
         });
       }
     }
-  }, [step]);
+  }, [step, showPrompt]);
 
   useEffect(() => {
-    if (isOpen) {
+    if (isOpen && !showPrompt) {
       updateTargetPosition();
       const timer = setTimeout(updateTargetPosition, 220);
       const handleResize = () => updateTargetPosition();
@@ -707,13 +718,24 @@ export const ProductTour = ({ isOpen, onClose, onFinish, currentRoute = 'employe
         window.removeEventListener('scroll', handleResize, true);
       };
     }
-  }, [isOpen, currentStepIndex, currentRoute, role, updateTargetPosition]);
+  }, [isOpen, showPrompt, currentStepIndex, currentRoute, role, updateTargetPosition]);
 
   // Keyboard navigation
   useEffect(() => {
     if (!isOpen) return;
 
     const handleKeyDown = (e) => {
+      if (showPrompt) {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          setShowPrompt(false);
+        } else if (e.key === 'Escape') {
+          e.preventDefault();
+          handleClose();
+        }
+        return;
+      }
+
       if (e.key === 'ArrowRight' || e.key === 'Enter') {
         e.preventDefault();
         handleNext();
@@ -728,7 +750,7 @@ export const ProductTour = ({ isOpen, onClose, onFinish, currentRoute = 'employe
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isOpen, currentStepIndex, activeSteps.length]);
+  }, [isOpen, showPrompt, currentStepIndex, activeSteps.length]);
 
   const handleNext = () => {
     if (currentStepIndex < activeSteps.length - 1) {
@@ -851,9 +873,201 @@ export const ProductTour = ({ isOpen, onClose, onFinish, currentRoute = 'employe
     mass: 0.8
   };
 
-  const roleTitle = role === 'admin' ? 'VP Admin Tour • Elena' : role === 'hr' ? 'HR Lead Tour • Marcus' : 'Employee Tour • Sophia';
+  const roleTitle = role === 'admin' ? 'VP Admin • Elena' : role === 'hr' ? 'HR Lead • Marcus' : 'Employee • Sophia';
   const roleColor = role === 'admin' ? '#D97706' : role === 'hr' ? '#059669' : 'var(--color-primary)';
 
+  // ==========================================
+  // A. WELCOME & GUIDE PROMPT INVITATION MODAL
+  // ==========================================
+  if (showPrompt) {
+    return (
+      <AnimatePresence>
+        <div
+          style={{
+            position: 'fixed',
+            inset: 0,
+            zIndex: 10000,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            backgroundColor: 'rgba(15, 12, 24, 0.78)',
+            backdropFilter: 'blur(12px)',
+            WebkitBackdropFilter: 'blur(12px)',
+            padding: '1.5rem',
+            overflowY: 'auto'
+          }}
+        >
+          {/* Ambient Lighting Orbs */}
+          <div
+            style={{
+              position: 'absolute',
+              width: '420px',
+              height: '420px',
+              background: 'radial-gradient(circle, rgba(168, 85, 247, 0.32) 0%, rgba(113, 75, 103, 0.12) 50%, transparent 70%)',
+              filter: 'blur(40px)',
+              pointerEvents: 'none'
+            }}
+          />
+
+          <motion.div
+            initial={{ opacity: 0, scale: 0.93, y: 16 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.95, y: -16 }}
+            transition={{ duration: 0.26, ease: [0.16, 1, 0.3, 1] }}
+            style={{
+              position: 'relative',
+              maxWidth: '460px',
+              width: '100%',
+              background: 'linear-gradient(145deg, rgba(255, 255, 255, 0.98) 0%, rgba(253, 250, 253, 0.96) 100%)',
+              borderRadius: '18px',
+              border: '1.5px solid rgba(168, 85, 247, 0.40)',
+              boxShadow: '0 24px 60px -12px rgba(113, 75, 103, 0.38), 0 0 35px rgba(168, 85, 247, 0.22)',
+              padding: '1.75rem',
+              color: '#0F172A',
+              textAlign: 'center',
+              overflow: 'hidden'
+            }}
+          >
+            {/* Top Gradient Line */}
+            <div
+              style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                right: 0,
+                height: '3.5px',
+                background: 'linear-gradient(90deg, #A855F7, #EC4899, #714B67)'
+              }}
+            />
+
+            {/* Close Button */}
+            <motion.button
+              whileHover={{ scale: 1.1, backgroundColor: 'rgba(0, 0, 0, 0.06)' }}
+              whileTap={{ scale: 0.92 }}
+              onClick={handleClose}
+              style={{
+                position: 'absolute',
+                top: '1rem',
+                right: '1rem',
+                background: 'rgba(0, 0, 0, 0.04)',
+                border: 'none',
+                color: '#64748B',
+                cursor: 'pointer',
+                padding: '6px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                borderRadius: '6px'
+              }}
+              title="Skip Tour"
+            >
+              <X size={15} />
+            </motion.button>
+
+            {/* Compass Icon Badge */}
+            <div
+              style={{
+                width: '52px',
+                height: '52px',
+                borderRadius: '14px',
+                backgroundColor: 'rgba(113, 75, 103, 0.12)',
+                color: 'var(--color-primary)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                margin: '0 auto 1.15rem auto',
+                border: '1px solid rgba(113, 75, 103, 0.25)',
+                boxShadow: '0 8px 18px rgba(113, 75, 103, 0.18), 0 0 16px rgba(168, 85, 247, 0.25)'
+              }}
+            >
+              <Compass size={26} />
+            </div>
+
+            {/* Persona Badge */}
+            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '4px 10px', borderRadius: '9999px', backgroundColor: 'rgba(113, 75, 103, 0.10)', border: '1px solid rgba(113, 75, 103, 0.20)', marginBottom: '0.75rem' }}>
+              <span style={{ width: '7px', height: '7px', borderRadius: '50%', backgroundColor: roleColor }} />
+              <span style={{ fontSize: '0.6875rem', fontWeight: 750, color: roleColor, textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+                {roleTitle}
+              </span>
+            </div>
+
+            {/* Title & Question */}
+            <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#0F172A', margin: '0 0 0.5rem 0', letterSpacing: '-0.02em' }}>
+              Would you like a quick guided tour?
+            </h3>
+            <p style={{ fontSize: '0.84375rem', color: '#475569', lineHeight: 1.5, margin: '0 0 1.25rem 0', fontWeight: 450 }}>
+              Dayflow has an interactive product walkthrough that explains key features, navigation, and live tools for your active role in under 45 seconds.
+            </p>
+
+            {/* Feature Highlights Pills */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', marginBottom: '1.5rem', textAlign: 'left' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '0.55rem 0.75rem', borderRadius: '8px', backgroundColor: 'rgba(247, 241, 245, 0.85)', border: '1px solid rgba(113, 75, 103, 0.15)', fontSize: '0.765625rem', color: '#334155' }}>
+                <Sparkles size={14} color="var(--color-primary)" style={{ flexShrink: 0 }} />
+                <span><strong>Spotlight Focus:</strong> Points directly at attendance, punch clock, leaves & payroll.</span>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '0.55rem 0.75rem', borderRadius: '8px', backgroundColor: 'rgba(247, 241, 245, 0.85)', border: '1px solid rgba(113, 75, 103, 0.15)', fontSize: '0.765625rem', color: '#334155' }}>
+                <Clock size={14} color="var(--color-primary)" style={{ flexShrink: 0 }} />
+                <span><strong>Fast & Non-Technical:</strong> Short, clean 1-line explanations with quick tips.</span>
+              </div>
+            </div>
+
+            {/* Action Buttons: Yes / No */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+              <motion.button
+                type="button"
+                whileHover={{ scale: 1.02, backgroundColor: 'rgba(0, 0, 0, 0.06)' }}
+                whileTap={{ scale: 0.97 }}
+                onClick={handleClose}
+                style={{
+                  flex: 1,
+                  padding: '9px 14px',
+                  borderRadius: '9px',
+                  border: '1px solid rgba(0, 0, 0, 0.12)',
+                  backgroundColor: '#FFFFFF',
+                  color: '#475569',
+                  fontSize: '0.8125rem',
+                  fontWeight: 650,
+                  cursor: 'pointer',
+                  boxShadow: '0 2px 4px rgba(0,0,0,0.04)'
+                }}
+              >
+                Explore on My Own
+              </motion.button>
+
+              <motion.button
+                type="button"
+                whileHover={{ scale: 1.03, y: -1 }}
+                whileTap={{ scale: 0.96 }}
+                onClick={() => setShowPrompt(false)}
+                style={{
+                  flex: 1.3,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '6px',
+                  padding: '9px 16px',
+                  borderRadius: '9px',
+                  border: 'none',
+                  backgroundColor: 'var(--color-primary)',
+                  color: '#FFFFFF',
+                  fontSize: '0.8125rem',
+                  fontWeight: 750,
+                  cursor: 'pointer',
+                  boxShadow: '0 4px 12px rgba(113, 75, 103, 0.35), 0 0 16px rgba(168, 85, 247, 0.25)'
+                }}
+              >
+                Yes, Start Guide 🚀
+              </motion.button>
+            </div>
+          </motion.div>
+        </div>
+      </AnimatePresence>
+    );
+  }
+
+  // ==========================================
+  // B. STEP-BY-STEP INTERACTIVE SPOTLIGHT TOUR
+  // ==========================================
   return (
     <AnimatePresence>
       <div

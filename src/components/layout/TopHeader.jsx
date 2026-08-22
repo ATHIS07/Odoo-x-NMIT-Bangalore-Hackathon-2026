@@ -143,11 +143,12 @@ export const TopHeader = ({ onOpenNotifications, onRouteChange, onOpenCommandPal
         {/* User Mini Avatar Trigger */}
         <div
           onClick={() => onRouteChange('profile')}
+          title="Open Profile"
           style={{ display: 'flex', alignItems: 'center', gap: '0.625rem', cursor: 'pointer', padding: '4px', borderRadius: '8px' }}
         >
           <img
-            src={activeUser.avatar}
-            alt={activeUser.name}
+            src={activeUser?.avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=240&auto=format&fit=crop&q=80'}
+            alt={activeUser?.name || 'User'}
             style={{ width: '34px', height: '34px', borderRadius: '50%', objectFit: 'cover', border: '2px solid var(--border-subtle)' }}
           />
         </div>

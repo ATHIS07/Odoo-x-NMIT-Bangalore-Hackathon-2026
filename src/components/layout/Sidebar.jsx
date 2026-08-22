@@ -249,16 +249,16 @@ export const Sidebar = ({ currentRoute, onRouteChange, onOpenNotifications }) =>
           style={{ display: 'flex', alignItems: 'center', gap: '0.625rem', cursor: 'pointer', flex: 1, minWidth: 0 }}
         >
           <img
-            src={activeUser.avatar}
-            alt={activeUser.name}
+            src={activeUser?.avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=240&auto=format&fit=crop&q=80'}
+            alt={activeUser?.name || 'User'}
             style={{ width: '36px', height: '36px', borderRadius: '50%', objectFit: 'cover', border: '1px solid var(--color-border)' }}
           />
           <div style={{ minWidth: 0 }}>
             <div style={{ fontSize: '0.8125rem', fontWeight: 600, color: 'var(--color-text-heading)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-              {activeUser.name}
+              {activeUser?.name || 'User'}
             </div>
             <div style={{ fontSize: '0.6875rem', color: 'var(--color-text-muted)', textTransform: 'uppercase' }}>
-              {activeUser.employeeId} • {activeUser.role}
+              {activeUser?.employeeId || 'DF-8824'} • {activeUser?.role || 'employee'}
             </div>
           </div>
         </div>

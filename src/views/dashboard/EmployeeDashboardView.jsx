@@ -21,7 +21,7 @@ import { Button, Card, Badge, MetricCard } from '../../components/common/CommonU
 import { LeaveQuotaDonut } from '../../components/charts/Charts';
 
 export const EmployeeDashboardView = ({ onNavigate }) => {
-  const { activeUser } = useAuth();
+  const { activeUser, signOut } = useAuth();
   const { profiles, getTodayAttendance, clockIn, clockOut, leaves, notifications, companyHolidays } = useHRMS();
 
   const safeUser = activeUser || { id: 'usr_001', employeeId: 'DF-8824', name: 'Sophia Vance', designation: 'Senior Staff Frontend Architect', department: 'Engineering' };
@@ -137,9 +137,8 @@ export const EmployeeDashboardView = ({ onNavigate }) => {
 
         <Card
           onClick={() => {
-            if (confirm('Are you sure you want to sign out?')) {
-              localStorage.removeItem('odoo_auth_user');
-              window.location.reload();
+            if (window.confirm('Are you sure you want to sign out?')) {
+              signOut();
             }
           }}
           style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.875rem', padding: '1rem 1.25rem', transition: 'all 0.2s ease' }}

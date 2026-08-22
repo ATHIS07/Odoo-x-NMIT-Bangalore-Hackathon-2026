@@ -21,13 +21,13 @@ export const ProfileEditView = ({ onNavigate }) => {
   const [avatarError, setAvatarError] = useState('');
   const [saving, setSaving] = useState(false);
 
-  const currentProf = profiles[activeUser.id] || {};
+  const currentProf = (activeUser?.id && profiles[activeUser.id]) || {};
 
   // Form local state
   const [formData, setFormData] = useState({
-    name: currentProf.personalDetails?.fullName || activeUser.name,
-    phone: currentProf.phone || activeUser.phone,
-    avatar: currentProf.avatar || activeUser.avatar,
+    name: currentProf.personalDetails?.fullName || activeUser?.name || 'Sophia Vance',
+    phone: currentProf.phone || activeUser?.phone || '+91 98450 00112',
+    avatar: currentProf.avatar || activeUser?.avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=240&auto=format&fit=crop&q=80',
     street: currentProf.address?.street || '74 Outer Ring Road, Bellandur',
     city: currentProf.address?.city || 'Bangalore',
     state: currentProf.address?.state || 'Karnataka',
@@ -36,8 +36,8 @@ export const ProfileEditView = ({ onNavigate }) => {
     emergencyRelation: currentProf.personalDetails?.emergencyContactRelation || 'Father',
     emergencyPhone: currentProf.personalDetails?.emergencyContactPhone || '+91 98451 91233',
     // Admin only fields
-    department: currentProf.jobDetails?.department || activeUser.department,
-    designation: currentProf.jobDetails?.designation || activeUser.designation,
+    department: currentProf.jobDetails?.department || activeUser?.department || 'Engineering',
+    designation: currentProf.jobDetails?.designation || activeUser?.designation || 'Staff Frontend Architect',
     manager: currentProf.jobDetails?.manager || 'Elena Rostova',
     baseSalary: currentProf.salaryStructure?.baseSalary || 1800000,
     hra: currentProf.salaryStructure?.hra || 720000,
