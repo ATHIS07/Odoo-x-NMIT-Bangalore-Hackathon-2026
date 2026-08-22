@@ -17,25 +17,109 @@ import {
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { useHRMS } from '../../context/HRMSContext';
+import { useToast } from '../../context/ToastContext';
 import { Button, Card, Badge, MetricCard } from '../../components/common/CommonUI';
 import { AttendanceTrendChart, PayrollExpenseChart } from '../../components/charts/Charts';
 
 export const AnalyticsView = () => {
-  const { activeUser, isHRorAdmin } = useAuth();
-  const { users, attendance, leaves, payroll } = useHRMS();
+  const { activeUser } = useAuth();
+  const { users, attendance, leaves, payroll, profiles } = useHRMS();
+  const { showToast } = useToast();
 
+  const [activePeriod, setActivePeriod] = useState('month'); // 'month' | 'q2' | 'ytd'
   const [reportDateRange, setReportDateRange] = useState('2026-Q3');
   const [reportDepartment, setReportDepartment] = useState('All');
   const [reportFormat, setReportFormat] = useState('CSV');
   const [isExporting, setIsExporting] = useState(false);
 
+  // Dynamic period metrics
+  const periodData = {
+    month: {
+      punctuality: '96.8%',
+      punctualityTrend: '+1.4% vs July',
+      leaveUtilization: '34.2%',
+      leaveSubtitle: 'Healthy distribution in Aug',
+      payrollBurn: '₹82,50,000',
+      payrollSubtitle: 'Reconciled for 7 accounts',
+      retention: '99.1%',
+      retentionSubtitle: '0 voluntary exits in Aug'
+    },
+    q2: {
+      punctuality: '95.4%',
+      punctualityTrend: '+0.8% vs Q1',
+      leaveUtilization: '42.1%',
+      leaveSubtitle: 'Summer leave peak reconciled',
+      payrollBurn: '₹79,20,000 / mo',
+      payrollSubtitle: 'Q2 average monthly run',
+      retention: '98.8%',
+      retentionSubtitle: '1 internal departmental transfer'
+    },
+    ytd: {
+      punctuality: '96.1%',
+      punctualityTrend: '+2.3% YoY',
+      leaveUtilization: '38.6%',
+      leaveSubtitle: 'Cumulative FY26-27 balance',
+      payrollBurn: '₹4.12 Cr Total',
+      payrollSubtitle: '5 months disbursed YTD',
+      retention: '99.4%',
+      retentionSubtitle: 'Enterprise retention benchmark'
+    }
+  };
+
+  const currentMetrics = periodData[activePeriod];
+
   const handleExportReport = () => {
     setIsExporting(true);
     setTimeout(() => {
       setIsExporting(false);
-      const filename = `Dayflow_Executive_Report_${reportDateRange}_${reportDepartment}.${reportFormat.toLowerCase()}`;
-      alert(`Report generated: ${filename} (Prepared via AWS Lambda Data Pipeline)`);
-    }, 600);
+
+      const exportRows = users.map((u) => {
+        const prof = profiles[u.id] || {};
+        const sal = prof.salaryStructure || { baseSalary: 1800000, netAnnualSalary: 2646000 };
+        const userLeaves = leaves.filter((l) => l.userId === u.id);
+        const approvedCount = userLeaves.filter((l) => l.status === 'approved').reduce((acc, l) => acc + l.daysCount, 0);
+
+        return {
+          employeeId: u.employeeId,
+          name: u.name,
+          department: u.department,
+          designation: u.designation,
+          location: u.location,
+          baseSalary: `₹${sal.baseSalary?.toLocaleString()}`,
+          netTakeHomeAnnual: `₹${sal.netAnnualSalary?.toLocaleString()}`,
+          totalApprovedLeaveDays: approvedCount
+        };
+      });
+
+      if (reportFormat === 'JSON') {
+        const jsonContent = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(exportRows, null, 2));
+        const link = document.createElement('a');
+        link.setAttribute('href', jsonContent);
+        link.setAttribute('download', `Dayflow_Executive_Report_${reportDateRange}_${reportDepartment}.json`);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      } else {
+        // CSV export
+        const headers = ['Employee ID,Name,Department,Designation,Location,Base Salary,Annual Take Home,Approved Leaves'];
+        const csvRows = exportRows.map((r) =>
+          `"${r.employeeId}","${r.name}","${r.department}","${r.designation}","${r.location}","${r.baseSalary}","${r.netTakeHomeAnnual}",${r.totalApprovedLeaveDays}`
+        );
+        const csvContent = 'data:text/csv;charset=utf-8,' + encodeURIComponent([headers, ...csvRows].join('\n'));
+        const link = document.createElement('a');
+        link.setAttribute('href', csvContent);
+        link.setAttribute('download', `Dayflow_Executive_Report_${reportDateRange}_${reportDepartment}.csv`);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      }
+
+      showToast({
+        title: 'Executive Report Downloaded',
+        message: `Generated and saved Dayflow_Executive_Report_${reportDateRange}.${reportFormat.toLowerCase()}`,
+        type: 'success'
+      });
+    }, 500);
   };
 
   return (
@@ -44,12 +128,12 @@ export const AnalyticsView = () => {
       <div className="page-header">
         <div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.25rem' }}>
-            <span style={{ fontSize: '0.75rem', fontWeight: 700, color: '#BE185D', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+            <span style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--primary-600)', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
               Executive Intelligence & Audit Reports
             </span>
             <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>•</span>
             <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>
-              Workforce Data Insights
+              Workforce Data Insights (India)
             </span>
           </div>
           <h1 className="page-title">Workforce Analytics & Executive Reports</h1>
@@ -58,10 +142,32 @@ export const AnalyticsView = () => {
           </p>
         </div>
 
-        <div style={{ display: 'flex', gap: '0.75rem' }}>
-          <Button variant="primary" icon={Download} loading={isExporting} onClick={handleExportReport}>
-            Generate Executive Dossier
-          </Button>
+        {/* Time Period Selector Tabs */}
+        <div style={{ display: 'flex', backgroundColor: 'var(--bg-surface-subtle)', borderRadius: '8px', padding: '3px' }}>
+          {[
+            { id: 'month', label: 'August 2026' },
+            { id: 'q2', label: 'Q2 (Apr-Jun)' },
+            { id: 'ytd', label: 'FY26-27 YTD' }
+          ].map((p) => (
+            <button
+              key={p.id}
+              onClick={() => setActivePeriod(p.id)}
+              style={{
+                padding: '6px 12px',
+                borderRadius: '6px',
+                border: 'none',
+                fontSize: '0.8125rem',
+                fontWeight: 600,
+                cursor: 'pointer',
+                backgroundColor: activePeriod === p.id ? 'var(--bg-surface)' : 'transparent',
+                color: activePeriod === p.id ? 'var(--text-primary)' : 'var(--text-secondary)',
+                boxShadow: activePeriod === p.id ? 'var(--shadow-sm)' : 'none',
+                transition: 'all 0.15s ease'
+              }}
+            >
+              {p.label}
+            </button>
+          ))}
         </div>
       </div>
 
@@ -69,27 +175,27 @@ export const AnalyticsView = () => {
       <div className="grid-4" style={{ marginBottom: '1.5rem' }}>
         <MetricCard
           label="Average Punctuality"
-          value="96.8%"
-          subtitle="+1.4% vs last month"
+          value={currentMetrics.punctuality}
+          subtitle={currentMetrics.punctualityTrend}
           icon={Clock}
           iconColor="var(--emerald-600)"
           iconBg="var(--emerald-50)"
-          trend={{ value: '+1.4%', isPositive: true, text: 'vs Q2' }}
+          trend={{ value: currentMetrics.punctualityTrend, isPositive: true, text: '' }}
         />
 
         <MetricCard
           label="Leave Quota Utilization"
-          value="34.2%"
-          subtitle="Healthy distribution across Q3"
+          value={currentMetrics.leaveUtilization}
+          subtitle={currentMetrics.leaveSubtitle}
           icon={TrendingUp}
           iconColor="var(--primary-600)"
           iconBg="var(--primary-50)"
         />
 
         <MetricCard
-          label="Monthly Payroll Burn"
-          value="₹82,50,000"
-          subtitle="Reconciled & balanced"
+          label={activePeriod === 'ytd' ? 'Cumulative YTD Payroll' : 'Monthly Payroll Burn'}
+          value={currentMetrics.payrollBurn}
+          subtitle={currentMetrics.payrollSubtitle}
           icon={CreditCard}
           iconColor="#8B5CF6"
           iconBg="#F5F3FF"
@@ -97,8 +203,8 @@ export const AnalyticsView = () => {
 
         <MetricCard
           label="Employee Retention"
-          value="99.1%"
-          subtitle="0 voluntary exits in 2026"
+          value={currentMetrics.retention}
+          subtitle={currentMetrics.retentionSubtitle}
           icon={Users}
           iconColor="var(--emerald-600)"
           iconBg="var(--emerald-50)"
@@ -116,7 +222,7 @@ export const AnalyticsView = () => {
                 Weekly Attendance & Presence Rates
               </div>
               <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>
-                Real-time punch metrics across all organizational tiers.
+                Real-time punch metrics across Bangalore, Mumbai, Pune, and Hyderabad hubs.
               </div>
             </div>
             <Badge variant="active">Realtime</Badge>
@@ -131,7 +237,7 @@ export const AnalyticsView = () => {
             <div>
               <div className="card-title">
                 <CreditCard size={18} color="var(--primary-600)" />
-                Department Payroll Allocation
+                Department Payroll Allocation (INR)
               </div>
               <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>
                 Monthly gross compensation expenditure by division.
@@ -168,7 +274,7 @@ export const AnalyticsView = () => {
               <option value="2026-Q3">Current Quarter (Q3 2026)</option>
               <option value="2026-Q2">Q2 2026 (Apr - Jun)</option>
               <option value="2026-Q1">Q1 2026 (Jan - Mar)</option>
-              <option value="2026-YTD">2026 Year-to-Date</option>
+              <option value="2026-YTD">FY 2026-27 Year-to-Date</option>
             </select>
           </div>
 
@@ -194,9 +300,8 @@ export const AnalyticsView = () => {
               onChange={(e) => setReportFormat(e.target.value)}
               className="form-select font-mono"
             >
-              <option value="CSV">Comma Separated (.CSV)</option>
-              <option value="PDF">Audit Executive PDF (.PDF)</option>
-              <option value="JSON">Structured API Dump (.JSON)</option>
+              <option value="CSV">Comma Separated File (.CSV)</option>
+              <option value="JSON">Structured JSON Dataset (.JSON)</option>
             </select>
           </div>
 
@@ -209,7 +314,7 @@ export const AnalyticsView = () => {
               onClick={handleExportReport}
               style={{ width: '100%' }}
             >
-              Export Report
+              Generate & Download Report
             </Button>
           </div>
         </div>

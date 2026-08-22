@@ -213,8 +213,15 @@ export const EmployeeDashboardView = ({ onNavigate }) => {
                 border: '1px solid var(--border-subtle)'
               }}
             >
-              <div style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)', textTransform: 'uppercase', letterSpacing: '0.05em', fontWeight: 600 }}>
-                Logged Today Duration
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}>
+                <span style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)', textTransform: 'uppercase', letterSpacing: '0.05em', fontWeight: 600 }}>
+                  Logged Today Duration
+                </span>
+                {elapsedSeconds >= 28800 && isClockedIn && (
+                  <span style={{ fontSize: '0.6875rem', backgroundColor: 'var(--color-primary-light)', color: 'var(--color-primary)', padding: '2px 6px', borderRadius: '4px', fontWeight: 600 }}>
+                    ⚡ Overtime
+                  </span>
+                )}
               </div>
               <div
                 style={{
@@ -269,7 +276,7 @@ export const EmployeeDashboardView = ({ onNavigate }) => {
               </Button>
 
               <div style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)', textAlign: 'center', marginTop: '0.25rem' }}>
-                Shift Policy: 09:00 AM - 05:30 PM PST (1h mandatory break)
+                Shift Policy: 09:30 AM - 06:00 PM IST (45m lunch break)
               </div>
             </div>
           </div>
@@ -282,12 +289,32 @@ export const EmployeeDashboardView = ({ onNavigate }) => {
               <CalendarCheck size={20} color="var(--primary-600)" />
               Leave Quota Balance
             </div>
-            <button
-              onClick={() => onNavigate('leave-apply')}
-              style={{ background: 'none', border: 'none', color: 'var(--primary-600)', fontSize: '0.8125rem', fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '2px' }}
-            >
-              Apply <ArrowUpRight size={14} />
-            </button>
+            <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+              <button
+                onClick={() => onNavigate('leave-apply')}
+                style={{
+                  padding: '4px 8px',
+                  borderRadius: '4px',
+                  backgroundColor: 'var(--color-primary-light)',
+                  border: '1px solid rgba(113, 75, 103, 0.2)',
+                  color: 'var(--color-primary)',
+                  fontSize: '0.75rem',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '3px'
+                }}
+              >
+                ⚡ Apply Tomorrow
+              </button>
+              <button
+                onClick={() => onNavigate('leave-apply')}
+                style={{ background: 'none', border: 'none', color: 'var(--primary-600)', fontSize: '0.8125rem', fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '2px' }}
+              >
+                Apply <ArrowUpRight size={14} />
+              </button>
+            </div>
           </div>
 
           <LeaveQuotaDonut balance={userProfile.leaveBalance} />

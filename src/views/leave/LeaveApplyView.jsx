@@ -10,7 +10,8 @@ import {
   Clock,
   ArrowRight,
   Info,
-  Sparkles
+  Sparkles,
+  AlertTriangle
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { useHRMS } from '../../context/HRMSContext';
@@ -58,10 +59,34 @@ export const LeaveApplyView = ({ onNavigate }) => {
 
   const daysCount = calculateWorkingDays(startDate, endDate);
   const currentRemaining = balance[leaveType]?.remaining || 10;
+  const isQuotaExceeded = leaveType !== 'unpaid' && daysCount > currentRemaining;
   const remainingAfter = Math.max(0, currentRemaining - daysCount);
+
+  // Check for date overlaps with existing leaves
+  const userLeaveHistory = leaves.filter((l) => l.userId === activeUser.id);
+  const conflictingLeave = userLeaveHistory.find((l) => {
+    if (l.status === 'rejected') return false;
+    const reqStart = new Date(startDate);
+    const reqEnd = new Date(endDate);
+    const existingStart = new Date(l.startDate);
+    const existingEnd = new Date(l.endDate);
+    return (reqStart <= existingEnd && reqEnd >= existingStart);
+  });
+
+  const reasonPresets = [
+    'Attending tech conference & outstation workshops',
+    'Personal / family commitment & travel',
+    'Viral fever & doctor advised bed rest',
+    'Routine dental / medical follow-up consultation',
+    'Personal sabbatical & continuous learning'
+  ];
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (isQuotaExceeded) {
+      alert(`Cannot submit: requested duration (${daysCount} days) exceeds your available ${leaveType} balance (${currentRemaining} days).`);
+      return;
+    }
     if (!remarks.trim()) {
       alert('Please provide a brief reason / remarks for your leave application');
       return;
@@ -79,8 +104,6 @@ export const LeaveApplyView = ({ onNavigate }) => {
     setIsSubmitting(false);
     setSubmittedSuccess(true);
   };
-
-  const userLeaveHistory = leaves.filter((l) => l.userId === activeUser.id);
 
   return (
     <div className="page-wrapper">
@@ -126,7 +149,7 @@ export const LeaveApplyView = ({ onNavigate }) => {
         <MetricCard
           label="Compensatory Off"
           value={`${balance.compensatory?.remaining || 4} Days`}
-          subtitle="Earned from weekend on-call"
+          subtitle={`Used: ${balance.compensatory?.used || 1} / ${balance.compensatory?.total || 5} days`}
           icon={Clock}
           iconColor="var(--color-primary)"
           iconBg="var(--primary-50)"
@@ -192,6 +215,52 @@ export const LeaveApplyView = ({ onNavigate }) => {
             </motion.div>
           ) : (
             <form onSubmit={handleSubmit}>
+              {/* Overlap Alert Banner */}
+              {conflictingLeave && (
+                <div
+                  style={{
+                    padding: '0.75rem 1rem',
+                    borderRadius: '8px',
+                    backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                    border: '1px solid rgba(239, 68, 68, 0.3)',
+                    color: '#DC2626',
+                    fontSize: '0.8125rem',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '0.625rem',
+                    marginBottom: '1.25rem'
+                  }}
+                >
+                  <AlertTriangle size={18} />
+                  <div>
+                    <strong>Date Conflict:</strong> You already have a {conflictingLeave.leaveType.toUpperCase()} leave ({conflictingLeave.startDate} to {conflictingLeave.endDate}) during this window.
+                  </div>
+                </div>
+              )}
+
+              {/* Quota Exceeded Banner */}
+              {isQuotaExceeded && (
+                <div
+                  style={{
+                    padding: '0.75rem 1rem',
+                    borderRadius: '8px',
+                    backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                    border: '1px solid rgba(239, 68, 68, 0.3)',
+                    color: '#DC2626',
+                    fontSize: '0.8125rem',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '0.625rem',
+                    marginBottom: '1.25rem'
+                  }}
+                >
+                  <AlertCircle size={18} />
+                  <div>
+                    <strong>Quota Limit Exceeded:</strong> You requested {daysCount} days, but only have {currentRemaining} {leaveType} days remaining.
+                  </div>
+                </div>
+              )}
+
               <div className="form-group">
                 <label className="form-label">Leave Category</label>
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '0.5rem' }}>
@@ -249,12 +318,39 @@ export const LeaveApplyView = ({ onNavigate }) => {
                 </div>
               </div>
 
+              {/* Quick Reason Presets */}
+              <div style={{ marginBottom: '0.75rem' }}>
+                <div style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)', marginBottom: '0.35rem', fontWeight: 600 }}>
+                  Quick Fill Reason:
+                </div>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.35rem' }}>
+                  {reasonPresets.map((preset, i) => (
+                    <button
+                      key={i}
+                      type="button"
+                      onClick={() => setRemarks(preset)}
+                      style={{
+                        padding: '3px 8px',
+                        borderRadius: '4px',
+                        border: '1px solid var(--border-subtle)',
+                        backgroundColor: 'var(--bg-surface-subtle)',
+                        fontSize: '0.6875rem',
+                        color: 'var(--text-secondary)',
+                        cursor: 'pointer'
+                      }}
+                    >
+                      + {preset}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
               <div className="form-group">
                 <label className="form-label">Reason / Remarks for Absence</label>
                 <textarea
                   rows={3}
                   required
-                  placeholder="e.g. Attending React Advanced Summit / Family commitment / Doctor appointment..."
+                  placeholder="Provide context for your manager & HR..."
                   value={remarks}
                   onChange={(e) => setRemarks(e.target.value)}
                   className="form-textarea"
@@ -263,7 +359,14 @@ export const LeaveApplyView = ({ onNavigate }) => {
 
               {leaveType === 'sick' && (
                 <div className="form-group">
-                  <label className="form-label">Medical Certificate / Proof (Optional)</label>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.35rem' }}>
+                    <label className="form-label" style={{ margin: 0 }}>Medical Certificate / Proof</label>
+                    {daysCount >= 2 && (
+                      <span style={{ fontSize: '0.6875rem', color: 'var(--primary-600)', fontWeight: 600 }}>
+                        * Required for medical leave ≥ 2 days
+                      </span>
+                    )}
+                  </div>
                   <FileUpload onUpload={(file) => setAttachedDoc(file)} />
                 </div>
               )}
@@ -273,7 +376,8 @@ export const LeaveApplyView = ({ onNavigate }) => {
                 variant="primary"
                 size="lg"
                 loading={isSubmitting}
-                style={{ width: '100%', marginTop: '1rem' }}
+                disabled={isQuotaExceeded}
+                style={{ width: '100%', marginTop: '1rem', opacity: isQuotaExceeded ? 0.6 : 1 }}
                 icon={ArrowRight}
                 iconPosition="right"
               >
@@ -318,14 +422,14 @@ export const LeaveApplyView = ({ onNavigate }) => {
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8125rem' }}>
                   <span style={{ color: 'var(--text-secondary)' }}>Remaining After Approval:</span>
-                  <span style={{ fontWeight: 700, color: remainingAfter <= 2 ? 'var(--rose-600)' : 'var(--emerald-600)', fontFamily: 'var(--font-mono)' }}>
-                    {remainingAfter} Days
+                  <span style={{ fontWeight: 700, color: isQuotaExceeded ? 'var(--rose-600)' : remainingAfter <= 2 ? 'var(--amber-600)' : 'var(--emerald-600)', fontFamily: 'var(--font-mono)' }}>
+                    {isQuotaExceeded ? 'Deficit' : `${remainingAfter} Days`}
                   </span>
                 </div>
               </div>
 
               <div style={{ backgroundColor: 'var(--bg-surface-subtle)', padding: '0.75rem', borderRadius: '8px', fontSize: '0.75rem', color: 'var(--text-secondary)' }}>
-                ℹ️ <strong>Auto-Routing Policy:</strong> Requests under 3 days are auto-reviewed by Department Lead. Requests over 5 days require VP Operations audit.
+                ℹ️ <strong>Auto-Routing Policy:</strong> Requests under 3 days are reviewed by Lead HR. Extended leaves over 5 days require Executive Admin audit.
               </div>
             </div>
           </Card>

@@ -936,3 +936,37 @@ a:hover {
     max-height: none;
   }
 }
+
+/* Dedicated Clean Print Stylesheet for Payslips */
+@media print {
+  body {
+    background: #FFFFFF !important;
+    color: #000000 !important;
+  }
+
+  .sidebar,
+  .top-header,
+  .demo-toolbar,
+  header,
+  button,
+  .auth-persona-card,
+  .page-header {
+    display: none !important;
+  }
+
+  .app-container,
+  .main-content,
+  .page-wrapper {
+    margin: 0 !important;
+    padding: 0 !important;
+    max-width: 100% !important;
+    width: 100% !important;
+  }
+
+  #printable-payslip {
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    width: 100% !important;
+  }
+}

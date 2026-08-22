@@ -8,6 +8,16 @@ export const NotificationDrawer = ({ isOpen, onClose, onNavigate }) => {
   const { notifications, markNotificationAsRead, markAllNotificationsAsRead } = useHRMS();
   const [filter, setFilter] = useState('all');
 
+  React.useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape' && isOpen) {
+        onClose?.();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, onClose]);
+
   const filtered = notifications.filter((n) => {
     if (filter === 'unread') return !n.read;
     if (filter === 'leaves') return n.type.includes('leave');

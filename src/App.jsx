@@ -9,6 +9,7 @@ import { Sidebar } from './components/layout/Sidebar';
 import { TopHeader } from './components/layout/TopHeader';
 import { DemoToolbar } from './components/layout/DemoToolbar';
 import { NotificationDrawer } from './components/layout/NotificationDrawer';
+import { CommandPalette } from './components/common/CommandPalette';
 
 // 12 Required Views
 import { SignInView } from './views/auth/SignInView';
@@ -34,6 +35,19 @@ const MainAppContent = () => {
   });
 
   const [isNotifDrawerOpen, setIsNotifDrawerOpen] = useState(false);
+  const [isCommandPaletteOpen, setIsCommandPaletteOpen] = useState(false);
+
+  // Global Ctrl+K / Cmd+K listener
+  useEffect(() => {
+    const handleGlobalKeyDown = (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        setIsCommandPaletteOpen((prev) => !prev);
+      }
+    };
+    window.addEventListener('keydown', handleGlobalKeyDown);
+    return () => window.removeEventListener('keydown', handleGlobalKeyDown);
+  }, []);
 
   // Sync route on role switch
   useEffect(() => {
@@ -147,6 +161,7 @@ const MainAppContent = () => {
         <TopHeader
           onOpenNotifications={() => setIsNotifDrawerOpen(true)}
           onRouteChange={handleNavigate}
+          onOpenCommandPalette={() => setIsCommandPaletteOpen(true)}
         />
 
         <main style={{ flex: 1, paddingBottom: '5rem' }}>
@@ -169,6 +184,17 @@ const MainAppContent = () => {
         isOpen={isNotifDrawerOpen}
         onClose={() => setIsNotifDrawerOpen(false)}
         onNavigate={handleNavigate}
+      />
+
+      {/* Global Command Palette (Ctrl + K) */}
+      <CommandPalette
+        isOpen={isCommandPaletteOpen}
+        onClose={() => setIsCommandPaletteOpen(false)}
+        onNavigate={(routePath) => {
+          // Convert route path to internal key
+          const cleanRoute = routePath.replace(/^\//, '').replace('/', '-');
+          handleNavigate(cleanRoute === 'dashboard' ? 'employee-dashboard' : cleanRoute);
+        }}
       />
 
       {/* Hackathon Judge Toolbar */}

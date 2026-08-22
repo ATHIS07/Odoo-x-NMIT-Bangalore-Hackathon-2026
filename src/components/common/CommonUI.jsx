@@ -105,7 +105,17 @@ export const MetricCard = ({
   );
 };
 
-export const Modal = ({ isOpen, onClose, title, children, maxWidth = '550px' }) => {
+export const Modal = ({ isOpen, onClose, title, children, maxWidth = '540px' }) => {
+  React.useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape' && isOpen) {
+        onClose?.();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, onClose]);
+
   if (!isOpen) return null;
 
   return (
@@ -115,7 +125,7 @@ export const Modal = ({ isOpen, onClose, title, children, maxWidth = '550px' }) 
         inset: 0,
         backgroundColor: 'rgba(15, 23, 42, 0.65)',
         backdropFilter: 'blur(4px)',
-        zIndex: 9990,
+        zIndex: 1000,
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',

@@ -4,7 +4,7 @@ import { useAuth } from '../../context/AuthContext';
 import { useHRMS } from '../../context/HRMSContext';
 import { Badge } from '../common/CommonUI';
 
-export const TopHeader = ({ onOpenNotifications, onRouteChange }) => {
+export const TopHeader = ({ onOpenNotifications, onRouteChange, onOpenCommandPalette }) => {
   const { activeUser, role, isAdmin, isHR, impersonatedUser, stopImpersonation } = useAuth();
   const { notifications, simulateLatency } = useHRMS();
 
@@ -35,17 +35,21 @@ export const TopHeader = ({ onOpenNotifications, onRouteChange }) => {
       {/* Search & Breadcrumbs */}
       <div style={{ display: 'flex', alignItems: 'center', gap: '1.25rem', flex: 1, maxWidth: '480px' }}>
         <div
+          onClick={onOpenCommandPalette}
           style={{
             position: 'relative',
             width: '100%',
             display: 'flex',
-            alignItems: 'center'
+            alignItems: 'center',
+            cursor: 'pointer'
           }}
         >
           <Search size={16} color="var(--text-tertiary)" style={{ position: 'absolute', left: '12px' }} />
           <input
             type="text"
-            placeholder="Search employees, policies, salary slips, or docs... (⌘K)"
+            readOnly
+            onClick={onOpenCommandPalette}
+            placeholder="Search employees, actions, or jump anywhere... (Ctrl+K)"
             style={{
               width: '100%',
               padding: '0.5rem 0.875rem 0.5rem 2.25rem',
@@ -55,9 +59,25 @@ export const TopHeader = ({ onOpenNotifications, onRouteChange }) => {
               borderRadius: '8px',
               outline: 'none',
               color: 'var(--text-primary)',
-              fontFamily: 'var(--font-sans)'
+              fontFamily: 'var(--font-sans)',
+              cursor: 'pointer'
             }}
           />
+          <kbd
+            style={{
+              position: 'absolute',
+              right: '10px',
+              fontSize: '0.6875rem',
+              fontFamily: 'var(--font-mono)',
+              color: 'var(--text-tertiary)',
+              border: '1px solid var(--border-subtle)',
+              padding: '2px 5px',
+              borderRadius: '4px',
+              backgroundColor: 'var(--bg-surface)'
+            }}
+          >
+            Ctrl+K
+          </kbd>
         </div>
       </div>
 

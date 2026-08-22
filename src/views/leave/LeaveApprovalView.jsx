@@ -11,14 +11,17 @@ import {
   AlertTriangle,
   User,
   Sparkles,
-  MessageSquare
+  MessageSquare,
+  Users,
+  CheckSquare,
+  Square
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { useHRMS } from '../../context/HRMSContext';
 import { Button, Card, Badge, Modal } from '../../components/common/CommonUI';
 
 export const LeaveApprovalView = () => {
-  const { activeUser, role } = useAuth();
+  const { activeUser } = useAuth();
   const { leaves, users, approveLeave, rejectLeave } = useHRMS();
 
   const [activeTab, setActiveTab] = useState('pending'); // 'pending' | 'approved' | 'rejected' | 'all'
@@ -28,6 +31,10 @@ export const LeaveApprovalView = () => {
   const [reviewActionType, setReviewActionType] = useState('approve'); // 'approve' | 'reject'
   const [adminComment, setAdminComment] = useState('');
   const [processingId, setProcessingId] = useState(null);
+  
+  // Bulk selection
+  const [selectedIds, setSelectedIds] = useState([]);
+  const [isBulkProcessing, setIsBulkProcessing] = useState(false);
 
   // Filter requests
   const filteredLeaves = leaves.filter((l) => {
@@ -42,7 +49,15 @@ export const LeaveApprovalView = () => {
     return true;
   });
 
+  const pendingLeaves = filteredLeaves.filter((l) => l.status === 'pending');
   const pendingCount = leaves.filter((l) => l.status === 'pending').length;
+
+  const rejectionPresets = [
+    'Critical sprint deliverable & release crunch',
+    'Notice period submitted below 48-hour SLA policy',
+    'Team concurrency limit reached for this window',
+    'Mandatory corporate quarterly planning meetings'
+  ];
 
   const handleQuickAction = async (leave, action) => {
     setProcessingId(leave.id);
@@ -52,6 +67,7 @@ export const LeaveApprovalView = () => {
       await rejectLeave(leave.id, 'Declined due to department coverage constraints.');
     }
     setProcessingId(null);
+    setSelectedIds((prev) => prev.filter((id) => id !== leave.id));
   };
 
   const handleModalSubmit = async () => {
@@ -63,12 +79,62 @@ export const LeaveApprovalView = () => {
       await rejectLeave(reviewModalLeave.id, adminComment || 'Declined with HR notes.');
     }
     setProcessingId(null);
+    setSelectedIds((prev) => prev.filter((id) => id !== reviewModalLeave.id));
     setReviewModalLeave(null);
     setAdminComment('');
   };
 
+  const toggleSelect = (id) => {
+    setSelectedIds((prev) =>
+      prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
+    );
+  };
+
+  const handleSelectAllPending = () => {
+    if (selectedIds.length === pendingLeaves.length) {
+      setSelectedIds([]);
+    } else {
+      setSelectedIds(pendingLeaves.map((l) => l.id));
+    }
+  };
+
+  const handleBulkApprove = async () => {
+    setIsBulkProcessing(true);
+    for (const id of selectedIds) {
+      await approveLeave(id, 'Bulk approved via HR governance queue.');
+    }
+    setSelectedIds([]);
+    setIsBulkProcessing(false);
+  };
+
+  const handleBulkReject = async () => {
+    setIsBulkProcessing(true);
+    for (const id of selectedIds) {
+      await rejectLeave(id, 'Declined in bulk review due to operational scheduling.');
+    }
+    setSelectedIds([]);
+    setIsBulkProcessing(false);
+  };
+
+  // Helper to check if another team member is already on leave during the requested dates
+  const getTeamOverlapWarning = (leave) => {
+    const overlapping = leaves.filter((other) => {
+      if (other.id === leave.id || other.department !== leave.department || other.status !== 'approved') return false;
+      const startA = new Date(leave.startDate);
+      const endA = new Date(leave.endDate);
+      const startB = new Date(other.startDate);
+      const endB = new Date(other.endDate);
+      return startA <= endB && endA >= startB;
+    });
+
+    if (overlapping.length > 0) {
+      return `${overlapping.length} other team member (${overlapping.map(o => o.employeeName).join(', ')}) on approved leave`;
+    }
+    return null;
+  };
+
   return (
-    <div className="page-wrapper">
+    <div className="page-wrapper" style={{ paddingBottom: selectedIds.length > 0 ? '6rem' : '3rem' }}>
       {/* Header */}
       <div className="page-header">
         <div>
@@ -101,7 +167,10 @@ export const LeaveApprovalView = () => {
             ].map((t) => (
               <button
                 key={t.id}
-                onClick={() => setActiveTab(t.id)}
+                onClick={() => {
+                  setActiveTab(t.id);
+                  setSelectedIds([]);
+                }}
                 style={{
                   padding: '0.45rem 0.875rem',
                   borderRadius: '6px',
@@ -136,8 +205,31 @@ export const LeaveApprovalView = () => {
             ))}
           </div>
 
-          {/* Search & Dept Filter */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+          {/* Search & Dept Filter & Select All */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
+            {activeTab === 'pending' && pendingLeaves.length > 0 && (
+              <button
+                type="button"
+                onClick={handleSelectAllPending}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '4px',
+                  padding: '0.4rem 0.75rem',
+                  borderRadius: '6px',
+                  border: '1px solid var(--border-default)',
+                  backgroundColor: 'var(--bg-surface)',
+                  fontSize: '0.75rem',
+                  fontWeight: 600,
+                  color: 'var(--text-secondary)',
+                  cursor: 'pointer'
+                }}
+              >
+                {selectedIds.length === pendingLeaves.length ? <CheckSquare size={14} color="var(--primary-600)" /> : <Square size={14} />}
+                {selectedIds.length === pendingLeaves.length ? 'Deselect All' : 'Select All'}
+              </button>
+            )}
+
             <div style={{ position: 'relative' }}>
               <Search size={15} color="var(--text-tertiary)" style={{ position: 'absolute', left: '10px', top: '9px' }} />
               <input
@@ -193,6 +285,8 @@ export const LeaveApprovalView = () => {
           ) : (
             filteredLeaves.map((l) => {
               const applicant = users.find((u) => u.id === l.userId);
+              const overlapWarning = getTeamOverlapWarning(l);
+              const isSelected = selectedIds.includes(l.id);
 
               return (
                 <motion.div
@@ -203,10 +297,29 @@ export const LeaveApprovalView = () => {
                   exit={{ opacity: 0, scale: 0.95 }}
                   transition={{ type: 'spring', stiffness: 450, damping: 35 }}
                 >
-                  <Card elevated>
+                  <Card
+                    elevated
+                    style={{
+                      border: isSelected ? '1px solid var(--primary-600)' : '1px solid var(--border-subtle)',
+                      backgroundColor: isSelected ? 'rgba(113, 75, 103, 0.02)' : 'var(--bg-surface)'
+                    }}
+                  >
                     <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '1.5rem', flexWrap: 'wrap' }}>
-                      {/* Left: Applicant Dossier Summary */}
+                      {/* Left: Checkbox & Applicant Dossier */}
                       <div style={{ display: 'flex', alignItems: 'flex-start', gap: '1rem', flex: 1, minWidth: '320px' }}>
+                        {l.status === 'pending' && (
+                          <div
+                            onClick={() => toggleSelect(l.id)}
+                            style={{ cursor: 'pointer', paddingTop: '10px' }}
+                          >
+                            {isSelected ? (
+                              <CheckSquare size={20} color="var(--primary-600)" />
+                            ) : (
+                              <Square size={20} color="var(--text-tertiary)" />
+                            )}
+                          </div>
+                        )}
+
                         <img
                           src={applicant?.avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=240&auto=format&fit=crop&q=80'}
                           alt={l.employeeName}
@@ -230,6 +343,28 @@ export const LeaveApprovalView = () => {
                             {l.department} • <strong style={{ color: 'var(--primary-600)', fontFamily: 'var(--font-mono)' }}>{l.daysCount} Working Days</strong> ({l.startDate} → {l.endDate})
                           </div>
 
+                          {/* Team Concurrency Overlap Alert */}
+                          {overlapWarning && (
+                            <div
+                              style={{
+                                display: 'inline-flex',
+                                alignItems: 'center',
+                                gap: '5px',
+                                padding: '3px 8px',
+                                borderRadius: '4px',
+                                backgroundColor: 'var(--amber-50)',
+                                border: '1px solid var(--amber-200)',
+                                color: '#B45309',
+                                fontSize: '0.75rem',
+                                fontWeight: 600,
+                                marginBottom: '0.5rem'
+                              }}
+                            >
+                              <Users size={13} />
+                              {overlapWarning}
+                            </div>
+                          )}
+
                           <div
                             style={{
                               backgroundColor: 'var(--bg-surface-subtle)',
@@ -251,10 +386,10 @@ export const LeaveApprovalView = () => {
                             </div>
                           )}
 
-                          {/* Review notes if already reviewed */}
-                          {l.adminComment && (
-                            <div style={{ marginTop: '0.625rem', fontSize: '0.75rem', color: 'var(--text-secondary)', fontStyle: 'italic' }}>
-                              Audit Decision: "{l.adminComment}" — <em>{l.reviewedBy}</em>
+                          {/* Review metadata if decided */}
+                          {l.reviewedBy && (
+                            <div style={{ marginTop: '0.75rem', fontSize: '0.75rem', color: 'var(--text-tertiary)' }}>
+                              Reviewed by <strong>{l.reviewedBy}</strong> • Comment: <em>"{l.adminComment}"</em>
                             </div>
                           )}
                         </div>
@@ -262,10 +397,10 @@ export const LeaveApprovalView = () => {
 
                       {/* Right: Actions */}
                       {l.status === 'pending' && (
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', minWidth: '180px' }}>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', minWidth: '160px' }}>
                           <Button
                             variant="success"
-                            size="md"
+                            size="sm"
                             icon={CheckCircle2}
                             loading={processingId === l.id}
                             onClick={() => handleQuickAction(l, 'approve')}
@@ -275,27 +410,32 @@ export const LeaveApprovalView = () => {
                           </Button>
 
                           <Button
-                            variant="danger"
-                            size="md"
-                            icon={XCircle}
-                            loading={processingId === l.id}
-                            onClick={() => handleQuickAction(l, 'reject')}
-                            style={{ width: '100%' }}
-                          >
-                            Reject Request
-                          </Button>
-
-                          <Button
-                            variant="ghost"
+                            variant="secondary"
                             size="sm"
                             icon={MessageSquare}
                             onClick={() => {
                               setReviewModalLeave(l);
                               setReviewActionType('approve');
+                              setAdminComment('');
                             }}
                             style={{ width: '100%' }}
                           >
-                            Audit Notes...
+                            Review & Notes
+                          </Button>
+
+                          <Button
+                            variant="danger"
+                            size="sm"
+                            icon={XCircle}
+                            loading={processingId === l.id}
+                            onClick={() => {
+                              setReviewModalLeave(l);
+                              setReviewActionType('reject');
+                              setAdminComment('');
+                            }}
+                            style={{ width: '100%' }}
+                          >
+                            Decline
                           </Button>
                         </div>
                       )}
@@ -308,56 +448,132 @@ export const LeaveApprovalView = () => {
         </AnimatePresence>
       </div>
 
-      {/* Decision Review Modal */}
+      {/* Floating Bulk Action Bar */}
+      <AnimatePresence>
+        {selectedIds.length > 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 50 }}
+            style={{
+              position: 'fixed',
+              bottom: '24px',
+              left: '50%',
+              transform: 'translateX(-50%)',
+              zIndex: 900,
+              backgroundColor: '#1E293B',
+              color: '#FFFFFF',
+              padding: '0.75rem 1.5rem',
+              borderRadius: '999px',
+              boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.3)',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '1.25rem'
+            }}
+          >
+            <div style={{ fontSize: '0.875rem', fontWeight: 600 }}>
+              {selectedIds.length} Leave{selectedIds.length > 1 ? 's' : ''} Selected
+            </div>
+
+            <div style={{ display: 'flex', gap: '0.5rem' }}>
+              <Button
+                size="sm"
+                variant="success"
+                icon={CheckCircle2}
+                loading={isBulkProcessing}
+                onClick={handleBulkApprove}
+              >
+                Approve Selected ({selectedIds.length})
+              </Button>
+              <Button
+                size="sm"
+                variant="danger"
+                icon={XCircle}
+                loading={isBulkProcessing}
+                onClick={handleBulkReject}
+              >
+                Reject Selected
+              </Button>
+              <Button
+                size="sm"
+                variant="ghost"
+                onClick={() => setSelectedIds([])}
+                style={{ color: '#94A3B8' }}
+              >
+                Cancel
+              </Button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Review & Comment Modal */}
       <Modal
         isOpen={!!reviewModalLeave}
         onClose={() => setReviewModalLeave(null)}
-        title="Leave Audit Decision"
+        title={reviewActionType === 'approve' ? `Approve Leave: ${reviewModalLeave?.employeeName}` : `Decline Leave: ${reviewModalLeave?.employeeName}`}
+        maxWidth="520px"
       >
         {reviewModalLeave && (
           <div>
-            <div style={{ padding: '1rem', backgroundColor: 'var(--bg-surface-subtle)', borderRadius: '8px', marginBottom: '1.25rem' }}>
-              <div style={{ fontWeight: 700, fontSize: '0.9375rem' }}>{reviewModalLeave.employeeName}</div>
-              <div style={{ fontSize: '0.8125rem', color: 'var(--text-secondary)', marginTop: '2px' }}>
-                {reviewModalLeave.department} • {reviewModalLeave.leaveType.toUpperCase()} ({reviewModalLeave.daysCount} Days)
-              </div>
-              <div style={{ fontSize: '0.8125rem', marginTop: '0.5rem' }}>
-                Span: <strong>{reviewModalLeave.startDate}</strong> to <strong>{reviewModalLeave.endDate}</strong>
-              </div>
+            <div style={{ padding: '0.875rem', backgroundColor: 'var(--bg-surface-subtle)', borderRadius: '8px', marginBottom: '1rem', fontSize: '0.8125rem' }}>
+              <div><strong>Dates:</strong> {reviewModalLeave.startDate} → {reviewModalLeave.endDate} ({reviewModalLeave.daysCount} days)</div>
+              <div><strong>Category:</strong> {reviewModalLeave.leaveType.toUpperCase()} Leave</div>
+              <div style={{ marginTop: '4px' }}><strong>Employee Reason:</strong> "{reviewModalLeave.remarks}"</div>
             </div>
 
+            {reviewActionType === 'reject' && (
+              <div style={{ marginBottom: '0.75rem' }}>
+                <div style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)', marginBottom: '0.35rem', fontWeight: 600 }}>
+                  Quick Rejection Reason Presets:
+                </div>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.35rem' }}>
+                  {rejectionPresets.map((preset, i) => (
+                    <button
+                      key={i}
+                      type="button"
+                      onClick={() => setAdminComment(preset)}
+                      style={{
+                        padding: '3px 8px',
+                        borderRadius: '4px',
+                        border: '1px solid var(--border-subtle)',
+                        backgroundColor: 'var(--bg-surface-subtle)',
+                        fontSize: '0.6875rem',
+                        color: 'var(--text-secondary)',
+                        cursor: 'pointer'
+                      }}
+                    >
+                      + {preset}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
             <div className="form-group">
-              <label className="form-label">Decision Remarks / Employee Feedback</label>
+              <label className="form-label">
+                {reviewActionType === 'approve' ? 'Optional Approval Note / Instructions' : 'Reason for Declining (Mandatory)'}
+              </label>
               <textarea
                 rows={3}
-                className="form-textarea"
-                placeholder="Enter comments or audit rationale for employee records..."
+                required={reviewActionType === 'reject'}
+                placeholder={reviewActionType === 'approve' ? 'e.g. Approved. Please ensure handover to peer before departure.' : 'Explain reasoning to employee...'}
                 value={adminComment}
                 onChange={(e) => setAdminComment(e.target.value)}
+                className="form-textarea"
               />
             </div>
 
-            <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'flex-end', marginTop: '1.5rem' }}>
+            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.75rem', marginTop: '1.25rem' }}>
               <Button variant="ghost" onClick={() => setReviewModalLeave(null)}>
                 Cancel
               </Button>
               <Button
-                variant="danger"
-                onClick={() => {
-                  setReviewActionType('reject');
-                  handleModalSubmit();
-                }}
+                variant={reviewActionType === 'approve' ? 'primary' : 'danger'}
+                loading={processingId === reviewModalLeave.id}
+                onClick={handleModalSubmit}
               >
-                Reject Request
-              </Button>
-              <Button
-                variant="success"
-                onClick={() => {
-                  setReviewActionType('approve');
-                  handleModalSubmit();
-                }}
-              >
-                Approve Leave
+                Confirm {reviewActionType === 'approve' ? 'Approval' : 'Rejection'}
               </Button>
             </div>
           </div>

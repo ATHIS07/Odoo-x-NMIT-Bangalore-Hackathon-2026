@@ -302,11 +302,35 @@ export const ProfileView = ({ onNavigate }) => {
 
                 <div style={{ borderTop: '1px solid var(--border-subtle)', paddingTop: '0.75rem' }}>
                   <div style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)', textTransform: 'uppercase', marginBottom: '2px' }}>Emergency Contact</div>
-                  <div style={{ fontWeight: 700, fontSize: '0.875rem' }}>
-                    {profile.personalDetails?.emergencyContactName} ({profile.personalDetails?.emergencyContactRelation})
-                  </div>
-                  <div style={{ fontSize: '0.8125rem', color: 'var(--text-secondary)', marginTop: '2px', fontFamily: 'var(--font-mono)' }}>
-                    {profile.personalDetails?.emergencyContactPhone}
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <div>
+                      <div style={{ fontWeight: 700, fontSize: '0.875rem' }}>
+                        {profile.personalDetails?.emergencyContactName} ({profile.personalDetails?.emergencyContactRelation})
+                      </div>
+                      <div style={{ fontSize: '0.8125rem', color: 'var(--text-secondary)', marginTop: '2px', fontFamily: 'var(--font-mono)' }}>
+                        {profile.personalDetails?.emergencyContactPhone}
+                      </div>
+                    </div>
+                    <div style={{ display: 'flex', gap: '0.5rem' }}>
+                      <a
+                        href={`tel:${profile.personalDetails?.emergencyContactPhone}`}
+                        style={{
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          gap: '4px',
+                          padding: '4px 10px',
+                          borderRadius: '6px',
+                          backgroundColor: 'var(--color-primary-light)',
+                          color: 'var(--color-primary)',
+                          fontSize: '0.75rem',
+                          fontWeight: 600,
+                          textDecoration: 'none',
+                          border: '1px solid rgba(113, 75, 103, 0.2)'
+                        }}
+                      >
+                        📞 Call Now
+                      </a>
+                    </div>
                   </div>
                 </div>
               </div>

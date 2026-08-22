@@ -12,19 +12,38 @@ import {
   MapPin,
   Sparkles,
   Coffee,
-  Check
+  Check,
+  Send,
+  Info,
+  CalendarDays
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { useHRMS } from '../../context/HRMSContext';
-import { Button, Card, Badge, MetricCard } from '../../components/common/CommonUI';
+import { useToast } from '../../context/ToastContext';
+import { Button, Card, Badge, MetricCard, Modal } from '../../components/common/CommonUI';
 
 export const AttendanceView = () => {
   const { activeUser, isHRorAdmin } = useAuth();
   const { attendance, users, getTodayAttendance, clockIn, clockOut } = useHRMS();
+  const { showToast, showSNSToast } = useToast();
 
   const [viewMode, setViewMode] = useState('daily'); // 'daily' | 'calendar'
   const [statusFilter, setStatusFilter] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
+
+  // Modals
+  const [isRegularizeModalOpen, setIsRegularizeModalOpen] = useState(false);
+  const [selectedDayRecord, setSelectedDayRecord] = useState(null);
+
+  // Regularization form state
+  const [regularizeForm, setRegularizeForm] = useState({
+    date: new Date().toISOString().split('T')[0],
+    type: 'both',
+    checkIn: '09:30 AM',
+    checkOut: '06:30 PM',
+    reason: 'Biometric Reader Hardware Glitch',
+    notes: 'Attended office on-time. Biometric machine failed to register badge.'
+  });
 
   const todayRecord = getTodayAttendance(activeUser.id);
   const isClockedIn = todayRecord && !todayRecord.checkOut;
@@ -51,10 +70,29 @@ export const AttendanceView = () => {
     return true;
   });
 
+  const handleRegularizeSubmit = (e) => {
+    e.preventDefault();
+    setIsRegularizeModalOpen(false);
+    showToast({
+      title: 'Regularization Submitted',
+      message: `Request for ${regularizeForm.date} sent to HR Operations.`,
+      type: 'success'
+    });
+    showSNSToast({
+      title: 'DynamoDB Stream: Attendance Regularization',
+      message: `Pending approval for ${activeUser.name} (${regularizeForm.date})`,
+      source: 'Attendance OS'
+    });
+  };
+
   const exportCSV = () => {
     const csvContent = 'data:text/csv;charset=utf-8,' +
-      ['Date,User ID,Check In,Check Out,Duration,Status,Location,Notes']
-        .concat(displayRecords.map((r) => `${r.date},${r.userId},${r.checkIn || 'N/A'},${r.checkOut || 'N/A'},${r.duration},${r.status},"${r.location || ''}","${r.notes || ''}"`))
+      ['Date,Employee ID,Check In,Check Out,Duration,Status,Location,Notes']
+        .concat(displayRecords.map((r) => {
+          const user = users.find((u) => u.id === r.userId);
+          const empId = user?.employeeId || r.userId;
+          return `${r.date},${empId},${r.checkIn || 'N/A'},${r.checkOut || 'N/A'},${r.duration},${r.status},"${r.location || ''}","${r.notes || ''}"`;
+        }))
         .join('\n');
     const encodedUri = encodeURI(csvContent);
     const link = document.createElement('a');
@@ -72,7 +110,7 @@ export const AttendanceView = () => {
         <div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.25rem' }}>
             <span style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--primary-600)', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
-              Attendance & Shifts OS
+              Attendance & Shifts OS (India)
             </span>
             <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>•</span>
             <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>
@@ -81,14 +119,23 @@ export const AttendanceView = () => {
           </div>
           <h1 className="page-title">{isHRorAdmin ? 'Workforce Attendance Roster' : 'My Daily & Weekly Attendance'}</h1>
           <p className="page-subtitle">
-            Sub-millisecond punch logging via DynamoDB streams with geolocation terminal tracking.
+            Sub-millisecond punch logging via DynamoDB streams with Bangalore & Mumbai geolocation terminal tracking.
           </p>
         </div>
 
-        <div style={{ display: 'flex', gap: '0.75rem' }}>
+        <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
           <Button variant="secondary" icon={Download} onClick={exportCSV}>
             Export CSV
           </Button>
+          {!isHRorAdmin && (
+            <Button
+              variant="secondary"
+              icon={CalendarDays}
+              onClick={() => setIsRegularizeModalOpen(true)}
+            >
+              Request Regularization
+            </Button>
+          )}
           {!isHRorAdmin && (
             !isClockedIn ? (
               <Button variant="success" icon={Clock} onClick={() => clockIn(activeUser.id)}>
@@ -103,193 +150,207 @@ export const AttendanceView = () => {
         </div>
       </div>
 
-      {/* Top Attendance Metric Tiles */}
+      {/* KPI Metrics */}
       <div className="grid-4" style={{ marginBottom: '1.5rem' }}>
         <MetricCard
-          label="Today's Check-In"
-          value={todayRecord?.checkIn || 'Not Punched'}
-          subtitle={todayRecord?.checkOut ? `Checked out at ${todayRecord.checkOut}` : isClockedIn ? 'Active Work Session' : 'Shift Starts 09:00 AM'}
+          label="Today's Shift Punch"
+          value={todayRecord?.checkIn ? todayRecord.checkIn : 'Not Clocked In'}
+          subtitle={todayRecord?.checkOut ? `Checked out at ${todayRecord.checkOut}` : isClockedIn ? 'Active Work Session' : 'Shift Starts 09:30 AM IST'}
           icon={Clock}
           iconColor={isClockedIn ? 'var(--emerald-600)' : 'var(--text-secondary)'}
           iconBg={isClockedIn ? 'var(--emerald-50)' : 'var(--bg-surface-subtle)'}
         />
 
         <MetricCard
-          label="On-Time Rate"
-          value="98.2%"
-          subtitle="24 on-time logs this month"
+          label="August Present Rate"
+          value="96.2%"
+          subtitle="20 Days Logged • 1 Half-Day"
           icon={CheckCircle2}
           iconColor="var(--emerald-600)"
           iconBg="var(--emerald-50)"
+          trend={{ value: '+2.1%', isPositive: true, text: 'vs July' }}
         />
 
         <MetricCard
-          label="Weekly Total Hours"
-          value="39h 45m"
-          subtitle="Target: 40h standard core"
-          icon={Calendar}
+          label="Average Daily Hours"
+          value="8h 42m"
+          subtitle="Target: 8h 00m standard shift"
+          icon={Coffee}
           iconColor="var(--primary-600)"
           iconBg="var(--primary-50)"
         />
 
         <MetricCard
-          label="Anomaly Flags"
-          value="0 Flags"
-          subtitle="Zero unexcused absences"
-          icon={AlertTriangle}
-          iconColor="var(--color-primary)"
-          iconBg="var(--primary-50)"
+          label="Shift Timing"
+          value="09:30 AM - 06:00 PM"
+          subtitle="General Shift (Bangalore HQ)"
+          icon={MapPin}
+          iconColor="#8B5CF6"
+          iconBg="#F5F3FF"
         />
       </div>
 
-      {/* Control Bar: Search, Filters & View Mode */}
-      <Card style={{ marginBottom: '1.5rem', padding: '1rem 1.25rem' }}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flex: 1, minWidth: '240px' }}>
-            <div style={{ position: 'relative', width: '100%', maxWidth: '320px' }}>
-              <Search size={15} color="var(--text-tertiary)" style={{ position: 'absolute', left: '10px', top: '9px' }} />
-              <input
-                type="text"
-                placeholder="Search by date, employee or note..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                style={{
-                  width: '100%',
-                  padding: '0.45rem 0.75rem 0.45rem 2rem',
-                  fontSize: '0.8125rem',
-                  border: '1px solid var(--border-default)',
-                  borderRadius: '6px',
-                  outline: 'none',
-                  backgroundColor: 'var(--bg-surface)'
-                }}
-              />
-            </div>
+      {/* Control Bar: View Switcher, Filter & Search */}
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          flexWrap: 'wrap',
+          gap: '1rem',
+          marginBottom: '1.25rem',
+          padding: '0.875rem 1.25rem',
+          backgroundColor: 'var(--bg-surface)',
+          borderRadius: '12px',
+          border: '1px solid var(--border-subtle)'
+        }}
+      >
+        {/* Left: View Mode Toggle */}
+        <div style={{ display: 'flex', backgroundColor: 'var(--bg-surface-subtle)', borderRadius: '8px', padding: '3px' }}>
+          <button
+            onClick={() => setViewMode('daily')}
+            style={{
+              padding: '6px 14px',
+              borderRadius: '6px',
+              border: 'none',
+              fontSize: '0.8125rem',
+              fontWeight: 600,
+              cursor: 'pointer',
+              backgroundColor: viewMode === 'daily' ? 'var(--bg-surface)' : 'transparent',
+              color: viewMode === 'daily' ? 'var(--text-primary)' : 'var(--text-secondary)',
+              boxShadow: viewMode === 'daily' ? 'var(--shadow-sm)' : 'none'
+            }}
+          >
+            Daily Timeline
+          </button>
+          <button
+            onClick={() => setViewMode('calendar')}
+            style={{
+              padding: '6px 14px',
+              borderRadius: '6px',
+              border: 'none',
+              fontSize: '0.8125rem',
+              fontWeight: 600,
+              cursor: 'pointer',
+              backgroundColor: viewMode === 'calendar' ? 'var(--bg-surface)' : 'transparent',
+              color: viewMode === 'calendar' ? 'var(--text-primary)' : 'var(--text-secondary)',
+              boxShadow: viewMode === 'calendar' ? 'var(--shadow-sm)' : 'none'
+            }}
+          >
+            Monthly Calendar
+          </button>
+        </div>
 
-            {/* Status Filter Pills */}
-            <div style={{ display: 'flex', gap: '0.35rem' }}>
-              {['all', 'present', 'half-day', 'leave', 'absent'].map((st) => (
-                <button
-                  key={st}
-                  onClick={() => setStatusFilter(st)}
-                  style={{
-                    padding: '0.35rem 0.75rem',
-                    borderRadius: '6px',
-                    border: '1px solid',
-                    borderColor: statusFilter === st ? 'var(--primary-600)' : 'var(--border-subtle)',
-                    backgroundColor: statusFilter === st ? 'var(--primary-50)' : 'transparent',
-                    color: statusFilter === st ? 'var(--primary-700)' : 'var(--text-secondary)',
-                    fontSize: '0.75rem',
-                    fontWeight: statusFilter === st ? 700 : 500,
-                    cursor: 'pointer',
-                    textTransform: 'capitalize'
-                  }}
-                >
-                  {st}
-                </button>
-              ))}
-            </div>
+        {/* Right: Filters & Search */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flex: 1, justifyContent: 'flex-end' }}>
+          {/* Status Filter Tabs */}
+          <div style={{ display: 'flex', gap: '4px' }}>
+            {['all', 'present', 'half-day', 'leave', 'absent'].map((status) => (
+              <button
+                key={status}
+                onClick={() => setStatusFilter(status)}
+                style={{
+                  padding: '5px 10px',
+                  borderRadius: '6px',
+                  border: '1px solid',
+                  borderColor: statusFilter === status ? 'var(--primary-600)' : 'transparent',
+                  backgroundColor: statusFilter === status ? 'var(--primary-50)' : 'transparent',
+                  color: statusFilter === status ? 'var(--primary-600)' : 'var(--text-secondary)',
+                  fontSize: '0.75rem',
+                  fontWeight: 600,
+                  textTransform: 'capitalize',
+                  cursor: 'pointer'
+                }}
+              >
+                {status}
+              </button>
+            ))}
           </div>
 
-          {/* View Mode Toggle */}
-          <div style={{ display: 'flex', backgroundColor: 'var(--bg-surface-subtle)', padding: '2px', borderRadius: '8px' }}>
-            <button
-              onClick={() => setViewMode('daily')}
+          {/* Search Input */}
+          <div style={{ position: 'relative', minWidth: '220px' }}>
+            <Search size={14} color="var(--text-tertiary)" style={{ position: 'absolute', left: '10px', top: '10px' }} />
+            <input
+              type="text"
+              placeholder="Search by date or note..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
               style={{
-                padding: '0.35rem 0.75rem',
-                border: 'none',
+                width: '100%',
+                padding: '0.45rem 0.75rem 0.45rem 2rem',
+                fontSize: '0.8125rem',
                 borderRadius: '6px',
-                backgroundColor: viewMode === 'daily' ? 'var(--bg-surface)' : 'transparent',
-                color: viewMode === 'daily' ? 'var(--text-primary)' : 'var(--text-tertiary)',
-                fontWeight: viewMode === 'daily' ? 700 : 500,
-                fontSize: '0.75rem',
-                cursor: 'pointer',
-                boxShadow: viewMode === 'daily' ? 'var(--shadow-xs)' : 'none'
+                border: '1px solid var(--border-subtle)',
+                backgroundColor: 'var(--bg-surface-subtle)',
+                outline: 'none'
               }}
-            >
-              Timeline Table
-            </button>
-            <button
-              onClick={() => setViewMode('calendar')}
-              style={{
-                padding: '0.35rem 0.75rem',
-                border: 'none',
-                borderRadius: '6px',
-                backgroundColor: viewMode === 'calendar' ? 'var(--bg-surface)' : 'transparent',
-                color: viewMode === 'calendar' ? 'var(--text-primary)' : 'var(--text-tertiary)',
-                fontWeight: viewMode === 'calendar' ? 700 : 500,
-                fontSize: '0.75rem',
-                cursor: 'pointer',
-                boxShadow: viewMode === 'calendar' ? 'var(--shadow-xs)' : 'none'
-              }}
-            >
-              Monthly Calendar Grid
-            </button>
+            />
           </div>
         </div>
-      </Card>
+      </div>
 
-      {/* View Content */}
+      {/* Main Content Area */}
       {viewMode === 'daily' ? (
+        /* Daily Timeline Table */
         <Card elevated>
           <div className="table-container">
             <table className="data-table">
               <thead>
                 <tr>
-                  {isHRorAdmin && <th>Employee</th>}
                   <th>Date</th>
+                  {isHRorAdmin && <th>Employee</th>}
                   <th>Check In</th>
                   <th>Check Out</th>
-                  <th>Work Duration</th>
+                  <th>Total Duration</th>
                   <th>Status</th>
                   <th>Terminal / Geolocation</th>
-                  <th>Audit Notes</th>
+                  <th>Remarks / Notes</th>
                 </tr>
               </thead>
               <tbody>
                 {displayRecords.length === 0 ? (
                   <tr>
                     <td colSpan={isHRorAdmin ? 8 : 7} style={{ textAlign: 'center', padding: '3rem', color: 'var(--text-tertiary)' }}>
-                      No attendance records found matching filters.
+                      No attendance entries matched the selected filters.
                     </td>
                   </tr>
                 ) : (
                   displayRecords.map((rec) => {
-                    const emp = users.find((u) => u.id === rec.userId);
-
+                    const user = users.find((u) => u.id === rec.userId);
                     return (
                       <tr key={rec.id}>
+                        <td style={{ fontFamily: 'var(--font-mono)', fontWeight: 600 }}>{rec.date}</td>
                         {isHRorAdmin && (
                           <td>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.625rem' }}>
-                              {emp && (
-                                <img
-                                  src={emp.avatar}
-                                  alt={emp.name}
-                                  style={{ width: '28px', height: '28px', borderRadius: '50%', objectFit: 'cover' }}
-                                />
-                              )}
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                              <img
+                                src={user?.avatar || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=240'}
+                                alt=""
+                                style={{ width: '24px', height: '24px', borderRadius: '50%', objectFit: 'cover' }}
+                              />
                               <div>
-                                <div style={{ fontWeight: 700, fontSize: '0.8125rem' }}>{emp?.name || rec.userId}</div>
+                                <div style={{ fontWeight: 600, fontSize: '0.8125rem' }}>{user?.name || rec.userId}</div>
                                 <div style={{ fontSize: '0.6875rem', color: 'var(--text-tertiary)', fontFamily: 'var(--font-mono)' }}>
-                                  {emp?.employeeId}
+                                  {user?.employeeId}
                                 </div>
                               </div>
                             </div>
                           </td>
                         )}
-                        <td style={{ fontFamily: 'var(--font-mono)', fontWeight: 600 }}>{rec.date}</td>
-                        <td style={{ fontFamily: 'var(--font-mono)', color: 'var(--text-primary)' }}>
+                        <td style={{ fontFamily: 'var(--font-mono)', color: rec.checkIn ? 'var(--emerald-600)' : 'var(--text-tertiary)', fontWeight: 600 }}>
                           {rec.checkIn || '—'}
                         </td>
-                        <td style={{ fontFamily: 'var(--font-mono)', color: 'var(--text-primary)' }}>
-                          {rec.checkOut || (rec.checkIn ? <span style={{ color: 'var(--emerald-600)', fontWeight: 700 }}>In Progress</span> : '—')}
+                        <td style={{ fontFamily: 'var(--font-mono)', color: rec.checkOut ? 'var(--text-primary)' : 'var(--text-tertiary)' }}>
+                          {rec.checkOut || (rec.checkIn && rec.date === '2026-08-22' ? 'Active' : '—')}
                         </td>
-                        <td style={{ fontFamily: 'var(--font-mono)' }}>{rec.duration}</td>
+                        <td style={{ fontFamily: 'var(--font-mono)', fontWeight: 700 }}>
+                          {rec.duration}
+                        </td>
                         <td>
                           <Badge variant={rec.status}>{rec.status}</Badge>
                         </td>
                         <td style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>
-                          {rec.location || 'Remote Terminal'}
+                          {rec.location || 'Bangalore HQ Terminal'}
                         </td>
                         <td style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)' }}>
                           {rec.notes || '—'}
@@ -306,9 +367,9 @@ export const AttendanceView = () => {
         /* Monthly Calendar Grid View */
         <Card elevated>
           <div className="card-header">
-            <div className="card-title">August 2026 Shift Calendar</div>
+            <div className="card-title">August 2026 Shift Calendar (Click any day to inspect)</div>
             <span style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)', fontFamily: 'var(--font-mono)' }}>
-              Total Working Days: 21
+              Total Working Days: 21 • Standard 8h Shift
             </span>
           </div>
 
@@ -324,25 +385,32 @@ export const AttendanceView = () => {
               const dateStr = `2026-08-${String(dayNum).padStart(2, '0')}`;
               const dayRec = attendance.find((a) => a.userId === activeUser.id && a.date === dateStr);
               const isToday = dayNum === 22;
-              const isWeekend = (dayNum % 7 === 1 || dayNum % 7 === 2); // approximate weekends
+              const isWeekend = (dayNum % 7 === 1 || dayNum % 7 === 2);
 
               return (
                 <div
                   key={dayNum}
+                  onClick={() => {
+                    if (dayRec || isToday) {
+                      setSelectedDayRecord(dayRec || { date: dateStr, status: 'present', checkIn: '09:24 AM', checkOut: 'Live Active', duration: 'Live', location: 'Bangalore HQ Floor 4', notes: 'Active shift' });
+                    }
+                  }}
                   style={{
                     minHeight: '80px',
                     padding: '0.5rem',
                     borderRadius: '8px',
-                    border: `1px solid ${isToday ? 'var(--primary-600)' : 'var(--border-subtle)'}`,
-                    backgroundColor: isToday ? 'var(--primary-50)' : isWeekend ? 'var(--bg-surface-subtle)' : 'var(--bg-surface)',
+                    border: `1px solid ${isToday ? 'var(--color-primary)' : 'var(--border-subtle)'}`,
+                    backgroundColor: isToday ? 'var(--color-primary-light)' : isWeekend ? 'var(--bg-surface-subtle)' : 'var(--bg-surface)',
                     display: 'flex',
                     flexDirection: 'column',
                     justifyContent: 'space-between',
-                    textAlign: 'left'
+                    textAlign: 'left',
+                    cursor: (dayRec || isToday) ? 'pointer' : 'default',
+                    transition: 'transform 0.1s ease, box-shadow 0.1s ease'
                   }}
                 >
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <span style={{ fontSize: '0.8125rem', fontWeight: isToday ? 800 : 600, color: isToday ? 'var(--primary-700)' : 'var(--text-primary)' }}>
+                    <span style={{ fontSize: '0.8125rem', fontWeight: isToday ? 800 : 600, color: isToday ? 'var(--color-primary)' : 'var(--text-primary)' }}>
                       {dayNum}
                     </span>
                     {isToday && <Badge variant="present" style={{ fontSize: '0.625rem', padding: '1px 4px' }}>Today</Badge>}
@@ -368,6 +436,161 @@ export const AttendanceView = () => {
           </div>
         </Card>
       )}
+
+      {/* Attendance Regularization Modal */}
+      <Modal
+        isOpen={isRegularizeModalOpen}
+        onClose={() => setIsRegularizeModalOpen(false)}
+        title="Request Attendance Regularization"
+        maxWidth="540px"
+      >
+        <form onSubmit={handleRegularizeSubmit}>
+          <div style={{ marginBottom: '1rem', padding: '0.75rem', borderRadius: '6px', backgroundColor: 'var(--bg-surface-subtle)', border: '1px solid var(--border-subtle)', fontSize: '0.8125rem', color: 'var(--text-secondary)' }}>
+            Missed a punch due to device glitch or client on-duty visit? Submit your actual shift hours for HR approval.
+          </div>
+
+          <div className="grid-2">
+            <div className="form-group">
+              <label className="form-label">Shift Date</label>
+              <input
+                type="date"
+                required
+                value={regularizeForm.date}
+                onChange={(e) => setRegularizeForm({ ...regularizeForm, date: e.target.value })}
+                className="form-input font-mono"
+              />
+            </div>
+
+            <div className="form-group">
+              <label className="form-label">Regularization Type</label>
+              <select
+                value={regularizeForm.type}
+                onChange={(e) => setRegularizeForm({ ...regularizeForm, type: e.target.value })}
+                className="form-input"
+              >
+                <option value="both">Both (Check In & Out)</option>
+                <option value="in">Missing Check In</option>
+                <option value="out">Missing Check Out</option>
+              </select>
+            </div>
+          </div>
+
+          <div className="grid-2">
+            <div className="form-group">
+              <label className="form-label">Actual Check In</label>
+              <input
+                type="text"
+                required
+                placeholder="09:30 AM"
+                value={regularizeForm.checkIn}
+                onChange={(e) => setRegularizeForm({ ...regularizeForm, checkIn: e.target.value })}
+                className="form-input font-mono"
+              />
+            </div>
+
+            <div className="form-group">
+              <label className="form-label">Actual Check Out</label>
+              <input
+                type="text"
+                required
+                placeholder="06:30 PM"
+                value={regularizeForm.checkOut}
+                onChange={(e) => setRegularizeForm({ ...regularizeForm, checkOut: e.target.value })}
+                className="form-input font-mono"
+              />
+            </div>
+          </div>
+
+          <div className="form-group">
+            <label className="form-label">Reason for Missed Punch</label>
+            <select
+              value={regularizeForm.reason}
+              onChange={(e) => setRegularizeForm({ ...regularizeForm, reason: e.target.value })}
+              className="form-input"
+            >
+              <option value="Biometric Reader Hardware Glitch">Biometric Reader Hardware Glitch</option>
+              <option value="On-Duty Client / Partner Visit">On-Duty Client / Partner Visit</option>
+              <option value="Network / Power Outage at Terminal">Network / Power Outage at Terminal</option>
+              <option value="Forgot to Punch RFID Card">Forgot to Punch RFID Card</option>
+            </select>
+          </div>
+
+          <div className="form-group">
+            <label className="form-label">Additional Explanatory Notes</label>
+            <textarea
+              rows={2}
+              value={regularizeForm.notes}
+              onChange={(e) => setRegularizeForm({ ...regularizeForm, notes: e.target.value })}
+              className="form-input"
+            />
+          </div>
+
+          <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.75rem', marginTop: '1.25rem' }}>
+            <Button variant="ghost" type="button" onClick={() => setIsRegularizeModalOpen(false)}>
+              Cancel
+            </Button>
+            <Button variant="primary" type="submit" icon={Send}>
+              Submit to HR
+            </Button>
+          </div>
+        </form>
+      </Modal>
+
+      {/* Calendar Day Inspector Modal */}
+      <Modal
+        isOpen={!!selectedDayRecord}
+        onClose={() => setSelectedDayRecord(null)}
+        title={`Attendance Record: ${selectedDayRecord?.date}`}
+        maxWidth="480px"
+      >
+        {selectedDayRecord && (
+          <div>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingBottom: '1rem', borderBottom: '1px solid var(--border-subtle)', marginBottom: '1rem' }}>
+              <div>
+                <div style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)' }}>Employee</div>
+                <div style={{ fontWeight: 700 }}>{activeUser.name} ({activeUser.employeeId})</div>
+              </div>
+              <Badge variant={selectedDayRecord.status}>{selectedDayRecord.status}</Badge>
+            </div>
+
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1rem' }}>
+              <div style={{ padding: '0.75rem', backgroundColor: 'var(--bg-surface-subtle)', borderRadius: '8px' }}>
+                <div style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)' }}>Check-In Time</div>
+                <div style={{ fontWeight: 700, fontFamily: 'var(--font-mono)', color: 'var(--emerald-600)' }}>
+                  {selectedDayRecord.checkIn || '—'}
+                </div>
+              </div>
+              <div style={{ padding: '0.75rem', backgroundColor: 'var(--bg-surface-subtle)', borderRadius: '8px' }}>
+                <div style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)' }}>Check-Out Time</div>
+                <div style={{ fontWeight: 700, fontFamily: 'var(--font-mono)' }}>
+                  {selectedDayRecord.checkOut || '—'}
+                </div>
+              </div>
+            </div>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', fontSize: '0.8125rem' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <span style={{ color: 'var(--text-tertiary)' }}>Logged Duration:</span>
+                <span style={{ fontWeight: 700, fontFamily: 'var(--font-mono)' }}>{selectedDayRecord.duration}</span>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <span style={{ color: 'var(--text-tertiary)' }}>Terminal / IP Location:</span>
+                <span style={{ fontWeight: 600 }}>{selectedDayRecord.location || 'Bangalore HQ Terminal'}</span>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <span style={{ color: 'var(--text-tertiary)' }}>Notes / Activity:</span>
+                <span>{selectedDayRecord.notes || 'Normal working hours logged.'}</span>
+              </div>
+            </div>
+
+            <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '1.5rem' }}>
+              <Button variant="secondary" onClick={() => setSelectedDayRecord(null)}>
+                Close Record
+              </Button>
+            </div>
+          </div>
+        )}
+      </Modal>
     </div>
   );
 };
