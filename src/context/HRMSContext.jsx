@@ -10,6 +10,7 @@ import {
 } from '../data/mockData';
 import { useAuth } from './AuthContext';
 import { useToast } from './ToastContext';
+import { api } from '../services/api';
 import confetti from 'canvas-confetti';
 
 const HRMSContext = createContext(null);
@@ -90,6 +91,43 @@ export const HRMSProvider = ({ children }) => {
   useEffect(() => { localStorage.setItem('df_leaves', JSON.stringify(leaves)); }, [leaves]);
   useEffect(() => { localStorage.setItem('df_payroll', JSON.stringify(payroll)); }, [payroll]);
   useEffect(() => { localStorage.setItem('df_notifs', JSON.stringify(notifications)); }, [notifications]);
+
+  // Authenticated Remote API Fetch (ONLY when user is authenticated with Cognito)
+  useEffect(() => {
+    if (!currentUser) return;
+
+    let isMounted = true;
+    const fetchRemoteData = async () => {
+      try {
+        const [remoteEmployees, remoteAttendance, remoteLeaves, remoteNotifs] = await Promise.allSettled([
+          api.getEmployees(),
+          api.getAttendance(),
+          api.getLeaves(),
+          api.getNotifications()
+        ]);
+
+        if (!isMounted) return;
+
+        if (remoteEmployees.status === 'fulfilled' && Array.isArray(remoteEmployees.value)) {
+          setUsers(remoteEmployees.value);
+        }
+        if (remoteAttendance.status === 'fulfilled' && Array.isArray(remoteAttendance.value)) {
+          setAttendance(remoteAttendance.value);
+        }
+        if (remoteLeaves.status === 'fulfilled' && Array.isArray(remoteLeaves.value)) {
+          setLeaves(remoteLeaves.value);
+        }
+        if (remoteNotifs.status === 'fulfilled' && Array.isArray(remoteNotifs.value)) {
+          setNotifications(remoteNotifs.value);
+        }
+      } catch (err) {
+        console.warn('API Gateway data sync error:', err);
+      }
+    };
+
+    fetchRemoteData();
+    return () => { isMounted = false; };
+  }, [currentUser]);
 
   // Helper to simulate Lambda processing delay
   const runWithLatency = useCallback(async (actionFn) => {

@@ -1,6 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
-import { INITIAL_USERS } from '../data/mockData';
-import { authApi } from '../services/authApi';
+import { cognitoService } from '../services/cognitoService';
 import { useToast } from './ToastContext';
 
 const AuthContext = createContext(null);
@@ -8,63 +7,74 @@ const AuthContext = createContext(null);
 export const AuthProvider = ({ children }) => {
   const { showToast, showSNSToast } = useToast();
   
-  // User authentication state (Defaults to Sophia Vance for instant demo evaluation)
+  // Single source of truth: Cognito authenticated session
   const [currentUser, setCurrentUser] = useState(() => {
-    const saved = localStorage.getItem('odoo_auth_user');
-    if (saved) {
-      try {
-        const parsed = JSON.parse(saved);
-        if (parsed && parsed.id) return parsed;
-      } catch (e) { /* ignore */ }
-    }
-    return INITIAL_USERS[0];
+    return cognitoService.getCurrentUser();
   });
 
   const [pendingVerification, setPendingVerification] = useState(null);
   const [impersonatedUser, setImpersonatedUser] = useState(null);
 
-  // Sync to local storage
+  // Listen for unauthorized events to automatically reset invalid sessions
   useEffect(() => {
-    if (currentUser) {
-      localStorage.setItem('odoo_auth_user', JSON.stringify(currentUser));
-    } else {
-      localStorage.removeItem('odoo_auth_user');
-    }
-  }, [currentUser]);
+    const handleUnauthorized = (e) => {
+      console.warn('Handling 401 Unauthorized event from API:', e.detail);
+      setCurrentUser(null);
+      setImpersonatedUser(null);
+      showToast({
+        title: 'Session Expired',
+        message: 'Your authenticated session has expired. Please sign in again.',
+        type: 'warning'
+      });
+    };
 
-  // Sign-In via standard authApi service
+    window.addEventListener('auth:unauthorized', handleUnauthorized);
+    return () => window.removeEventListener('auth:unauthorized', handleUnauthorized);
+  }, [showToast]);
+
+  // Sign-In via direct Amazon Cognito USER_PASSWORD_AUTH
   const signIn = useCallback(async ({ email, password }) => {
     try {
-      const response = await authApi.login({ email, password });
+      const response = await cognitoService.signIn({ email, password });
+      
+      // Handle potential Cognito challenges
+      if (response.challengeName) {
+        return response;
+      }
+
       const user = response.user;
       setCurrentUser(user);
       setImpersonatedUser(null);
+      setPendingVerification(null);
+
       showToast({
         title: 'Authentication Verified',
-        message: `Signed in as ${user.name} (${user.role.toUpperCase()})`,
+        message: `Welcome back, ${user.name} (${user.role.toUpperCase()})`,
         type: 'success'
       });
+
       return user;
     } catch (err) {
+      // Re-throw real Cognito error to be displayed by SignIn view
       throw err;
     }
   }, [showToast]);
 
-  // Sign-Up via standard authApi service
-  const signUp = useCallback(async (userData) => {
+  // Sign-Up via direct Amazon Cognito Identity Provider SignUp
+  const signUp = useCallback(async ({ employeeId, email, password }) => {
     try {
-      const response = await authApi.signup(userData);
+      const response = await cognitoService.signUp({ employeeId, email, password });
+      
       setPendingVerification({
-        user: response.user,
-        code: response.verificationCode || '849201',
-        tempToken: response.tempToken,
-        expiresIn: 300
+        email: response.email,
+        employeeId: response.employeeId,
+        userSub: response.userSub
       });
 
       showSNSToast({
         title: 'Verification Code Dispatched',
-        message: `Verification code ${response.verificationCode || '849201'} sent to ${userData.email}`,
-        source: 'Odoo Auth Gateway'
+        message: `Cognito verification code sent to ${email}`,
+        source: 'AWS Cognito Auth'
       });
 
       return response;
@@ -73,63 +83,47 @@ export const AuthProvider = ({ children }) => {
     }
   }, [showSNSToast]);
 
-  // Verify OTP Step via standard authApi service
-  const verifySignUp = useCallback(async (code) => {
+  // Confirm Sign-Up with OTP verification code via Cognito ConfirmSignUp
+  const confirmSignUp = useCallback(async ({ email, code }) => {
     try {
-      const response = await authApi.verifyOtp({
-        code,
-        tempToken: pendingVerification?.tempToken,
-        email: pendingVerification?.user?.email
-      });
-      const verifiedUser = response.user;
-      setCurrentUser(verifiedUser);
+      const response = await cognitoService.confirmSignUp({ email, code });
       setPendingVerification(null);
 
       showToast({
-        title: 'Account Provisioned & Confirmed',
-        message: `Welcome to Odoo, ${verifiedUser.name}!`,
+        title: 'Account Confirmed',
+        message: 'Email verification confirmed with Cognito. You can now log in.',
         type: 'success'
       });
 
-      return verifiedUser;
-    } catch (err) {
-      throw err;
-    }
-  }, [pendingVerification, showToast]);
-
-  // Direct Sign-Up (Immediate provision without OTP wait)
-  const directSignUp = useCallback(async (userData) => {
-    try {
-      const signupRes = await authApi.signup(userData);
-      const verifyRes = await authApi.verifyOtp({
-        code: signupRes.verificationCode || '849201',
-        tempToken: signupRes.tempToken,
-        email: userData.email
-      });
-      const verifiedUser = verifyRes.user;
-      setCurrentUser(verifiedUser);
-      setPendingVerification(null);
-
-      showToast({
-        title: 'Account Created',
-        message: `Welcome aboard, ${verifiedUser.name}!`,
-        type: 'success'
-      });
-
-      return verifiedUser;
+      return response;
     } catch (err) {
       throw err;
     }
   }, [showToast]);
 
-  // Password Reset Flow Mock
+  // Resend confirmation code
+  const resendConfirmationCode = useCallback(async (email) => {
+    try {
+      const response = await cognitoService.resendConfirmationCode({ email });
+      showSNSToast({
+        title: 'Code Resent',
+        message: `A new verification code was sent to ${email}`,
+        source: 'AWS Cognito Auth'
+      });
+      return response;
+    } catch (err) {
+      throw err;
+    }
+  }, [showSNSToast]);
+
+  // Password Reset Flow via Cognito
   const requestPasswordReset = useCallback(async (email) => {
     try {
-      const response = await authApi.forgotPassword({ email });
+      const response = await cognitoService.forgotPassword({ email });
       showSNSToast({
         title: 'Password Reset Code Sent',
-        message: `Reset token ${response.resetToken || '932140'} dispatched to ${email}`,
-        source: 'Odoo Auth Gateway'
+        message: `Reset code dispatched to ${email}`,
+        source: 'AWS Cognito Auth'
       });
       return response;
     } catch (err) {
@@ -139,7 +133,7 @@ export const AuthProvider = ({ children }) => {
 
   const confirmPasswordReset = useCallback(async ({ email, code, newPassword }) => {
     try {
-      await authApi.resetPassword({ email, code, newPassword });
+      await cognitoService.confirmForgotPassword({ email, code, newPassword });
       showToast({
         title: 'Password Updated',
         message: 'Your password has been securely reset. Please sign in.',
@@ -153,52 +147,40 @@ export const AuthProvider = ({ children }) => {
 
   // Sign Out
   const signOut = useCallback(async () => {
-    await authApi.logout();
+    await cognitoService.signOut();
     setCurrentUser(null);
     setImpersonatedUser(null);
+    setPendingVerification(null);
     showToast({
       title: 'Signed Out',
-      message: 'Session signed out successfully.',
+      message: 'Cognito session ended successfully.',
       type: 'info'
     });
   }, [showToast]);
 
-  // Quick Persona Switcher
+  // Persona Switcher for Quick Demo testing
   const switchPersona = useCallback((roleOrUserId) => {
-    let allUsers = INITIAL_USERS;
-    try {
-      const saved = localStorage.getItem('df_users');
-      if (saved) {
-        const parsed = JSON.parse(saved);
-        if (Array.isArray(parsed)) allUsers = parsed;
-      }
-    } catch (e) { /* ignore */ }
-
-    let target = null;
-    if (['employee', 'hr'].includes(roleOrUserId)) {
-      target = allUsers.find((u) => u.role === roleOrUserId);
-    } else {
-      target = allUsers.find((u) => u.id === roleOrUserId || u.employeeId === roleOrUserId);
-    }
-
-    if (target) {
-      setCurrentUser(target);
-      setImpersonatedUser(null);
-      localStorage.setItem('odoo_auth_user', JSON.stringify(target));
+    // If in demo mode, update role
+    if (currentUser) {
+      const updated = {
+        ...currentUser,
+        role: roleOrUserId === 'hr' ? 'hr' : 'employee'
+      };
+      setCurrentUser(updated);
       showToast({
         title: 'Role Switched',
-        message: `Switched identity to ${target.name} (${target.role.toUpperCase()})`,
+        message: `Switched view mode to ${updated.role.toUpperCase()}`,
         type: 'info'
       });
     }
-  }, [showToast]);
+  }, [currentUser, showToast]);
 
   // HR Impersonation of another employee
   const startImpersonation = useCallback((user) => {
     setImpersonatedUser(user);
     showToast({
       title: 'Viewing as Employee',
-      message: `HR Lead previewing view for ${user.name}`,
+      message: `HR Lead previewing view for ${user.name || user.email}`,
       type: 'info'
     });
   }, [showToast]);
@@ -217,20 +199,20 @@ export const AuthProvider = ({ children }) => {
     setCurrentUser((prev) => {
       if (!prev) return prev;
       const updated = { ...prev, ...updatedFields };
-      localStorage.setItem('odoo_auth_user', JSON.stringify(updated));
+      localStorage.setItem('cognito_user', JSON.stringify(updated));
       return updated;
     });
   }, []);
 
   // Active Effective User
-  const activeUser = impersonatedUser || currentUser || INITIAL_USERS[0];
+  const activeUser = impersonatedUser || currentUser;
 
-  // RBAC Helper flags (2 Roles Only: Employee & HR)
-  const rawRole = currentUser?.role || 'employee';
-  const role = rawRole === 'hr' || rawRole === 'admin' ? 'hr' : 'employee';
+  // RBAC Helper flags (2 Roles: Employee & HR)
+  const rawRole = activeUser?.role || currentUser?.role || 'employee';
+  const role = rawRole === 'hr' || rawRole === 'admin' || rawRole === 'Admin_HR' ? 'hr' : 'employee';
   const isEmployee = role === 'employee';
   const isHR = role === 'hr';
-  const isAdmin = false;
+  const isAdmin = isHR;
   const isHRorAdmin = isHR;
 
   return (
@@ -245,10 +227,11 @@ export const AuthProvider = ({ children }) => {
         isHRorAdmin,
         impersonatedUser,
         pendingVerification,
+        setPendingVerification,
         signIn,
         signUp,
-        verifySignUp,
-        directSignUp,
+        confirmSignUp,
+        resendConfirmationCode,
         requestPasswordReset,
         confirmPasswordReset,
         updateCurrentUser,
@@ -270,4 +253,3 @@ export const useAuth = () => {
   }
   return context;
 };
-

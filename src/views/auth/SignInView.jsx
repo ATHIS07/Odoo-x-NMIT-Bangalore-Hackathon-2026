@@ -1,17 +1,18 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Eye, EyeOff, AlertCircle, KeyRound, X, Database, Globe, Code, Sparkles, User, Shield } from 'lucide-react';
+import { Eye, EyeOff, AlertCircle, KeyRound, X, Database, Globe, Code, Sparkles, User, Shield, ArrowRight } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { Button } from '../../components/common/CommonUI';
 import { ApiInspectorModal } from '../../components/common/ApiInspectorModal';
 
 export const SignInView = ({ onNavigate }) => {
   const { signIn, requestPasswordReset, confirmPasswordReset } = useAuth();
-  const [email, setEmail] = useState('sophia.vance@odoo.com');
-  const [password, setPassword] = useState('Odoo@2026!');
+  const [email, setEmail] = useState('athishm.cs24@bitsathy.ac.in');
+  const [password, setPassword] = useState('Password@2026!');
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(true);
   const [error, setError] = useState('');
+  const [isUnconfirmed, setIsUnconfirmed] = useState(false);
   const [loading, setLoading] = useState(false);
 
   // API Inspector Modal State
@@ -20,13 +21,23 @@ export const SignInView = ({ onNavigate }) => {
   // Forgot Password Modal State
   const [isForgotModalOpen, setIsForgotModalOpen] = useState(false);
   const [forgotStep, setForgotStep] = useState(1); // 1: Email, 2: OTP + New Password
-  const [forgotEmail, setForgotEmail] = useState('sophia.vance@odoo.com');
-  const [forgotOtp, setForgotOtp] = useState('932140');
-  const [forgotNewPassword, setForgotNewPassword] = useState('Odoo@2026Secure!');
+  const [forgotEmail, setForgotEmail] = useState('');
+  const [forgotOtp, setForgotOtp] = useState('');
+  const [forgotNewPassword, setForgotNewPassword] = useState('');
   const [forgotLoading, setForgotLoading] = useState(false);
   const [forgotError, setForgotError] = useState('');
 
   const demoAccounts = [
+    {
+      badge: 'Admin HR',
+      label: 'Admin HR (Seeded)',
+      name: 'Athish M',
+      designation: 'Lead Admin HR',
+      email: 'athishm.cs24@bitsathy.ac.in',
+      password: 'Password@2026!',
+      role: 'hr',
+      icon: Shield
+    },
     {
       badge: 'Emp 1',
       label: 'Employee 1',
@@ -46,16 +57,6 @@ export const SignInView = ({ onNavigate }) => {
       password: 'Odoo@2026!',
       role: 'employee',
       icon: User
-    },
-    {
-      badge: 'HR 1',
-      label: 'HR Lead',
-      name: 'Marcus Chen',
-      designation: 'Lead HR Partner',
-      email: 'marcus.chen@odoo.com',
-      password: 'Odoo@2026!',
-      role: 'hr',
-      icon: Shield
     }
   ];
 
@@ -63,22 +64,35 @@ export const SignInView = ({ onNavigate }) => {
     setEmail(acc.email);
     setPassword(acc.password);
     setError('');
+    setIsUnconfirmed(false);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
+    setIsUnconfirmed(false);
     setLoading(true);
 
     try {
+      // Direct Amazon Cognito Authentication
       const user = await signIn({ email, password });
+      
+      if (user && user.challengeName) {
+        setError(`Authentication challenge required: ${user.challengeName}`);
+        return;
+      }
+
       if (user.role === 'hr') {
         onNavigate('admin-dashboard');
       } else {
         onNavigate('employee-dashboard');
       }
     } catch (err) {
-      setError(err.message || 'Invalid email or password');
+      const errMsg = err.message || 'Cognito authentication failed.';
+      setError(errMsg);
+      if (err.code === 'UserNotConfirmedException' || errMsg.toLowerCase().includes('not confirmed')) {
+        setIsUnconfirmed(true);
+      }
     } finally {
       setLoading(false);
     }
@@ -145,7 +159,7 @@ export const SignInView = ({ onNavigate }) => {
             Odoo
           </span>
           <span style={{ fontSize: '0.75rem', color: '#8A8A8A', paddingLeft: '0.5rem', borderLeft: '1px solid #E5E5E5' }}>
-            Employee Portal
+            Employee Portal (AWS Cognito)
           </span>
         </div>
 
@@ -175,7 +189,7 @@ export const SignInView = ({ onNavigate }) => {
 
           <span style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', color: '#8A8A8A' }}>
             <Database size={13} color="#714B67" />
-            <span style={{ fontFamily: 'var(--font-sans)' }}>enterprise.odoo.com</span>
+            <span style={{ fontFamily: 'var(--font-sans)' }}>ap-south-1 • Cognito</span>
           </span>
           <span style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', cursor: 'pointer' }}>
             <Globe size={13} />
@@ -190,6 +204,7 @@ export const SignInView = ({ onNavigate }) => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.25 }}
         className="auth-odoo-card"
+        style={{ maxWidth: '440px' }}
       >
         {/* Navigation Switcher Tabs (Sign In vs Sign Up) */}
         <div
@@ -198,7 +213,7 @@ export const SignInView = ({ onNavigate }) => {
             backgroundColor: '#F5F5F5',
             padding: '3px',
             borderRadius: '8px',
-            marginBottom: '1.5rem'
+            marginBottom: '1.25rem'
           }}
         >
           <button
@@ -244,15 +259,15 @@ export const SignInView = ({ onNavigate }) => {
             Sign in to Odoo
           </h1>
           <p style={{ fontSize: '0.875rem', color: '#8A8A8A' }}>
-            Access your employee management workspace
+            Authenticated directly via Amazon Cognito
           </p>
         </div>
 
-        {/* Quick Demo Fill Buttons (2 Employees & 1 HR) */}
+        {/* Quick Demo Fill Buttons (Seeded Admin HR + 2 Employees) */}
         <div style={{ marginBottom: '1.25rem' }}>
           <div style={{ fontSize: '0.6875rem', fontWeight: 600, color: '#8A8A8A', textTransform: 'uppercase', marginBottom: '0.4rem', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
             <Sparkles size={11} color="#714B67" />
-            <span>1-Click Demo Accounts (2 Employees & 1 HR)</span>
+            <span>1-Click Test Personas</span>
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '0.4rem' }}>
             {demoAccounts.map((acc) => {
@@ -279,7 +294,7 @@ export const SignInView = ({ onNavigate }) => {
                     textAlign: 'left',
                     transition: 'all 0.15s ease'
                   }}
-                  title={`${acc.name} (${acc.designation})`}
+                  title={`${acc.name} (${acc.email})`}
                 >
                   <div style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', width: '100%', justifyContent: 'space-between' }}>
                     <span
@@ -310,7 +325,7 @@ export const SignInView = ({ onNavigate }) => {
           {/* Email Field */}
           <div style={{ marginBottom: '1.25rem' }}>
             <label style={{ display: 'block', fontSize: '0.8125rem', fontWeight: 500, color: '#4C4C4C', marginBottom: '0.35rem' }}>
-              Work Email
+              Official Email
             </label>
             <input
               type="email"
@@ -318,7 +333,7 @@ export const SignInView = ({ onNavigate }) => {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className="auth-odoo-input"
-              placeholder="yourname@company.com"
+              placeholder="athishm.cs24@bitsathy.ac.in"
             />
           </div>
 
@@ -330,7 +345,10 @@ export const SignInView = ({ onNavigate }) => {
               </label>
               <button
                 type="button"
-                onClick={() => setIsForgotModalOpen(true)}
+                onClick={() => {
+                  setForgotEmail(email);
+                  setIsForgotModalOpen(true);
+                }}
                 style={{
                   background: 'none',
                   border: 'none',
@@ -386,26 +404,49 @@ export const SignInView = ({ onNavigate }) => {
                 onChange={(e) => setRememberMe(e.target.checked)}
                 style={{ accentColor: '#714B67', width: '15px', height: '15px', borderRadius: '4px' }}
               />
-              Remember me on this device
+              Remember session on this device
             </label>
           </div>
 
           {error && (
             <div
               style={{
-                padding: '0.625rem 0.875rem',
+                padding: '0.75rem 0.875rem',
                 borderRadius: '6px',
                 backgroundColor: '#FBEAEA',
                 color: '#DC3545',
                 fontSize: '0.8125rem',
                 display: 'flex',
-                alignItems: 'center',
-                gap: '0.5rem',
+                flexDirection: 'column',
+                gap: '0.4rem',
                 marginBottom: '1.25rem'
               }}
             >
-              <AlertCircle size={15} />
-              <span>{error}</span>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <AlertCircle size={15} style={{ flexShrink: 0 }} />
+                <span>{error}</span>
+              </div>
+              {isUnconfirmed && (
+                <button
+                  type="button"
+                  onClick={() => onNavigate('signup')}
+                  style={{
+                    background: 'none',
+                    border: 'none',
+                    color: '#714B67',
+                    fontWeight: 600,
+                    cursor: 'pointer',
+                    fontSize: '0.75rem',
+                    textAlign: 'left',
+                    padding: 0,
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '4px'
+                  }}
+                >
+                  <span>Go to Email Verification</span> <ArrowRight size={12} />
+                </button>
+              )}
             </div>
           )}
 
@@ -414,13 +455,13 @@ export const SignInView = ({ onNavigate }) => {
             disabled={loading}
             className="auth-odoo-btn"
           >
-            {loading ? 'Authenticating via API...' : 'Log in'}
+            {loading ? 'Authenticating with Cognito...' : 'Sign In with Cognito'}
           </button>
         </form>
 
         {/* Bottom Plain Signup Link */}
         <div style={{ marginTop: '1.75rem', textAlign: 'center', fontSize: '0.875rem', color: '#4C4C4C' }}>
-          Don't have an account?{' '}
+          Don't have a registered account?{' '}
           <button
             type="button"
             onClick={() => onNavigate('signup')}
@@ -433,7 +474,7 @@ export const SignInView = ({ onNavigate }) => {
               padding: 0
             }}
           >
-            Create an Account / Sign up
+            Sign up
           </button>
         </div>
       </motion.div>
@@ -441,7 +482,7 @@ export const SignInView = ({ onNavigate }) => {
       {/* Odoo Enterprise Portal Footer */}
       <footer className="odoo-portal-footer">
         <div>
-          Powered by <strong style={{ color: '#714B67' }}>Odoo Enterprise</strong> • Open Source Business Software
+          Powered by <strong style={{ color: '#714B67' }}>Amazon Cognito & Odoo Enterprise</strong>
         </div>
         <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
           <button
@@ -497,12 +538,12 @@ export const SignInView = ({ onNavigate }) => {
               {forgotStep === 1 ? (
                 <form onSubmit={handleRequestForgot}>
                   <p style={{ fontSize: '0.8125rem', color: '#4C4C4C', marginBottom: '1.25rem', lineHeight: 1.5 }}>
-                    Enter your registered work email to receive a password reset token via the auth API.
+                    Enter your registered official email to receive a password reset verification code from Amazon Cognito.
                   </p>
 
                   <div className="form-group" style={{ marginBottom: '1.25rem' }}>
                     <label style={{ display: 'block', fontSize: '0.8125rem', fontWeight: 500, color: '#4C4C4C', marginBottom: '0.35rem' }}>
-                      Work Email Address
+                      Official Email Address
                     </label>
                     <input
                       type="email"
@@ -510,7 +551,7 @@ export const SignInView = ({ onNavigate }) => {
                       value={forgotEmail}
                       onChange={(e) => setForgotEmail(e.target.value)}
                       className="auth-odoo-input"
-                      placeholder="yourname@company.com"
+                      placeholder="e.g. athishm.cs24@bitsathy.ac.in"
                     />
                   </div>
 
@@ -528,21 +569,20 @@ export const SignInView = ({ onNavigate }) => {
               ) : (
                 <form onSubmit={handleConfirmForgot}>
                   <p style={{ fontSize: '0.8125rem', color: '#4C4C4C', marginBottom: '1rem' }}>
-                    Reset code sent. Enter the 6-digit code (Demo code: <strong>932140</strong>) and your new password.
+                    Cognito reset code sent. Enter the code and your new password.
                   </p>
 
                   <div className="form-group" style={{ marginBottom: '1rem' }}>
                     <label style={{ display: 'block', fontSize: '0.8125rem', fontWeight: 500, color: '#4C4C4C', marginBottom: '0.35rem' }}>
-                      6-Digit Code
+                      Confirmation Code
                     </label>
                     <input
                       type="text"
                       required
-                      maxLength={6}
                       value={forgotOtp}
                       onChange={(e) => setForgotOtp(e.target.value)}
                       className="auth-odoo-input"
-                      placeholder="932140"
+                      placeholder="Enter 6-digit code"
                     />
                   </div>
 
