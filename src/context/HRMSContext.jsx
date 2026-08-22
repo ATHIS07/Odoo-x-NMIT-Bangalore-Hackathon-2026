@@ -99,23 +99,8 @@ export const HRMSProvider = ({ children }) => {
         };
         return [newRecord, ...filtered];
       });
-
-      showSNSToast({
-        title: 'DynamoDB Stream: Attendance Check-In',
-        message: `Status set to PRESENT at ${nowTimeStr}`,
-        source: 'DynamoDB Streams'
-      });
-
-      // Confetti celebration
-      try {
-        confetti({
-          particleCount: 35,
-          spread: 60,
-          origin: { y: 0.85 }
-        });
-      } catch (e) { /* ignore */ }
     });
-  }, [runWithLatency, showSNSToast]);
+  }, [runWithLatency]);
 
   const clockOut = useCallback(async (userId) => {
     return runWithLatency(() => {
@@ -135,14 +120,8 @@ export const HRMSProvider = ({ children }) => {
           return rec;
         })
       );
-
-      showToast({
-        title: 'Check-Out Confirmed',
-        message: `Shift closed at ${nowTimeStr}. Total logged: 8h 15m.`,
-        type: 'info'
-      });
     });
-  }, [runWithLatency, showToast]);
+  }, [runWithLatency]);
 
   // ==========================================
   // LEAVE ACTIONS
