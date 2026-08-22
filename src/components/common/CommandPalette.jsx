@@ -19,8 +19,9 @@ import {
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { useHRMS } from '../../context/HRMSContext';
+import { audioManager } from '../../utils/audioFeedback';
 
-export const CommandPalette = ({ isOpen, onClose, onNavigate, onStartTour }) => {
+export const CommandPalette = ({ isOpen, onClose, onNavigate, onStartTour, onOpenShortcuts }) => {
   const { activeUser, switchPersona, isHRorAdmin } = useAuth();
   const { clockIn, clockOut, getTodayAttendance, resetDemoData } = useHRMS();
   
@@ -74,6 +75,14 @@ export const CommandPalette = ({ isOpen, onClose, onNavigate, onStartTour }) => 
       action: () => { onNavigate('/profile'); onClose(); }
     },
     {
+      id: 'nav_payroll',
+      title: isHRorAdmin ? 'Organization Payroll Administration' : 'My Payslips & Compensation (PDF Slips)',
+      category: 'Navigation',
+      icon: CreditCard,
+      shortcut: 'G P',
+      action: () => { onNavigate('/payroll'); onClose(); }
+    },
+    {
       id: 'nav_notifications',
       title: 'Notifications & Activity Center',
       category: 'Navigation',
@@ -97,8 +106,13 @@ export const CommandPalette = ({ isOpen, onClose, onNavigate, onStartTour }) => 
       category: 'Quick Actions',
       icon: Zap,
       action: () => {
-        if (isClockedIn) clockOut();
-        else clockIn();
+        if (isClockedIn) {
+          audioManager.playClockOutChime();
+          clockOut(activeUser.id);
+        } else {
+          audioManager.playSuccessChime();
+          clockIn(activeUser.id);
+        }
         onClose();
       }
     },
@@ -107,10 +121,20 @@ export const CommandPalette = ({ isOpen, onClose, onNavigate, onStartTour }) => 
       title: 'Start Interactive Guided Product Tour (Evaluator Walkthrough)',
       category: 'Quick Actions',
       icon: Compass,
-      shortcut: '?',
       action: () => {
         onClose();
         onStartTour?.();
+      }
+    },
+    {
+      id: 'act_shortcuts',
+      title: 'Show Keyboard Shortcuts Cheat Sheet',
+      category: 'Quick Actions',
+      icon: Compass,
+      shortcut: '?',
+      action: () => {
+        onClose();
+        onOpenShortcuts?.();
       }
     },
     {

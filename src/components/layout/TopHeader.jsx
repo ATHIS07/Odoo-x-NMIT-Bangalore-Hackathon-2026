@@ -4,7 +4,7 @@ import { useAuth } from '../../context/AuthContext';
 import { useHRMS } from '../../context/HRMSContext';
 import { Badge } from '../common/CommonUI';
 
-export const TopHeader = ({ onOpenNotifications, onRouteChange, onOpenCommandPalette }) => {
+export const TopHeader = ({ onOpenNotifications, onRouteChange, onOpenCommandPalette, onOpenShortcuts }) => {
   const { activeUser, role, isAdmin, isHR, impersonatedUser, stopImpersonation } = useAuth();
   const { notifications, simulateLatency } = useHRMS();
 
@@ -83,12 +83,36 @@ export const TopHeader = ({ onOpenNotifications, onRouteChange, onOpenCommandPal
       </div>
 
       {/* Right Action Icons & User Status */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '1.25rem' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
         {/* Live Clock */}
         <div style={{ fontSize: '0.75rem', fontFamily: 'var(--font-mono)', color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
           <span className="pulse-dot" style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: 'var(--emerald-500)' }} />
           {currentTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })} IST
         </div>
+
+        {/* Shortcuts Button */}
+        <button
+          onClick={onOpenShortcuts}
+          title="Keyboard Shortcuts (?)"
+          style={{
+            background: 'var(--bg-surface-subtle)',
+            border: '1px solid var(--border-subtle)',
+            borderRadius: '8px',
+            width: '38px',
+            height: '38px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            cursor: 'pointer',
+            color: 'var(--text-secondary)',
+            fontFamily: 'var(--font-mono)',
+            fontWeight: 700,
+            fontSize: '0.875rem'
+          }}
+          aria-label="Keyboard Shortcuts"
+        >
+          ?
+        </button>
 
         {/* Role Pill */}
         <Badge variant={role === 'hr' ? 'role-hr' : 'role-employee'}>

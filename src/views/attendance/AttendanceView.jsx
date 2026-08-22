@@ -21,6 +21,7 @@ import { useAuth } from '../../context/AuthContext';
 import { useHRMS } from '../../context/HRMSContext';
 import { useToast } from '../../context/ToastContext';
 import { Button, Card, Badge, MetricCard, Modal } from '../../components/common/CommonUI';
+import { audioManager } from '../../utils/audioFeedback';
 
 export const AttendanceView = () => {
   const { activeUser, isHRorAdmin } = useAuth();
@@ -82,6 +83,7 @@ export const AttendanceView = () => {
   const handleRegularizeSubmit = (e) => {
     e.preventDefault();
     setIsRegularizeModalOpen(false);
+    audioManager.playSuccessChime();
     showToast({
       title: 'Regularization Submitted',
       message: `Request for ${regularizeForm.date} sent to HR Operations.`,

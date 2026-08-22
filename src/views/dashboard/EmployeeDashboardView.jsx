@@ -19,6 +19,7 @@ import { useAuth } from '../../context/AuthContext';
 import { useHRMS } from '../../context/HRMSContext';
 import { Button, Card, Badge, MetricCard } from '../../components/common/CommonUI';
 import { LeaveQuotaDonut } from '../../components/charts/Charts';
+import { audioManager } from '../../utils/audioFeedback';
 
 export const EmployeeDashboardView = ({ onNavigate }) => {
   const { activeUser, signOut } = useAuth();
@@ -49,7 +50,13 @@ export const EmployeeDashboardView = ({ onNavigate }) => {
     return `${String(hrs).padStart(2, '0')}:${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
   };
 
+  const handleClockIn = async () => {
+    audioManager.playSuccessChime();
+    await clockIn(safeUser.id);
+  };
+
   const handleClockOut = async () => {
+    audioManager.playClockOutChime();
     const finalDuration = formatTimer(elapsedSeconds);
     await clockOut(safeUser.id, finalDuration);
   };
@@ -134,23 +141,18 @@ export const EmployeeDashboardView = ({ onNavigate }) => {
             <div style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)' }}>Apply & Track Quota</div>
           </div>
         </Card>
-
         <Card
-          onClick={() => {
-            if (window.confirm('Are you sure you want to sign out?')) {
-              signOut();
-            }
-          }}
+          onClick={() => onNavigate('payroll')}
           style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.875rem', padding: '1rem 1.25rem', transition: 'all 0.2s ease' }}
-          onMouseEnter={(e) => { e.currentTarget.style.borderColor = 'var(--color-danger)'; e.currentTarget.style.transform = 'translateY(-2px)'; }}
+          onMouseEnter={(e) => { e.currentTarget.style.borderColor = 'var(--primary-600)'; e.currentTarget.style.transform = 'translateY(-2px)'; }}
           onMouseLeave={(e) => { e.currentTarget.style.borderColor = 'var(--border-subtle)'; e.currentTarget.style.transform = 'translateY(0)'; }}
         >
-          <div style={{ width: '40px', height: '40px', borderRadius: '8px', backgroundColor: 'var(--color-danger-bg)', color: 'var(--color-danger)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-            <Sparkles size={20} />
+          <div style={{ width: '40px', height: '40px', borderRadius: '8px', backgroundColor: 'var(--primary-50)', color: 'var(--primary-600)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+            <CreditCard size={20} />
           </div>
           <div>
-            <div style={{ fontWeight: 600, fontSize: '0.875rem', color: 'var(--text-primary)' }}>Sign Out</div>
-            <div style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)' }}>Revoke Session</div>
+            <div style={{ fontWeight: 600, fontSize: '0.875rem', color: 'var(--text-primary)' }}>My Payslips</div>
+            <div style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)' }}>Salary & Tax Slips</div>
           </div>
         </Card>
       </div>
@@ -208,84 +210,57 @@ export const EmployeeDashboardView = ({ onNavigate }) => {
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
               <button
-                type="button"
-                onClick={() => onNavigate('attendance')}
+                onClick={() => setIsOnBreak(!isOnBreak)}
                 style={{
-                  background: 'none',
-                  border: 'none',
-                  color: '#714B67',
-                  fontSize: '0.8125rem',
-                  fontWeight: 600,
-                  cursor: 'pointer',
                   display: 'flex',
                   alignItems: 'center',
-                  gap: '0.25rem',
-                  padding: 0
+                  gap: '0.35rem',
+                  fontSize: '0.75rem',
+                  fontWeight: 600,
+                  color: isOnBreak ? '#D97706' : 'var(--text-secondary)',
+                  backgroundColor: isOnBreak ? '#FEF3C7' : 'var(--bg-surface-subtle)',
+                  border: `1px solid ${isOnBreak ? '#FDE68A' : 'var(--border-subtle)'}`,
+                  padding: '4px 10px',
+                  borderRadius: '6px',
+                  cursor: 'pointer'
                 }}
               >
-                My Attendance <ArrowUpRight size={14} />
+                <Coffee size={14} />
+                {isOnBreak ? 'End Coffee Break' : 'Take Coffee Break'}
               </button>
-              <Badge variant={isClockedIn ? 'present' : isClockedOutToday ? 'present' : 'pending'}>
-                {isClockedIn ? 'Live Active' : isClockedOutToday ? 'Shift Completed' : 'Offline'}
+              <Badge variant={isClockedIn ? 'active' : isClockedOutToday ? 'completed' : 'pending'}>
+                {isClockedIn ? 'SHIFT ACTIVE' : isClockedOutToday ? 'COMPLETED' : 'OFFLINE'}
               </Badge>
             </div>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.25rem', alignItems: 'stretch' }}>
-            {/* Live Elapsed Stopwatch */}
+          <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: '1.5rem', alignItems: 'center' }}>
+            {/* Live Stopwatch Dial */}
             <div
               style={{
-                backgroundColor: isClockedIn
-                  ? 'rgba(16, 185, 129, 0.04)'
-                  : isClockedOutToday
-                  ? 'rgba(113, 75, 103, 0.04)'
-                  : 'var(--bg-surface-subtle)',
-                padding: '1.25rem 1.5rem',
+                backgroundColor: 'var(--bg-surface-subtle)',
                 borderRadius: '12px',
+                padding: '1.5rem',
                 textAlign: 'center',
-                border: isClockedIn
-                  ? '1px solid rgba(16, 185, 129, 0.2)'
-                  : isClockedOutToday
-                  ? '1px solid rgba(113, 75, 103, 0.2)'
-                  : '1px solid var(--border-subtle)',
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'center',
-                transition: 'all 0.2s ease'
+                border: '1px solid var(--border-subtle)'
               }}
             >
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}>
-                <span style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)', textTransform: 'uppercase', letterSpacing: '0.05em', fontWeight: 600 }}>
-                  {isClockedOutToday ? "Today's Total Shift Logged" : 'Logged Today Duration'}
-                </span>
-                {elapsedSeconds >= 28800 && isClockedIn && (
-                  <span style={{ fontSize: '0.6875rem', backgroundColor: 'var(--color-primary-light)', color: 'var(--color-primary)', padding: '2px 6px', borderRadius: '4px', fontWeight: 600 }}>
-                    Overtime
-                  </span>
-                )}
+              <div style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.5rem' }}>
+                {isClockedIn ? (isOnBreak ? '☕ ON COFFEE BREAK' : '🟢 ACTIVE WORKING DURATION') : 'RECORDED TODAY'}
               </div>
 
               <div
                 style={{
-                  fontSize: '2.5rem',
+                  fontSize: '2.25rem',
                   fontWeight: 800,
                   fontFamily: 'var(--font-mono)',
-                  color: isClockedIn ? 'var(--emerald-600)' : isClockedOutToday ? '#714B67' : 'var(--text-tertiary)',
-                  marginTop: '0.25rem'
+                  color: isClockedIn ? 'var(--primary-600)' : 'var(--text-primary)',
+                  letterSpacing: '0.02em',
+                  lineHeight: 1
                 }}
               >
-                {isClockedIn || isClockedOutToday ? formatTimer(elapsedSeconds) : '00:00:00'}
+                {formatTimer(elapsedSeconds)}
               </div>
-
-              {/* Punch Timestamps Summary */}
-              {todayRecord?.checkIn && (
-                <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', marginTop: '0.5rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
-                  <span><strong style={{ color: 'var(--emerald-600)' }}>In:</strong> {todayRecord.checkIn}</span>
-                  {todayRecord.checkOut && (
-                    <span><strong style={{ color: '#DC3545' }}>Out:</strong> {todayRecord.checkOut}</span>
-                  )}
-                </div>
-              )}
 
               <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px', marginTop: '0.5rem' }}>
                 <MapPin size={13} color="var(--emerald-600)" />
@@ -300,7 +275,7 @@ export const EmployeeDashboardView = ({ onNavigate }) => {
                   variant="success"
                   size="lg"
                   icon={Clock}
-                  onClick={() => clockIn(safeUser.id)}
+                  onClick={handleClockIn}
                   style={{ width: '100%', padding: '0.875rem 1.25rem', fontSize: '0.9375rem', fontWeight: 600 }}
                 >
                   Clock In to Shift
@@ -345,7 +320,7 @@ export const EmployeeDashboardView = ({ onNavigate }) => {
                     variant="secondary"
                     size="md"
                     icon={Clock}
-                    onClick={() => clockIn(activeUser.id)}
+                    onClick={handleClockIn}
                     style={{ width: '100%' }}
                   >
                     Clock In for Overtime Session

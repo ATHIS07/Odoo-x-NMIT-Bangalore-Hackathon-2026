@@ -11,6 +11,7 @@ import { DemoToolbar } from './components/layout/DemoToolbar';
 import { NotificationDrawer } from './components/layout/NotificationDrawer';
 import { CommandPalette } from './components/common/CommandPalette';
 import { ProductTour, TourLauncherButton } from './components/common/ProductTour';
+import { KeyboardShortcutsModal } from './components/common/KeyboardShortcutsModal';
 
 // 12 Required Views
 import { SignInView } from './views/auth/SignInView';
@@ -24,6 +25,7 @@ import { LeaveApplyView } from './views/leave/LeaveApplyView';
 import { LeaveApprovalView } from './views/leave/LeaveApprovalView';
 import { NotificationsView } from './views/notifications/NotificationsView';
 import { AnalyticsView } from './views/analytics/AnalyticsView';
+import { PayrollView } from './views/payroll/PayrollView';
 
 const MainAppContent = () => {
   const { currentUser, role, isHR } = useAuth();
@@ -37,16 +39,21 @@ const MainAppContent = () => {
 
   const [isNotifDrawerOpen, setIsNotifDrawerOpen] = useState(false);
   const [isCommandPaletteOpen, setIsCommandPaletteOpen] = useState(false);
+  const [isShortcutsOpen, setIsShortcutsOpen] = useState(false);
 
   // Guided product tour state
   const [isTourOpen, setIsTourOpen] = useState(false);
 
-  // Global Ctrl+K / Cmd+K listener
+  // Global Ctrl+K / Cmd+K and '?' shortcuts listener
   useEffect(() => {
     const handleGlobalKeyDown = (e) => {
+      const isInput = ['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target?.tagName) || e.target?.isContentEditable;
       if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
         e.preventDefault();
         setIsCommandPaletteOpen((prev) => !prev);
+      } else if (e.key === '?' && !isInput && !e.ctrlKey && !e.metaKey && !e.altKey) {
+        e.preventDefault();
+        setIsShortcutsOpen((prev) => !prev);
       }
     };
     window.addEventListener('keydown', handleGlobalKeyDown);
@@ -138,6 +145,8 @@ const MainAppContent = () => {
         return <NotificationsView onNavigate={handleNavigate} />;
       case 'analytics':
         return <AnalyticsView onNavigate={handleNavigate} />;
+      case 'payroll':
+        return <PayrollView onNavigate={handleNavigate} />;
       default:
         return isHR ? (
           <AdminDashboardView onNavigate={handleNavigate} />
@@ -162,6 +171,7 @@ const MainAppContent = () => {
           onOpenNotifications={() => setIsNotifDrawerOpen(true)}
           onRouteChange={handleNavigate}
           onOpenCommandPalette={() => setIsCommandPaletteOpen(true)}
+          onOpenShortcuts={() => setIsShortcutsOpen(true)}
         />
 
         <main style={{ flex: 1, paddingBottom: '5rem' }}>
@@ -191,11 +201,18 @@ const MainAppContent = () => {
         isOpen={isCommandPaletteOpen}
         onClose={() => setIsCommandPaletteOpen(false)}
         onStartTour={() => setIsTourOpen(true)}
+        onOpenShortcuts={() => setIsShortcutsOpen(true)}
         onNavigate={(routePath) => {
           // Convert route path to internal key
           const cleanRoute = routePath.replace(/^\//, '').replace('/', '-');
           handleNavigate(cleanRoute === 'dashboard' ? 'employee-dashboard' : cleanRoute);
         }}
+      />
+
+      {/* Global Keyboard Shortcuts Legend Modal (?) */}
+      <KeyboardShortcutsModal
+        isOpen={isShortcutsOpen}
+        onClose={() => setIsShortcutsOpen(false)}
       />
 
       {/* Auto-starting Interactive Guided Product Tour */}

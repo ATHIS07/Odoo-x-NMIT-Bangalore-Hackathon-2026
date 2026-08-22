@@ -19,6 +19,7 @@ import {
 import { useAuth } from '../../context/AuthContext';
 import { useHRMS } from '../../context/HRMSContext';
 import { Button, Card, Badge, Modal } from '../../components/common/CommonUI';
+import { audioManager } from '../../utils/audioFeedback';
 
 export const LeaveApprovalView = () => {
   const { activeUser } = useAuth();
@@ -62,8 +63,10 @@ export const LeaveApprovalView = () => {
   const handleQuickAction = async (leave, action) => {
     setProcessingId(leave.id);
     if (action === 'approve') {
+      audioManager.playSuccessChime();
       await approveLeave(leave.id, 'Approved via 1-click HR triage.');
     } else {
+      audioManager.playTap();
       await rejectLeave(leave.id, 'Declined due to department coverage constraints.');
     }
     setProcessingId(null);
@@ -74,8 +77,10 @@ export const LeaveApprovalView = () => {
     if (!reviewModalLeave) return;
     setProcessingId(reviewModalLeave.id);
     if (actionType === 'approve') {
+      audioManager.playSuccessChime();
       await approveLeave(reviewModalLeave.id, adminComment || 'Accepted by HR Manager.');
     } else {
+      audioManager.playTap();
       await rejectLeave(reviewModalLeave.id, adminComment || 'Rejected by HR Manager.');
     }
     setProcessingId(null);
@@ -100,6 +105,7 @@ export const LeaveApprovalView = () => {
 
   const handleBulkApprove = async () => {
     setIsBulkProcessing(true);
+    audioManager.playSuccessChime();
     for (const id of selectedIds) {
       await approveLeave(id, 'Bulk approved via HR governance queue.');
     }

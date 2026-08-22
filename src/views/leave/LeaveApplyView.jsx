@@ -17,6 +17,7 @@ import { useAuth } from '../../context/AuthContext';
 import { useHRMS } from '../../context/HRMSContext';
 import { Button, Card, Badge, MetricCard } from '../../components/common/CommonUI';
 import { FileUpload } from '../../components/common/FileUpload';
+import { audioManager } from '../../utils/audioFeedback';
 
 export const LeaveApplyView = ({ onNavigate }) => {
   const { activeUser } = useAuth();
@@ -101,6 +102,7 @@ export const LeaveApplyView = ({ onNavigate }) => {
       remarks,
       attachment: attachedDoc?.name || null
     });
+    audioManager.playSuccessChime();
     setIsSubmitting(false);
     setSubmittedSuccess(true);
   };
@@ -156,7 +158,12 @@ export const LeaveApplyView = ({ onNavigate }) => {
         />
 
         <MetricCard
-          iconBg="var(--bg-surface-subtle)"
+          label="Compensatory Leave Balance"
+          value={`${balance.compensatory?.remaining || 4} Days`}
+          subtitle={`${balance.compensatory?.used || 1} used of ${balance.compensatory?.total || 5} total`}
+          icon={Sparkles}
+          iconColor="#8B5CF6"
+          iconBg="#F5F3FF"
         />
       </div>
 

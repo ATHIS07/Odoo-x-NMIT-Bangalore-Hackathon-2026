@@ -57,6 +57,12 @@ export const Sidebar = ({ currentRoute, onRouteChange, onOpenNotifications }) =>
       roles: ['employee', 'hr']
     },
     {
+      id: 'payroll',
+      label: isHR ? 'Org Payroll & CTC' : 'My Compensation & Slips',
+      icon: CreditCard,
+      roles: ['employee', 'hr']
+    },
+    {
       id: 'analytics',
       label: 'Workforce Analytics',
       icon: BarChart3,

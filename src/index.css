@@ -11,12 +11,12 @@
   --color-primary-hover: #875A7B;
   --color-primary-active: #5F3F56;
   --color-primary-tint: #F5EFF3;
-  --color-bg: #FFFFFF;
-  --color-bg-secondary: #F9F9F9;
-  --color-border: #E5E5E5;
+  --color-bg: #F8F9FA;
+  --color-bg-secondary: #F1F3F5;
+  --color-border: #E2E8F0;
   --color-text-heading: #1A1A1A;
-  --color-text-body: #4C4C4C;
-  --color-text-muted: #8A8A8A;
+  --color-text-body: #475569;
+  --color-text-muted: #94A3B8;
 
   --color-success: #28A745;
   --color-success-bg: #E6F4EA;
@@ -27,13 +27,13 @@
 
   /* Aliased / Design System Bridge Tokens */
   --bg-app: var(--color-bg);
-  --bg-surface: var(--color-bg);
-  --bg-surface-subtle: var(--color-bg-secondary);
-  --bg-surface-raised: var(--color-bg);
-  --bg-card: var(--color-bg);
-  --bg-elevated: var(--color-bg);
-  --bg-sidebar: var(--color-bg-secondary);
-  --bg-sidebar-hover: #EFEFEF;
+  --bg-surface: #FFFFFF;
+  --bg-surface-subtle: #F8F9FA;
+  --bg-surface-raised: #FFFFFF;
+  --bg-card: #FFFFFF;
+  --bg-elevated: #FFFFFF;
+  --bg-sidebar: #FFFFFF;
+  --bg-sidebar-hover: #F1F5F9;
   --bg-sidebar-active: #F5EFF3;
 
   /* Typography Colors */
@@ -225,22 +225,23 @@ a:hover {
 .card {
   background: #FFFFFF;
   border: 1px solid var(--color-border);
-  border-radius: 8px;
+  border-radius: 10px;
   padding: 1.5rem;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-  transition: border-color var(--transition-fast);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.02);
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.2s ease;
   position: relative;
 }
 
 .card:hover {
-  border-color: #D1D1D1;
+  border-color: #CBD5E1;
+  box-shadow: 0 6px 16px -2px rgba(0, 0, 0, 0.06), 0 2px 6px -1px rgba(0, 0, 0, 0.03);
 }
 
 .card-elevated {
   background: #FFFFFF;
   border: 1px solid var(--color-border);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.06);
-  border-radius: 8px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.04);
+  border-radius: 10px;
 }
 
 .card-header {
@@ -553,17 +554,19 @@ button:focus-visible, a:focus-visible {
 .metric-card {
   background: #FFFFFF;
   border: 1px solid var(--color-border);
-  border-radius: 8px;
+  border-radius: 10px;
   padding: 1.25rem 1.5rem;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.02);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  transition: border-color var(--transition-fast);
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.2s ease;
 }
 
 .metric-card:hover {
-  border-color: #D1D1D1;
+  border-color: #CBD5E1;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 16px -2px rgba(0, 0, 0, 0.06), 0 2px 6px -1px rgba(0, 0, 0, 0.03);
 }
 
 .metric-header {
@@ -1304,4 +1307,45 @@ button:focus-visible, a:focus-visible {
 .auth-odoo-btn:disabled {
   opacity: 0.7;
   cursor: not-allowed;
+}
+
+/* ==========================================================================
+   OFFICIAL CORPORATE SALARY SLIP PRINT & PDF ENGINE
+   ========================================================================== */
+@media print {
+  body {
+    background-color: #FFFFFF !important;
+    color: #000000 !important;
+  }
+
+  /* Hide app navigation chrome and non-printable elements */
+  .sidebar,
+  header,
+  .demo-toolbar,
+  .toast-container,
+  .tour-launcher-btn,
+  .command-palette,
+  button,
+  .btn {
+    display: none !important;
+  }
+
+  /* Full-bleed printable container */
+  #printable-payslip {
+    visibility: visible !important;
+    position: absolute !important;
+    left: 0 !important;
+    top: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 15mm 20mm !important;
+    margin: 0 !important;
+    background: #FFFFFF !important;
+    box-shadow: none !important;
+    border: none !important;
+  }
+
+  #printable-payslip * {
+    visibility: visible !important;
+  }
 }

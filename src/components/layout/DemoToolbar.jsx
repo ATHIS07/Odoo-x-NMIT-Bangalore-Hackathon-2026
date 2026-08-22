@@ -22,9 +22,10 @@ export const DemoToolbar = ({ currentRoute, onRouteChange }) => {
     { id: 'profile', label: '6. Profile (View)', roleReq: 'all' },
     { id: 'profile-edit', label: '7. Profile (Edit RBAC)', roleReq: 'all' },
     { id: 'analytics', label: '8. Workforce Analytics', roleReq: 'hr' },
-    { id: 'notifications', label: '9. Notifications Center', roleReq: 'all' },
-    { id: 'signin', label: '10. Sign In Portal', roleReq: 'all' },
-    { id: 'signup', label: '11. Sign Up (OTP Flow)', roleReq: 'all' }
+    { id: 'payroll', label: '9. Compensation & Payroll', roleReq: 'all' },
+    { id: 'notifications', label: '10. Notifications Center', roleReq: 'all' },
+    { id: 'signin', label: '11. Sign In Portal', roleReq: 'all' },
+    { id: 'signup', label: '12. Sign Up (OTP Flow)', roleReq: 'all' }
   ];
 
   if (currentRoute === 'signin' || currentRoute === 'signup') {

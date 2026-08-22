@@ -92,7 +92,7 @@ export const EMPLOYEE_TOURS = {
       icon: Sparkles,
       description:
         'A testing toolbar built especially for evaluators. Switch between Sophia (Employee), Marcus (HR Lead), and Elena (VP Admin) with one click to test role permissions.',
-      tip: 'Click any persona pill to instantly test how Dayflow adapts for different roles.'
+      tip: 'Click any persona pill to instantly test how Odoo HRMS adapts for different roles.'
     }
   ],
 
@@ -157,7 +157,7 @@ export const EMPLOYEE_TOURS = {
       badge: 'Step 2 of 4',
       icon: ShieldCheck,
       description:
-        'Displays your remaining Paid, Sick, and Compensatory quotas. Dayflow automatically prevents you from applying for more days than you have left.',
+        'Displays your remaining Paid, Sick, and Compensatory quotas. Odoo HRMS automatically prevents you from applying for more days than you have left.',
       tip: 'Weekends are automatically excluded so your days are calculated accurately.'
     },
     {
@@ -344,7 +344,7 @@ export const HR_TOURS = {
       badge: 'Step 4 of 4',
       icon: Users,
       description:
-        'Dayflow automatically detects if multiple team members from the same department are on leave during the same dates, preventing project delivery bottlenecks.',
+        'Odoo HRMS automatically detects if multiple team members from the same department are on leave during the same dates, preventing project delivery bottlenecks.',
       tip: 'Look for the yellow concurrency warning tag on leave cards.'
     }
   ],
@@ -578,7 +578,7 @@ export const ADMIN_TOURS = {
       icon: CheckCircle2,
       description:
         'Approve requests individually or select multiple checkboxes to approve all pending leaves in bulk with the floating action bar.',
-      tip: 'Dayflow alerts you if multiple team members from the same department request overlapping dates.'
+      tip: 'Odoo HRMS alerts you if multiple team members from the same department request overlapping dates.'
     }
   ],
 
@@ -996,7 +996,7 @@ export const ProductTour = ({ isOpen, onClose, onFinish, currentRoute = 'employe
               Would you like a quick guided tour?
             </h3>
             <p style={{ fontSize: '0.84375rem', color: '#475569', lineHeight: 1.5, margin: '0 0 1.25rem 0', fontWeight: 450 }}>
-              Dayflow has an interactive product walkthrough that explains key features, navigation, and live tools for your active role in under 45 seconds.
+              Odoo Enterprise HRMS has an interactive product walkthrough that explains key features, navigation, and live tools for your active role in under 45 seconds.
             </p>
 
             {/* Feature Highlights Pills */}

@@ -7,5 +7,16 @@ export default defineConfig({
     host: '0.0.0.0',
     port: 3000,
     strictPort: true
+  },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          'vendor-react': ['react', 'react-dom'],
+          'vendor-motion': ['framer-motion'],
+          'vendor-icons': ['lucide-react', 'canvas-confetti']
+        }
+      }
+    }
   }
 });
