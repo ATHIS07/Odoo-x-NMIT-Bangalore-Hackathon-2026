@@ -102,7 +102,7 @@ export const SignInView = ({ onNavigate }) => {
             Odoo
           </span>
           <span style={{ fontSize: '0.75rem', color: '#8A8A8A', paddingLeft: '0.5rem', borderLeft: '1px solid #E5E5E5' }}>
-            Enterprise Portal
+            Employee Portal
           </span>
         </div>
 

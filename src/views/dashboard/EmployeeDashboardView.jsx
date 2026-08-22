@@ -241,14 +241,14 @@ export const EmployeeDashboardView = ({ onNavigate }) => {
             </div>
 
             {/* Actions & Punch Controls */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.875rem', justifyContent: 'center', height: '100%' }}>
               {!isClockedIn ? (
                 <Button
                   variant="success"
                   size="lg"
                   icon={Clock}
                   onClick={() => clockIn(activeUser.id)}
-                  style={{ width: '100%' }}
+                  style={{ width: '100%', padding: '0.875rem 1.25rem', fontSize: '0.9375rem', fontWeight: 600 }}
                 >
                   Clock In to Shift
                 </Button>
@@ -258,24 +258,24 @@ export const EmployeeDashboardView = ({ onNavigate }) => {
                   size="lg"
                   icon={Clock}
                   onClick={() => clockOut(activeUser.id)}
-                  style={{ width: '100%' }}
+                  style={{ width: '100%', padding: '0.875rem 1.25rem', fontSize: '0.9375rem', fontWeight: 600 }}
                 >
                   Clock Out (End Shift)
                 </Button>
               )}
 
-              <Button
-                variant={isOnBreak ? 'primary' : 'secondary'}
-                size="md"
-                icon={Coffee}
-                disabled={!isClockedIn}
-                onClick={() => setIsOnBreak(!isOnBreak)}
-                style={{ width: '100%' }}
+              <div
+                style={{
+                  fontSize: '0.75rem',
+                  color: 'var(--text-secondary)',
+                  textAlign: 'center',
+                  padding: '0.5rem 0.75rem',
+                  backgroundColor: 'var(--bg-surface-subtle)',
+                  borderRadius: '8px',
+                  border: '1px solid var(--border-subtle)',
+                  fontWeight: 500
+                }}
               >
-                {isOnBreak ? 'Resume from Break' : 'Take Coffee Break'}
-              </Button>
-
-              <div style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)', textAlign: 'center', marginTop: '0.25rem' }}>
                 Shift Policy: 09:30 AM - 06:00 PM IST (45m lunch break)
               </div>
             </div>

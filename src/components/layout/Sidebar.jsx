@@ -124,7 +124,7 @@ export const Sidebar = ({ currentRoute, onRouteChange, onOpenNotifications }) =>
               Odoo
             </span>
             <span style={{ fontSize: '0.625rem', padding: '1px 5px', borderRadius: '4px', backgroundColor: 'var(--primary-50)', color: 'var(--color-primary)', fontWeight: 600 }}>
-              ENTERPRISE
+              EMPLOYEE PORTAL
             </span>
           </div>
           <div style={{ fontSize: '0.6875rem', color: 'var(--color-text-muted)', display: 'flex', alignItems: 'center', gap: '0.3rem', marginTop: '2px' }}>

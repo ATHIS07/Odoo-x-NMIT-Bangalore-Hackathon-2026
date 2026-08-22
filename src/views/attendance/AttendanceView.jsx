@@ -175,7 +175,7 @@ export const AttendanceView = () => {
           label="Average Daily Hours"
           value="8h 42m"
           subtitle="Target: 8h 00m standard shift"
-          icon={Coffee}
+          icon={Clock}
           iconColor="var(--primary-600)"
           iconBg="var(--primary-50)"
         />
