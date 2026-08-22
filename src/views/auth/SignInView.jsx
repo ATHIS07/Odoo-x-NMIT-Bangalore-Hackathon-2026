@@ -101,7 +101,6 @@ export const SignInView = ({ onNavigate }) => {
   };
 
   const handleSSOLogin = (provider) => {
-    // Quick demo login feedback
     handleQuickPersona('employee');
   };
 
@@ -109,10 +108,6 @@ export const SignInView = ({ onNavigate }) => {
     <div className="auth-wrapper">
       {/* Left Editorial Branding Hero */}
       <div className="auth-hero">
-        <div className="auth-hero-glow" />
-        <div className="auth-hero-glow-bottom" />
-        <div className="auth-hero-grid-pattern" />
-
         {/* Top Brand Bar */}
         <div style={{ position: 'relative', zIndex: 2 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.875rem', marginBottom: '2.5rem' }}>
@@ -120,10 +115,10 @@ export const SignInView = ({ onNavigate }) => {
               D
             </div>
             <div>
-              <span style={{ fontSize: '1.45rem', fontWeight: 800, letterSpacing: '-0.03em', fontFamily: 'var(--font-display)', color: '#FFFFFF' }}>
+              <span style={{ fontSize: '1.45rem', fontWeight: 700, letterSpacing: 'normal', fontFamily: 'var(--font-sans)', color: '#FFFFFF' }}>
                 Dayflow
               </span>
-              <span style={{ fontSize: '0.6875rem', color: '#64748B', display: 'block', fontWeight: 700, letterSpacing: '0.06em' }}>
+              <span style={{ fontSize: '0.6875rem', color: '#EADEE7', display: 'block', fontWeight: 600, letterSpacing: 'normal' }}>
                 PEOPLE & WORK OS
               </span>
             </div>
@@ -132,7 +127,7 @@ export const SignInView = ({ onNavigate }) => {
           <motion.div
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
+            transition={{ duration: 0.4 }}
           >
             <div
               style={{
@@ -140,13 +135,12 @@ export const SignInView = ({ onNavigate }) => {
                 alignItems: 'center',
                 gap: '0.45rem',
                 padding: '5px 12px',
-                borderRadius: '9999px',
-                backgroundColor: 'rgba(37, 99, 235, 0.15)',
-                border: '1px solid rgba(37, 99, 235, 0.35)',
-                color: '#60A5FA',
+                borderRadius: '999px',
+                backgroundColor: 'rgba(255, 255, 255, 0.15)',
+                border: '1px solid rgba(255, 255, 255, 0.25)',
+                color: '#FFFFFF',
                 fontSize: '0.75rem',
-                fontWeight: 700,
-                letterSpacing: '0.04em',
+                fontWeight: 600,
                 marginBottom: '1.5rem'
               }}
             >
@@ -156,18 +150,18 @@ export const SignInView = ({ onNavigate }) => {
 
             <h1
               style={{
-                fontSize: '2.4rem',
-                lineHeight: 1.18,
+                fontSize: '2.25rem',
+                lineHeight: 1.2,
                 fontWeight: 700,
-                letterSpacing: '-0.035em',
+                letterSpacing: 'normal',
                 marginBottom: '1.25rem',
-                color: '#F8FAFC'
+                color: '#FFFFFF'
               }}
             >
               Intelligent workforce orchestration for high-velocity teams.
             </h1>
 
-            <p style={{ fontSize: '0.975rem', color: '#94A3B8', lineHeight: 1.6, maxWidth: '490px' }}>
+            <p style={{ fontSize: '0.9375rem', color: '#F5EFF3', lineHeight: 1.6, maxWidth: '490px' }}>
               Precision real-time attendance streams, autonomous leave approval workflows, and role-governed compensation vaults on AWS serverless fabric.
             </p>
           </motion.div>
@@ -185,13 +179,13 @@ export const SignInView = ({ onNavigate }) => {
                 key={idx}
                 style={{
                   padding: '0.75rem 0.875rem',
-                  borderRadius: '10px',
-                  backgroundColor: 'rgba(255, 255, 255, 0.03)',
-                  border: '1px solid rgba(255, 255, 255, 0.08)'
+                  borderRadius: '6px',
+                  backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                  border: '1px solid rgba(255, 255, 255, 0.15)'
                 }}
               >
-                <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#F1F5F9' }}>{item.label}</div>
-                <div style={{ fontSize: '0.6875rem', color: '#64748B', marginTop: '2px' }}>{item.desc}</div>
+                <div style={{ fontSize: '0.75rem', fontWeight: 600, color: '#FFFFFF' }}>{item.label}</div>
+                <div style={{ fontSize: '0.6875rem', color: '#EADEE7', marginTop: '2px' }}>{item.desc}</div>
               </div>
             ))}
           </div>
@@ -202,17 +196,17 @@ export const SignInView = ({ onNavigate }) => {
               alignItems: 'center',
               justifyContent: 'space-between',
               padding: '0.625rem 1rem',
-              borderRadius: '8px',
-              backgroundColor: 'rgba(15, 23, 42, 0.6)',
-              border: '1px solid rgba(255, 255, 255, 0.06)',
+              borderRadius: '6px',
+              backgroundColor: 'rgba(0, 0, 0, 0.15)',
+              border: '1px solid rgba(255, 255, 255, 0.15)',
               fontSize: '0.75rem'
             }}
           >
-            <span style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#94A3B8' }}>
-              <span style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#10B981', display: 'inline-block' }} className="pulse-dot" />
+            <span style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#FFFFFF' }}>
+              <span style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: 'var(--color-success)', display: 'inline-block' }} />
               All AWS Services Operational
             </span>
-            <span style={{ color: '#64748B', fontFamily: 'var(--font-mono)', fontSize: '0.6875rem' }}>us-west-2 (Oregon)</span>
+            <span style={{ color: '#EADEE7', fontFamily: 'var(--font-sans)', fontSize: '0.6875rem' }}>us-west-2 (Oregon)</span>
           </div>
         </div>
       </div>
@@ -220,9 +214,9 @@ export const SignInView = ({ onNavigate }) => {
       {/* Right Login Form Container */}
       <div className="auth-form-container">
         <motion.div
-          initial={{ opacity: 0, scale: 0.97 }}
+          initial={{ opacity: 0, scale: 0.98 }}
           animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.35 }}
+          transition={{ duration: 0.3 }}
           className="auth-form-card"
         >
           {/* Top Auth Navigation Tabs (Sign In / Sign Up) */}
@@ -246,18 +240,18 @@ export const SignInView = ({ onNavigate }) => {
           </div>
 
           <div style={{ marginBottom: '1.5rem' }}>
-            <h2 style={{ fontSize: '1.75rem', fontWeight: 700, letterSpacing: '-0.03em', color: 'var(--text-primary)' }}>
+            <h2 style={{ fontSize: '1.75rem', fontWeight: 700, letterSpacing: 'normal', color: 'var(--color-text-heading)' }}>
               Sign in to Dayflow
             </h2>
-            <p style={{ fontSize: '0.875rem', color: 'var(--text-secondary)', marginTop: '0.25rem' }}>
+            <p style={{ fontSize: '0.875rem', color: 'var(--color-text-body)', marginTop: '0.25rem' }}>
               Enter your corporate credentials or use 1-click hackathon personas below.
             </p>
           </div>
 
           {/* 1-Click Fast Persona Switchers */}
           <div className="auth-persona-card">
-            <div style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.625rem', display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
-              <Sparkles size={13} color="var(--primary-600)" />
+            <div style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--color-text-body)', textTransform: 'uppercase', marginBottom: '0.625rem', display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+              <Sparkles size={13} color="var(--color-primary)" />
               1-Click Demo Personas:
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '0.5rem' }}>
@@ -270,13 +264,13 @@ export const SignInView = ({ onNavigate }) => {
                   handleQuickPersona('employee');
                 }}
                 style={{
-                  border: '1px solid var(--primary-200)',
-                  backgroundColor: '#EFF6FF',
-                  color: '#1D4ED8'
+                  border: '1px solid var(--color-border)',
+                  backgroundColor: '#FFFFFF',
+                  color: 'var(--color-primary)'
                 }}
               >
-                <span>👤 Employee</span>
-                <span style={{ fontWeight: 500, fontSize: '0.6875rem', color: '#3B82F6' }}>Sophia (Staff Eng)</span>
+                <span style={{ fontWeight: 600 }}>👤 Employee</span>
+                <span style={{ fontWeight: 400, fontSize: '0.6875rem', color: 'var(--color-text-muted)' }}>Sophia</span>
               </button>
 
               <button
@@ -288,13 +282,13 @@ export const SignInView = ({ onNavigate }) => {
                   handleQuickPersona('hr');
                 }}
                 style={{
-                  border: '1px solid #DDD6FE',
-                  backgroundColor: '#F5F3FF',
-                  color: '#6D28D9'
+                  border: '1px solid var(--color-border)',
+                  backgroundColor: '#FFFFFF',
+                  color: 'var(--color-primary-hover)'
                 }}
               >
-                <span>👥 HR Lead</span>
-                <span style={{ fontWeight: 500, fontSize: '0.6875rem', color: '#8B5CF6' }}>Marcus (People Ops)</span>
+                <span style={{ fontWeight: 600 }}>👥 HR Lead</span>
+                <span style={{ fontWeight: 400, fontSize: '0.6875rem', color: 'var(--color-text-muted)' }}>Marcus</span>
               </button>
 
               <button
@@ -306,13 +300,13 @@ export const SignInView = ({ onNavigate }) => {
                   handleQuickPersona('admin');
                 }}
                 style={{
-                  border: '1px solid #FBCFE8',
-                  backgroundColor: '#FDF2F8',
-                  color: '#BE185D'
+                  border: '1px solid var(--color-border)',
+                  backgroundColor: '#FFFFFF',
+                  color: 'var(--color-primary-active)'
                 }}
               >
-                <span>👑 VP Admin</span>
-                <span style={{ fontWeight: 500, fontSize: '0.6875rem', color: '#EC4899' }}>Elena (Exec Admin)</span>
+                <span style={{ fontWeight: 600 }}>👑 VP Admin</span>
+                <span style={{ fontWeight: 400, fontSize: '0.6875rem', color: 'var(--color-text-muted)' }}>Elena</span>
               </button>
             </div>
           </div>
@@ -346,8 +340,8 @@ export const SignInView = ({ onNavigate }) => {
                     background: 'none',
                     border: 'none',
                     fontSize: '0.75rem',
-                    color: 'var(--primary-600)',
-                    fontWeight: 600,
+                    color: 'var(--color-primary)',
+                    fontWeight: 500,
                     cursor: 'pointer',
                     padding: 0
                   }}
@@ -381,12 +375,12 @@ export const SignInView = ({ onNavigate }) => {
 
             {/* Remember Me Checkbox */}
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.25rem' }}>
-              <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.8125rem', color: 'var(--text-secondary)', cursor: 'pointer' }}>
+              <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.8125rem', color: 'var(--color-text-body)', cursor: 'pointer' }}>
                 <input
                   type="checkbox"
                   checked={rememberMe}
                   onChange={(e) => setRememberMe(e.target.checked)}
-                  style={{ accentColor: 'var(--primary-600)', width: '15px', height: '15px', borderRadius: '4px' }}
+                  style={{ accentColor: 'var(--color-primary)', width: '15px', height: '15px', borderRadius: '4px' }}
                 />
                 Remember this workstation for 30 days
               </label>
@@ -396,15 +390,15 @@ export const SignInView = ({ onNavigate }) => {
               <div
                 style={{
                   padding: '0.75rem 1rem',
-                  borderRadius: '8px',
-                  backgroundColor: 'var(--rose-50)',
-                  color: 'var(--rose-700)',
+                  borderRadius: '6px',
+                  backgroundColor: 'var(--color-danger-bg)',
+                  color: 'var(--color-danger)',
                   fontSize: '0.8125rem',
                   display: 'flex',
                   alignItems: 'center',
                   gap: '0.5rem',
                   marginBottom: '1.25rem',
-                  border: '1px solid rgba(220, 38, 38, 0.2)'
+                  border: '1px solid var(--color-danger-bg)'
                 }}
               >
                 <AlertCircle size={16} />
@@ -458,7 +452,7 @@ export const SignInView = ({ onNavigate }) => {
             </button>
           </div>
 
-          <div style={{ marginTop: '1.75rem', textAlign: 'center', fontSize: '0.8125rem', color: 'var(--text-secondary)' }}>
+          <div style={{ marginTop: '1.75rem', textAlign: 'center', fontSize: '0.8125rem', color: 'var(--color-text-body)' }}>
             New employee without credentials?{' '}
             <button
               type="button"
@@ -466,8 +460,8 @@ export const SignInView = ({ onNavigate }) => {
               style={{
                 background: 'none',
                 border: 'none',
-                color: 'var(--primary-600)',
-                fontWeight: 700,
+                color: 'var(--color-primary)',
+                fontWeight: 600,
                 cursor: 'pointer',
                 padding: 0
               }}
@@ -491,17 +485,17 @@ export const SignInView = ({ onNavigate }) => {
             >
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.25rem' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                  <div style={{ width: '36px', height: '36px', borderRadius: '8px', backgroundColor: 'var(--primary-50)', color: 'var(--primary-600)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <div style={{ width: '36px', height: '36px', borderRadius: '6px', backgroundColor: 'var(--primary-50)', color: 'var(--color-primary)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                     <KeyRound size={18} />
                   </div>
                   <div>
-                    <h3 style={{ fontSize: '1.125rem', fontWeight: 700 }}>Reset Cognito Credentials</h3>
-                    <p style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>AWS Secure Password Recovery</p>
+                    <h3 style={{ fontSize: '1.125rem', fontWeight: 600, color: 'var(--color-text-heading)' }}>Reset Cognito Credentials</h3>
+                    <p style={{ fontSize: '0.75rem', color: 'var(--color-text-body)' }}>AWS Secure Password Recovery</p>
                   </div>
                 </div>
                 <button
                   onClick={() => setIsForgotModalOpen(false)}
-                  style={{ background: 'none', border: 'none', color: 'var(--text-tertiary)', cursor: 'pointer', padding: '4px' }}
+                  style={{ background: 'none', border: 'none', color: 'var(--color-text-muted)', cursor: 'pointer', padding: '4px' }}
                 >
                   <X size={18} />
                 </button>
@@ -509,7 +503,7 @@ export const SignInView = ({ onNavigate }) => {
 
               {forgotStep === 1 ? (
                 <form onSubmit={handleRequestForgot}>
-                  <p style={{ fontSize: '0.8125rem', color: 'var(--text-secondary)', marginBottom: '1.25rem', lineHeight: 1.5 }}>
+                  <p style={{ fontSize: '0.8125rem', color: 'var(--color-text-body)', marginBottom: '1.25rem', lineHeight: 1.5 }}>
                     Enter your registered corporate email address to receive an AWS Cognito reset OTP.
                   </p>
 
@@ -526,7 +520,7 @@ export const SignInView = ({ onNavigate }) => {
                   </div>
 
                   {forgotError && (
-                    <div style={{ color: 'var(--rose-600)', fontSize: '0.75rem', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                    <div style={{ color: 'var(--color-danger)', fontSize: '0.75rem', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '4px' }}>
                       <AlertCircle size={14} /> {forgotError}
                     </div>
                   )}
@@ -541,10 +535,10 @@ export const SignInView = ({ onNavigate }) => {
                   <div
                     style={{
                       padding: '0.625rem 0.875rem',
-                      borderRadius: '8px',
-                      backgroundColor: 'rgba(37,99,235,0.08)',
-                      border: '1px solid var(--primary-200)',
-                      color: 'var(--primary-700)',
+                      borderRadius: '6px',
+                      backgroundColor: 'var(--primary-50)',
+                      border: '1px solid var(--primary-100)',
+                      color: 'var(--color-primary)',
                       fontSize: '0.75rem',
                       fontWeight: 600,
                       marginBottom: '1rem'
@@ -561,7 +555,7 @@ export const SignInView = ({ onNavigate }) => {
                       maxLength={6}
                       value={forgotOtp}
                       onChange={(e) => setForgotOtp(e.target.value)}
-                      className="form-input font-mono"
+                      className="form-input"
                       placeholder="932140"
                     />
                   </div>
@@ -579,7 +573,7 @@ export const SignInView = ({ onNavigate }) => {
                   </div>
 
                   {forgotError && (
-                    <div style={{ color: 'var(--rose-600)', fontSize: '0.75rem', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                    <div style={{ color: 'var(--color-danger)', fontSize: '0.75rem', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '4px' }}>
                       <AlertCircle size={14} /> {forgotError}
                     </div>
                   )}

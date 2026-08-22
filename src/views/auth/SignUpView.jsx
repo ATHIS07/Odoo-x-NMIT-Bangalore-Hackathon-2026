@@ -61,12 +61,12 @@ export const SignUpView = ({ onNavigate }) => {
 
   const strengthColor =
     strengthScore === 4
-      ? 'var(--emerald-600)'
+      ? 'var(--color-success)'
       : strengthScore === 3
-      ? 'var(--primary-600)'
+      ? 'var(--color-primary)'
       : strengthScore === 2
-      ? 'var(--amber-600)'
-      : 'var(--rose-600)';
+      ? 'var(--color-warning)'
+      : 'var(--color-danger)';
 
   // Countdown timer for OTP resend
   useEffect(() => {
@@ -129,10 +129,8 @@ export const SignUpView = ({ onNavigate }) => {
   };
 
   const handleOtpChange = (index, value) => {
-    // Only accept numbers
     const cleanValue = value.replace(/[^0-9]/g, '');
     if (cleanValue.length > 1) {
-      // Handle paste
       const digits = cleanValue.slice(0, 6).split('');
       const newOtp = [...otpCode];
       digits.forEach((d, i) => {
@@ -148,7 +146,6 @@ export const SignUpView = ({ onNavigate }) => {
     newOtp[index] = cleanValue;
     setOtpCode(newOtp);
 
-    // Auto focus next input
     if (cleanValue && index < 5) {
       const nextInput = document.getElementById(`otp-input-${index + 1}`);
       if (nextInput) nextInput.focus();
@@ -199,10 +196,6 @@ export const SignUpView = ({ onNavigate }) => {
     <div className="auth-wrapper">
       {/* Left Editorial Branding Hero */}
       <div className="auth-hero">
-        <div className="auth-hero-glow" />
-        <div className="auth-hero-glow-bottom" />
-        <div className="auth-hero-grid-pattern" />
-
         {/* Top Brand Bar */}
         <div style={{ position: 'relative', zIndex: 2 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.875rem', marginBottom: '2.5rem' }}>
@@ -210,10 +203,10 @@ export const SignUpView = ({ onNavigate }) => {
               D
             </div>
             <div>
-              <span style={{ fontSize: '1.45rem', fontWeight: 800, letterSpacing: '-0.03em', fontFamily: 'var(--font-display)', color: '#FFFFFF' }}>
+              <span style={{ fontSize: '1.45rem', fontWeight: 700, letterSpacing: 'normal', fontFamily: 'var(--font-sans)', color: '#FFFFFF' }}>
                 Dayflow
               </span>
-              <span style={{ fontSize: '0.6875rem', color: '#64748B', display: 'block', fontWeight: 700, letterSpacing: '0.06em' }}>
+              <span style={{ fontSize: '0.6875rem', color: '#EADEE7', display: 'block', fontWeight: 600, letterSpacing: 'normal' }}>
                 PEOPLE & WORK OS
               </span>
             </div>
@@ -222,7 +215,7 @@ export const SignUpView = ({ onNavigate }) => {
           <motion.div
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
+            transition={{ duration: 0.4 }}
           >
             <div
               style={{
@@ -230,13 +223,12 @@ export const SignUpView = ({ onNavigate }) => {
                 alignItems: 'center',
                 gap: '0.45rem',
                 padding: '5px 12px',
-                borderRadius: '9999px',
-                backgroundColor: 'rgba(5, 150, 105, 0.15)',
-                border: '1px solid rgba(5, 150, 105, 0.35)',
-                color: '#34D399',
+                borderRadius: '999px',
+                backgroundColor: 'rgba(255, 255, 255, 0.15)',
+                border: '1px solid rgba(255, 255, 255, 0.25)',
+                color: '#FFFFFF',
                 fontSize: '0.75rem',
-                fontWeight: 700,
-                letterSpacing: '0.04em',
+                fontWeight: 600,
                 marginBottom: '1.5rem'
               }}
             >
@@ -246,18 +238,18 @@ export const SignUpView = ({ onNavigate }) => {
 
             <h1
               style={{
-                fontSize: '2.4rem',
-                lineHeight: 1.18,
+                fontSize: '2.25rem',
+                lineHeight: 1.2,
                 fontWeight: 700,
-                letterSpacing: '-0.035em',
+                letterSpacing: 'normal',
                 marginBottom: '1.25rem',
-                color: '#F8FAFC'
+                color: '#FFFFFF'
               }}
             >
               Provision your identity onto the Dayflow infrastructure.
             </h1>
 
-            <p style={{ fontSize: '0.975rem', color: '#94A3B8', lineHeight: 1.6, maxWidth: '490px' }}>
+            <p style={{ fontSize: '0.9375rem', color: '#F5EFF3', lineHeight: 1.6, maxWidth: '490px' }}>
               Identity tokenization via AWS Cognito User Pool with 256-bit encrypted credential management, instant RBAC policy attachment, and verified hardware tokens.
             </p>
           </motion.div>
@@ -272,9 +264,9 @@ export const SignUpView = ({ onNavigate }) => {
               alignItems: 'center',
               gap: '1rem',
               padding: '0.875rem 1.25rem',
-              borderRadius: '10px',
-              backgroundColor: 'rgba(255, 255, 255, 0.03)',
-              border: '1px solid rgba(255, 255, 255, 0.08)',
+              borderRadius: '6px',
+              backgroundColor: 'rgba(255, 255, 255, 0.1)',
+              border: '1px solid rgba(255, 255, 255, 0.15)',
               marginBottom: '1.5rem'
             }}
           >
@@ -284,8 +276,8 @@ export const SignUpView = ({ onNavigate }) => {
                   width: '24px',
                   height: '24px',
                   borderRadius: '50%',
-                  backgroundColor: step >= 1 ? 'var(--primary-600)' : '#334155',
-                  color: '#FFFFFF',
+                  backgroundColor: step >= 1 ? '#FFFFFF' : 'rgba(255, 255, 255, 0.2)',
+                  color: step >= 1 ? 'var(--color-primary)' : '#FFFFFF',
                   fontSize: '0.75rem',
                   fontWeight: 700,
                   display: 'flex',
@@ -295,12 +287,12 @@ export const SignUpView = ({ onNavigate }) => {
               >
                 {step > 1 ? <Check size={14} /> : '1'}
               </span>
-              <span style={{ fontSize: '0.8125rem', color: step === 1 ? '#FFFFFF' : '#94A3B8', fontWeight: 600 }}>
+              <span style={{ fontSize: '0.8125rem', color: '#FFFFFF', fontWeight: 600 }}>
                 Account Details
               </span>
             </div>
 
-            <div style={{ flex: 1, height: '1px', backgroundColor: 'rgba(255, 255, 255, 0.1)' }} />
+            <div style={{ flex: 1, height: '1px', backgroundColor: 'rgba(255, 255, 255, 0.2)' }} />
 
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
               <span
@@ -308,8 +300,8 @@ export const SignUpView = ({ onNavigate }) => {
                   width: '24px',
                   height: '24px',
                   borderRadius: '50%',
-                  backgroundColor: step === 2 ? 'var(--primary-600)' : '#334155',
-                  color: '#FFFFFF',
+                  backgroundColor: step === 2 ? '#FFFFFF' : 'rgba(255, 255, 255, 0.2)',
+                  color: step === 2 ? 'var(--color-primary)' : '#FFFFFF',
                   fontSize: '0.75rem',
                   fontWeight: 700,
                   display: 'flex',
@@ -319,7 +311,7 @@ export const SignUpView = ({ onNavigate }) => {
               >
                 2
               </span>
-              <span style={{ fontSize: '0.8125rem', color: step === 2 ? '#FFFFFF' : '#64748B', fontWeight: 600 }}>
+              <span style={{ fontSize: '0.8125rem', color: step === 2 ? '#FFFFFF' : '#EADEE7', fontWeight: 500 }}>
                 OTP Verification
               </span>
             </div>
@@ -331,17 +323,17 @@ export const SignUpView = ({ onNavigate }) => {
               alignItems: 'center',
               justifyContent: 'space-between',
               padding: '0.625rem 1rem',
-              borderRadius: '8px',
-              backgroundColor: 'rgba(15, 23, 42, 0.6)',
-              border: '1px solid rgba(255, 255, 255, 0.06)',
+              borderRadius: '6px',
+              backgroundColor: 'rgba(0, 0, 0, 0.15)',
+              border: '1px solid rgba(255, 255, 255, 0.15)',
               fontSize: '0.75rem'
             }}
           >
-            <span style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#94A3B8' }}>
-              <span style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#10B981', display: 'inline-block' }} className="pulse-dot" />
+            <span style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#FFFFFF' }}>
+              <span style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: 'var(--color-success)', display: 'inline-block' }} />
               Cognito User Pool Active
             </span>
-            <span style={{ color: '#64748B', fontFamily: 'var(--font-mono)', fontSize: '0.6875rem' }}>Pool: us-west-2_DF2026</span>
+            <span style={{ color: '#EADEE7', fontFamily: 'var(--font-sans)', fontSize: '0.6875rem' }}>Pool: us-west-2_DF2026</span>
           </div>
         </div>
       </div>
@@ -376,14 +368,14 @@ export const SignUpView = ({ onNavigate }) => {
                 initial={{ opacity: 0, x: -16 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: 16 }}
-                transition={{ duration: 0.25 }}
+                transition={{ duration: 0.2 }}
               >
                 <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: '1.5rem' }}>
                   <div>
-                    <h2 style={{ fontSize: '1.75rem', fontWeight: 700, letterSpacing: '-0.03em', color: 'var(--text-primary)' }}>
+                    <h2 style={{ fontSize: '1.75rem', fontWeight: 700, letterSpacing: 'normal', color: 'var(--color-text-heading)' }}>
                       Create Dayflow Account
                     </h2>
-                    <p style={{ fontSize: '0.875rem', color: 'var(--text-secondary)', marginTop: '0.25rem' }}>
+                    <p style={{ fontSize: '0.875rem', color: 'var(--color-text-body)', marginTop: '0.25rem' }}>
                       Provide your employee details for RBAC credential provisioning.
                     </p>
                   </div>
@@ -400,9 +392,9 @@ export const SignUpView = ({ onNavigate }) => {
                       borderRadius: '6px',
                       backgroundColor: 'var(--primary-50)',
                       border: '1px solid var(--primary-200)',
-                      color: 'var(--primary-700)',
+                      color: 'var(--color-primary)',
                       fontSize: '0.75rem',
-                      fontWeight: 700,
+                      fontWeight: 600,
                       cursor: 'pointer',
                       whiteSpace: 'nowrap'
                     }}
@@ -441,7 +433,7 @@ export const SignUpView = ({ onNavigate }) => {
                         required
                         value={formData.employeeId}
                         onChange={(e) => setFormData({ ...formData, employeeId: e.target.value.toUpperCase() })}
-                        className="form-input font-mono"
+                        className="form-input"
                         placeholder="DF-9210"
                       />
                     </div>
@@ -527,19 +519,19 @@ export const SignUpView = ({ onNavigate }) => {
                   {/* Live Password Entropy Meter */}
                   <div
                     style={{
-                      backgroundColor: 'var(--bg-surface-subtle)',
+                      backgroundColor: 'var(--color-bg-secondary)',
                       padding: '0.75rem',
-                      borderRadius: '8px',
-                      border: '1px solid var(--border-subtle)',
+                      borderRadius: '6px',
+                      border: '1px solid var(--color-border)',
                       marginBottom: '1.25rem'
                     }}
                   >
                     <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.75rem', marginBottom: '0.35rem' }}>
-                      <span style={{ color: 'var(--text-secondary)' }}>Security Entropy:</span>
-                      <span style={{ fontWeight: 700, color: strengthColor }}>{strengthLabel}</span>
+                      <span style={{ color: 'var(--color-text-body)' }}>Security Entropy:</span>
+                      <span style={{ fontWeight: 600, color: strengthColor }}>{strengthLabel}</span>
                     </div>
 
-                    <div style={{ height: '5px', width: '100%', backgroundColor: 'var(--border-subtle)', borderRadius: '9999px', overflow: 'hidden', marginBottom: '0.5rem' }}>
+                    <div style={{ height: '4px', width: '100%', backgroundColor: 'var(--color-border)', borderRadius: '999px', overflow: 'hidden', marginBottom: '0.5rem' }}>
                       <div
                         style={{
                           height: '100%',
@@ -551,16 +543,16 @@ export const SignUpView = ({ onNavigate }) => {
                     </div>
 
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.35rem', fontSize: '0.6875rem' }}>
-                      <span style={{ display: 'flex', alignItems: 'center', gap: '4px', color: hasMinLength ? 'var(--emerald-600)' : 'var(--text-tertiary)' }}>
+                      <span style={{ display: 'flex', alignItems: 'center', gap: '4px', color: hasMinLength ? 'var(--color-success)' : 'var(--color-text-muted)' }}>
                         {hasMinLength ? <CheckCircle2 size={12} /> : <XCircle size={12} />} 8+ Characters
                       </span>
-                      <span style={{ display: 'flex', alignItems: 'center', gap: '4px', color: hasUpperLower ? 'var(--emerald-600)' : 'var(--text-tertiary)' }}>
+                      <span style={{ display: 'flex', alignItems: 'center', gap: '4px', color: hasUpperLower ? 'var(--color-success)' : 'var(--color-text-muted)' }}>
                         {hasUpperLower ? <CheckCircle2 size={12} /> : <XCircle size={12} />} Upper & Lower
                       </span>
-                      <span style={{ display: 'flex', alignItems: 'center', gap: '4px', color: hasNumber ? 'var(--emerald-600)' : 'var(--text-tertiary)' }}>
+                      <span style={{ display: 'flex', alignItems: 'center', gap: '4px', color: hasNumber ? 'var(--color-success)' : 'var(--color-text-muted)' }}>
                         {hasNumber ? <CheckCircle2 size={12} /> : <XCircle size={12} />} Numeric Digit
                       </span>
-                      <span style={{ display: 'flex', alignItems: 'center', gap: '4px', color: hasSpecial ? 'var(--emerald-600)' : 'var(--text-tertiary)' }}>
+                      <span style={{ display: 'flex', alignItems: 'center', gap: '4px', color: hasSpecial ? 'var(--color-success)' : 'var(--color-text-muted)' }}>
                         {hasSpecial ? <CheckCircle2 size={12} /> : <XCircle size={12} />} Special Symbol
                       </span>
                     </div>
@@ -568,12 +560,12 @@ export const SignUpView = ({ onNavigate }) => {
 
                   {/* Terms & Privacy Policy Checkbox */}
                   <div style={{ marginBottom: '1.25rem' }}>
-                    <label style={{ display: 'flex', alignItems: 'flex-start', gap: '0.5rem', fontSize: '0.8125rem', color: 'var(--text-secondary)', cursor: 'pointer' }}>
+                    <label style={{ display: 'flex', alignItems: 'flex-start', gap: '0.5rem', fontSize: '0.8125rem', color: 'var(--color-text-body)', cursor: 'pointer' }}>
                       <input
                         type="checkbox"
                         checked={agreedTerms}
                         onChange={(e) => setAgreedTerms(e.target.checked)}
-                        style={{ accentColor: 'var(--primary-600)', width: '15px', height: '15px', borderRadius: '4px', marginTop: '2px' }}
+                        style={{ accentColor: 'var(--color-primary)', width: '15px', height: '15px', borderRadius: '4px', marginTop: '2px' }}
                       />
                       <span>
                         I agree to Dayflow's corporate governance policies and AWS identity telemetry.
@@ -585,15 +577,15 @@ export const SignUpView = ({ onNavigate }) => {
                     <div
                       style={{
                         padding: '0.75rem 1rem',
-                        borderRadius: '8px',
-                        backgroundColor: 'var(--rose-50)',
-                        color: 'var(--rose-700)',
+                        borderRadius: '6px',
+                        backgroundColor: 'var(--color-danger-bg)',
+                        color: 'var(--color-danger)',
                         fontSize: '0.8125rem',
                         display: 'flex',
                         alignItems: 'center',
                         gap: '0.5rem',
                         marginBottom: '1.25rem',
-                        border: '1px solid rgba(220, 38, 38, 0.2)'
+                        border: '1px solid var(--color-danger-bg)'
                       }}
                     >
                       <AlertCircle size={16} />
@@ -614,7 +606,7 @@ export const SignUpView = ({ onNavigate }) => {
                   </Button>
                 </form>
 
-                <div style={{ marginTop: '1.5rem', textAlign: 'center', fontSize: '0.8125rem', color: 'var(--text-secondary)' }}>
+                <div style={{ marginTop: '1.5rem', textAlign: 'center', fontSize: '0.8125rem', color: 'var(--color-text-body)' }}>
                   Already have an identity token?{' '}
                   <button
                     type="button"
@@ -622,8 +614,8 @@ export const SignUpView = ({ onNavigate }) => {
                     style={{
                       background: 'none',
                       border: 'none',
-                      color: 'var(--primary-600)',
-                      fontWeight: 700,
+                      color: 'var(--color-primary)',
+                      fontWeight: 600,
                       cursor: 'pointer',
                       padding: 0
                     }}
@@ -638,29 +630,28 @@ export const SignUpView = ({ onNavigate }) => {
                 initial={{ opacity: 0, x: 16 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -16 }}
-                transition={{ duration: 0.25 }}
+                transition={{ duration: 0.2 }}
               >
                 <div
                   style={{
-                    width: '52px',
-                    height: '52px',
-                    borderRadius: '14px',
+                    width: '48px',
+                    height: '48px',
+                    borderRadius: '8px',
                     backgroundColor: 'var(--primary-50)',
-                    color: 'var(--primary-600)',
+                    color: 'var(--color-primary)',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    marginBottom: '1.25rem',
-                    boxShadow: '0 0 20px rgba(37, 99, 235, 0.2)'
+                    marginBottom: '1.25rem'
                   }}
                 >
-                  <KeyRound size={26} />
+                  <KeyRound size={24} />
                 </div>
 
-                <h2 style={{ fontSize: '1.75rem', fontWeight: 700, letterSpacing: '-0.03em', color: 'var(--text-primary)' }}>
+                <h2 style={{ fontSize: '1.75rem', fontWeight: 700, letterSpacing: 'normal', color: 'var(--color-text-heading)' }}>
                   Verify Cognito Code
                 </h2>
-                <p style={{ fontSize: '0.875rem', color: 'var(--text-secondary)', marginTop: '0.25rem', marginBottom: '1.5rem' }}>
+                <p style={{ fontSize: '0.875rem', color: 'var(--color-text-body)', marginTop: '0.25rem', marginBottom: '1.5rem' }}>
                   We dispatched a 6-digit confirmation token via AWS SNS to <strong>{formData.email}</strong>.
                 </p>
 
@@ -668,10 +659,10 @@ export const SignUpView = ({ onNavigate }) => {
                 <div
                   style={{
                     padding: '0.75rem 1rem',
-                    borderRadius: '8px',
-                    backgroundColor: 'rgba(37, 99, 235, 0.08)',
-                    border: '1px solid var(--primary-200)',
-                    color: 'var(--primary-700)',
+                    borderRadius: '6px',
+                    backgroundColor: 'var(--primary-50)',
+                    border: '1px solid var(--primary-100)',
+                    color: 'var(--color-primary)',
                     fontSize: '0.8125rem',
                     fontWeight: 600,
                     marginBottom: '1.75rem',
@@ -690,8 +681,8 @@ export const SignUpView = ({ onNavigate }) => {
                     style={{
                       background: 'none',
                       border: 'none',
-                      color: 'var(--primary-600)',
-                      fontWeight: 700,
+                      color: 'var(--color-primary)',
+                      fontWeight: 600,
                       fontSize: '0.75rem',
                       cursor: 'pointer',
                       textDecoration: 'underline'
@@ -721,15 +712,15 @@ export const SignUpView = ({ onNavigate }) => {
                     <div
                       style={{
                         padding: '0.75rem 1rem',
-                        borderRadius: '8px',
-                        backgroundColor: 'var(--rose-50)',
-                        color: 'var(--rose-700)',
+                        borderRadius: '6px',
+                        backgroundColor: 'var(--color-danger-bg)',
+                        color: 'var(--color-danger)',
                         fontSize: '0.8125rem',
                         display: 'flex',
                         alignItems: 'center',
                         gap: '0.5rem',
                         marginBottom: '1.25rem',
-                        border: '1px solid rgba(220, 38, 38, 0.2)'
+                        border: '1px solid var(--color-danger-bg)'
                       }}
                     >
                       <AlertCircle size={16} />
@@ -757,7 +748,7 @@ export const SignUpView = ({ onNavigate }) => {
                     style={{
                       background: 'none',
                       border: 'none',
-                      color: 'var(--text-tertiary)',
+                      color: 'var(--color-text-muted)',
                       cursor: 'pointer',
                       padding: 0,
                       display: 'flex',
@@ -775,8 +766,8 @@ export const SignUpView = ({ onNavigate }) => {
                     style={{
                       background: 'none',
                       border: 'none',
-                      color: canResend ? 'var(--primary-600)' : 'var(--text-tertiary)',
-                      fontWeight: 600,
+                      color: canResend ? 'var(--color-primary)' : 'var(--color-text-muted)',
+                      fontWeight: 500,
                       cursor: canResend ? 'pointer' : 'not-allowed',
                       padding: 0
                     }}

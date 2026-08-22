@@ -116,10 +116,10 @@ export const ProfileEditView = ({ onNavigate }) => {
         <div
           style={{
             padding: '1rem 1.25rem',
-            borderRadius: '10px',
-            backgroundColor: 'rgba(37, 99, 235, 0.08)',
-            border: '1px solid var(--primary-200)',
-            color: 'var(--primary-900)',
+            borderRadius: '6px',
+            backgroundColor: 'var(--primary-50)',
+            border: '1px solid var(--primary-100)',
+            color: 'var(--color-primary)',
             marginBottom: '1.75rem',
             display: 'flex',
             alignItems: 'center',

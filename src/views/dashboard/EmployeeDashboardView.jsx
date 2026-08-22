@@ -116,14 +116,14 @@ export const EmployeeDashboardView = ({ onNavigate }) => {
         <Card
           onClick={() => onNavigate('leave-apply')}
           style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.875rem', padding: '1rem 1.25rem', transition: 'all 0.2s ease' }}
-          onMouseEnter={(e) => { e.currentTarget.style.borderColor = '#8B5CF6'; e.currentTarget.style.transform = 'translateY(-2px)'; }}
+          onMouseEnter={(e) => { e.currentTarget.style.borderColor = 'var(--color-primary)'; e.currentTarget.style.transform = 'translateY(-2px)'; }}
           onMouseLeave={(e) => { e.currentTarget.style.borderColor = 'var(--border-subtle)'; e.currentTarget.style.transform = 'translateY(0)'; }}
         >
-          <div style={{ width: '40px', height: '40px', borderRadius: '10px', backgroundColor: '#F5F3FF', color: '#8B5CF6', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+          <div style={{ width: '40px', height: '40px', borderRadius: '8px', backgroundColor: 'var(--primary-50)', color: 'var(--color-primary)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
             <CalendarCheck size={20} />
           </div>
           <div>
-            <div style={{ fontWeight: 700, fontSize: '0.875rem', color: 'var(--text-primary)' }}>Leave Requests</div>
+            <div style={{ fontWeight: 600, fontSize: '0.875rem', color: 'var(--text-primary)' }}>Leave Requests</div>
             <div style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)' }}>Apply & Track Quota</div>
           </div>
         </Card>
@@ -136,14 +136,14 @@ export const EmployeeDashboardView = ({ onNavigate }) => {
             }
           }}
           style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.875rem', padding: '1rem 1.25rem', transition: 'all 0.2s ease' }}
-          onMouseEnter={(e) => { e.currentTarget.style.borderColor = 'var(--rose-600)'; e.currentTarget.style.transform = 'translateY(-2px)'; }}
+          onMouseEnter={(e) => { e.currentTarget.style.borderColor = 'var(--color-danger)'; e.currentTarget.style.transform = 'translateY(-2px)'; }}
           onMouseLeave={(e) => { e.currentTarget.style.borderColor = 'var(--border-subtle)'; e.currentTarget.style.transform = 'translateY(0)'; }}
         >
-          <div style={{ width: '40px', height: '40px', borderRadius: '10px', backgroundColor: 'var(--rose-50)', color: 'var(--rose-600)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+          <div style={{ width: '40px', height: '40px', borderRadius: '8px', backgroundColor: 'var(--color-danger-bg)', color: 'var(--color-danger)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
             <Sparkles size={20} />
           </div>
           <div>
-            <div style={{ fontWeight: 700, fontSize: '0.875rem', color: 'var(--text-primary)' }}>Sign Out</div>
+            <div style={{ fontWeight: 600, fontSize: '0.875rem', color: 'var(--text-primary)' }}>Sign Out</div>
             <div style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)' }}>Revoke Session</div>
           </div>
         </Card>
@@ -156,8 +156,8 @@ export const EmployeeDashboardView = ({ onNavigate }) => {
           value={isClockedIn ? 'Clocked In' : todayRecord?.checkOut ? 'Shift Done' : 'Not Punched'}
           subtitle={todayRecord?.checkIn ? `Since ${todayRecord.checkIn}` : 'Standard shift starts 09:00 AM'}
           icon={Clock}
-          iconColor={isClockedIn ? 'var(--emerald-600)' : 'var(--text-secondary)'}
-          iconBg={isClockedIn ? 'var(--emerald-50)' : 'var(--bg-surface-subtle)'}
+          iconColor={isClockedIn ? 'var(--color-success)' : 'var(--text-secondary)'}
+          iconBg={isClockedIn ? 'var(--color-success-bg)' : 'var(--bg-surface-subtle)'}
         />
 
         <MetricCard
@@ -165,7 +165,7 @@ export const EmployeeDashboardView = ({ onNavigate }) => {
           value={`${userProfile.leaveBalance?.paid?.remaining ?? 14} Days`}
           subtitle={`Used: ${userProfile.leaveBalance?.paid?.used ?? 6} of ${userProfile.leaveBalance?.paid?.total ?? 20} days`}
           icon={CalendarCheck}
-          iconColor="var(--primary-600)"
+          iconColor="var(--color-primary)"
           iconBg="var(--primary-50)"
         />
 
@@ -174,8 +174,8 @@ export const EmployeeDashboardView = ({ onNavigate }) => {
           value="₹2,19,000"
           subtitle="August 2026 Cycle • Depositing Aug 31"
           icon={CreditCard}
-          iconColor="var(--emerald-600)"
-          iconBg="var(--emerald-50)"
+          iconColor="var(--color-success)"
+          iconBg="var(--color-success-bg)"
         />
 
         <MetricCard
@@ -183,8 +183,8 @@ export const EmployeeDashboardView = ({ onNavigate }) => {
           value="Gandhi Jayanti"
           subtitle="Fri, Oct 02 (National Gazetted)"
           icon={Building2}
-          iconColor="#8B5CF6"
-          iconBg="#F5F3FF"
+          iconColor="var(--color-primary)"
+          iconBg="var(--primary-50)"
         />
       </div>
 

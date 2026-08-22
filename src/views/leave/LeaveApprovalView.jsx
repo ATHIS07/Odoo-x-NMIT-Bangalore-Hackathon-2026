@@ -73,7 +73,7 @@ export const LeaveApprovalView = () => {
       <div className="page-header">
         <div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.25rem' }}>
-            <span style={{ fontSize: '0.75rem', fontWeight: 700, color: '#BE185D', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+            <span style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--color-primary)', textTransform: 'uppercase' }}>
               HR Governance & Approvals
             </span>
             <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>•</span>
@@ -104,12 +104,12 @@ export const LeaveApprovalView = () => {
                 onClick={() => setActiveTab(t.id)}
                 style={{
                   padding: '0.45rem 0.875rem',
-                  borderRadius: '8px',
+                  borderRadius: '6px',
                   border: 'none',
-                  backgroundColor: activeTab === t.id ? 'var(--primary-600)' : 'var(--bg-surface-subtle)',
+                  backgroundColor: activeTab === t.id ? 'var(--color-primary)' : 'var(--bg-surface-subtle)',
                   color: activeTab === t.id ? '#FFFFFF' : 'var(--text-secondary)',
                   fontSize: '0.8125rem',
-                  fontWeight: activeTab === t.id ? 700 : 500,
+                  fontWeight: activeTab === t.id ? 600 : 500,
                   cursor: 'pointer',
                   display: 'flex',
                   alignItems: 'center',
@@ -123,11 +123,10 @@ export const LeaveApprovalView = () => {
                     style={{
                       fontSize: '0.6875rem',
                       padding: '1px 6px',
-                      borderRadius: '9999px',
-                      backgroundColor: activeTab === t.id ? 'rgba(255,255,255,0.25)' : 'var(--amber-500)',
-                      color: '#FFFFFF',
-                      fontWeight: 800,
-                      fontFamily: 'var(--font-mono)'
+                      borderRadius: '999px',
+                      backgroundColor: activeTab === t.id ? 'rgba(255,255,255,0.25)' : 'var(--color-warning-bg)',
+                      color: activeTab === t.id ? '#FFFFFF' : 'var(--color-warning)',
+                      fontWeight: 600
                     }}
                   >
                     {t.badge}

@@ -78,8 +78,8 @@ export const Sidebar = ({ currentRoute, onRouteChange, onOpenNotifications }) =>
     <aside
       style={{
         width: '260px',
-        backgroundColor: 'var(--bg-sidebar)',
-        borderRight: '1px solid var(--border-sidebar)',
+        backgroundColor: 'var(--color-bg-secondary)',
+        borderRight: '1px solid var(--color-border)',
         display: 'flex',
         flexDirection: 'column',
         flexShrink: 0,
@@ -94,25 +94,25 @@ export const Sidebar = ({ currentRoute, onRouteChange, onOpenNotifications }) =>
       <div
         style={{
           padding: '1.5rem 1.25rem',
-          borderBottom: '1px solid var(--border-sidebar)',
+          borderBottom: '1px solid var(--color-border)',
           display: 'flex',
           alignItems: 'center',
-          gap: '0.75rem'
+          gap: '0.75rem',
+          backgroundColor: '#FFFFFF'
         }}
       >
         <div
           style={{
             width: '36px',
             height: '36px',
-            borderRadius: '10px',
-            backgroundColor: 'var(--primary-600)',
+            borderRadius: '6px',
+            backgroundColor: 'var(--color-primary)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
             color: '#FFFFFF',
-            fontWeight: 800,
-            boxShadow: '0 0 16px rgba(37,99,235,0.4)',
-            fontFamily: 'var(--font-display)',
+            fontWeight: 700,
+            fontFamily: 'var(--font-sans)',
             fontSize: '1.125rem'
           }}
         >
@@ -120,15 +120,15 @@ export const Sidebar = ({ currentRoute, onRouteChange, onOpenNotifications }) =>
         </div>
         <div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-            <span style={{ fontSize: '1.125rem', fontWeight: 800, color: '#FFFFFF', letterSpacing: '-0.03em', fontFamily: 'var(--font-display)' }}>
+            <span style={{ fontSize: '1.125rem', fontWeight: 700, color: 'var(--color-text-heading)', fontFamily: 'var(--font-sans)' }}>
               Dayflow
             </span>
-            <span style={{ fontSize: '0.625rem', padding: '1px 5px', borderRadius: '4px', backgroundColor: 'rgba(255,255,255,0.1)', color: '#94A3B8', fontWeight: 700 }}>
+            <span style={{ fontSize: '0.625rem', padding: '1px 5px', borderRadius: '4px', backgroundColor: 'var(--primary-50)', color: 'var(--color-primary)', fontWeight: 600 }}>
               ENTERPRISE
             </span>
           </div>
-          <div style={{ fontSize: '0.6875rem', color: '#64748B', display: 'flex', alignItems: 'center', gap: '0.3rem', marginTop: '2px' }}>
-            <span className="pulse-dot" style={{ width: '5px', height: '5px', borderRadius: '50%', backgroundColor: 'var(--emerald-500)' }} />
+          <div style={{ fontSize: '0.6875rem', color: 'var(--color-text-muted)', display: 'flex', alignItems: 'center', gap: '0.3rem', marginTop: '2px' }}>
+            <span style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: 'var(--color-success)' }} />
             AWS DynamoDB Connected
           </div>
         </div>
@@ -140,21 +140,21 @@ export const Sidebar = ({ currentRoute, onRouteChange, onOpenNotifications }) =>
           style={{
             margin: '0.75rem',
             padding: '0.625rem 0.75rem',
-            borderRadius: '8px',
-            backgroundColor: 'rgba(217, 119, 6, 0.15)',
-            border: '1px solid rgba(217, 119, 6, 0.3)',
-            color: '#FDE68A',
+            borderRadius: '6px',
+            backgroundColor: 'var(--color-warning-bg)',
+            border: '1px solid var(--color-warning-bg)',
+            color: 'var(--color-warning)',
             fontSize: '0.75rem'
           }}
         >
-          <div style={{ fontWeight: 700 }}>Previewing as {impersonatedUser.name}</div>
+          <div style={{ fontWeight: 600 }}>Previewing as {impersonatedUser.name}</div>
           <button
             onClick={stopImpersonation}
             style={{
               marginTop: '4px',
               background: 'none',
               border: 'none',
-              color: '#F59E0B',
+              color: 'var(--color-warning)',
               textDecoration: 'underline',
               cursor: 'pointer',
               fontSize: '0.6875rem',
@@ -168,7 +168,7 @@ export const Sidebar = ({ currentRoute, onRouteChange, onOpenNotifications }) =>
 
       {/* Navigation Links */}
       <nav style={{ flex: 1, padding: '1rem 0.75rem', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
-        <div style={{ padding: '0.5rem 0.75rem 0.25rem', fontSize: '0.6875rem', fontWeight: 700, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+        <div style={{ padding: '0.5rem 0.75rem 0.25rem', fontSize: '0.6875rem', fontWeight: 600, color: 'var(--color-text-muted)', textTransform: 'uppercase' }}>
           {isHRorAdmin ? 'Executive Management' : 'Employee Self-Service'}
         </div>
 
@@ -192,13 +192,15 @@ export const Sidebar = ({ currentRoute, onRouteChange, onOpenNotifications }) =>
                 alignItems: 'center',
                 justifyContent: 'space-between',
                 padding: '0.625rem 0.75rem',
-                borderRadius: '8px',
+                borderRadius: '6px',
                 border: 'none',
-                backgroundColor: isActive ? 'var(--bg-sidebar-active)' : 'transparent',
-                color: isActive ? '#FFFFFF' : '#94A3B8',
+                borderLeft: isActive ? '3px solid var(--color-primary)' : '3px solid transparent',
+                backgroundColor: isActive ? 'var(--primary-50)' : 'transparent',
+                color: isActive ? 'var(--color-primary)' : 'var(--color-text-body)',
                 cursor: 'pointer',
                 fontSize: '0.8125rem',
-                fontWeight: isActive ? 600 : 500,
+                fontWeight: 500,
+                fontFamily: 'var(--font-sans)',
                 textAlign: 'left',
                 transition: 'all 0.15s ease'
               }}
@@ -210,7 +212,7 @@ export const Sidebar = ({ currentRoute, onRouteChange, onOpenNotifications }) =>
               }}
             >
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.625rem' }}>
-                <Icon size={17} color={isActive ? 'var(--primary-500)' : '#64748B'} />
+                <Icon size={17} color={isActive ? 'var(--color-primary)' : 'var(--color-text-muted)'} />
                 <span>{item.label}</span>
               </div>
               {item.badge && (
@@ -218,11 +220,10 @@ export const Sidebar = ({ currentRoute, onRouteChange, onOpenNotifications }) =>
                   style={{
                     fontSize: '0.6875rem',
                     padding: '2px 6px',
-                    borderRadius: '9999px',
-                    backgroundColor: 'rgba(217, 119, 6, 0.2)',
-                    color: '#F59E0B',
-                    fontWeight: 700,
-                    fontFamily: 'var(--font-mono)'
+                    borderRadius: '999px',
+                    backgroundColor: 'var(--color-warning-bg)',
+                    color: 'var(--color-warning)',
+                    fontWeight: 600
                   }}
                 >
                   {item.badge}
@@ -237,8 +238,8 @@ export const Sidebar = ({ currentRoute, onRouteChange, onOpenNotifications }) =>
       <div
         style={{
           padding: '1rem',
-          borderTop: '1px solid var(--border-sidebar)',
-          backgroundColor: 'rgba(0,0,0,0.2)'
+          borderTop: '1px solid var(--color-border)',
+          backgroundColor: '#FFFFFF'
         }}
       >
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
@@ -249,13 +250,13 @@ export const Sidebar = ({ currentRoute, onRouteChange, onOpenNotifications }) =>
             <img
               src={activeUser.avatar}
               alt={activeUser.name}
-              style={{ width: '36px', height: '36px', borderRadius: '50%', objectFit: 'cover', border: '1px solid #334155' }}
+              style={{ width: '36px', height: '36px', borderRadius: '50%', objectFit: 'cover', border: '1px solid var(--color-border)' }}
             />
             <div style={{ minWidth: 0 }}>
-              <div style={{ fontSize: '0.8125rem', fontWeight: 600, color: '#F8FAFC', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+              <div style={{ fontSize: '0.8125rem', fontWeight: 600, color: 'var(--color-text-heading)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                 {activeUser.name}
               </div>
-              <div style={{ fontSize: '0.6875rem', color: '#64748B', fontFamily: 'var(--font-mono)', textTransform: 'uppercase' }}>
+              <div style={{ fontSize: '0.6875rem', color: 'var(--color-text-muted)', textTransform: 'uppercase' }}>
                 {activeUser.employeeId} • {activeUser.role}
               </div>
             </div>
@@ -267,7 +268,7 @@ export const Sidebar = ({ currentRoute, onRouteChange, onOpenNotifications }) =>
             style={{
               background: 'transparent',
               border: 'none',
-              color: '#64748B',
+              color: 'var(--color-text-muted)',
               cursor: 'pointer',
               padding: '6px',
               borderRadius: '6px',
@@ -275,8 +276,8 @@ export const Sidebar = ({ currentRoute, onRouteChange, onOpenNotifications }) =>
               alignItems: 'center',
               justifyContent: 'center'
             }}
-            onMouseEnter={(e) => (e.currentTarget.style.color = 'var(--rose-500)')}
-            onMouseLeave={(e) => (e.currentTarget.style.color = '#64748B')}
+            onMouseEnter={(e) => (e.currentTarget.style.color = 'var(--color-danger)')}
+            onMouseLeave={(e) => (e.currentTarget.style.color = 'var(--color-text-muted)')}
           >
             <LogOut size={16} />
           </button>

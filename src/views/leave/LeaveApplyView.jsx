@@ -128,8 +128,8 @@ export const LeaveApplyView = ({ onNavigate }) => {
           value={`${balance.compensatory?.remaining || 4} Days`}
           subtitle="Earned from weekend on-call"
           icon={Clock}
-          iconColor="#8B5CF6"
-          iconBg="#F5F3FF"
+          iconColor="var(--color-primary)"
+          iconBg="var(--primary-50)"
         />
 
         <MetricCard

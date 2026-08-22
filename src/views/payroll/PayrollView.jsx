@@ -129,8 +129,8 @@ export const PayrollView = () => {
           value="New Regime (FY26)"
           subtitle="TDS Withheld at Source"
           icon={CreditCard}
-          iconColor="#8B5CF6"
-          iconBg="#F5F3FF"
+          iconColor="var(--color-primary)"
+          iconBg="var(--primary-50)"
         />
       </div>
 

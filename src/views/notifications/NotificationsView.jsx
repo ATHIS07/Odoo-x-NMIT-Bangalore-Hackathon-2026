@@ -79,12 +79,12 @@ export const NotificationsView = ({ onNavigate }) => {
               onClick={() => setActiveFilter(t.id)}
               style={{
                 padding: '0.4rem 0.875rem',
-                borderRadius: '8px',
+                borderRadius: '6px',
                 border: 'none',
-                backgroundColor: activeFilter === t.id ? 'var(--primary-600)' : 'var(--bg-surface-subtle)',
+                backgroundColor: activeFilter === t.id ? 'var(--color-primary)' : 'var(--bg-surface-subtle)',
                 color: activeFilter === t.id ? '#FFFFFF' : 'var(--text-secondary)',
                 fontSize: '0.8125rem',
-                fontWeight: activeFilter === t.id ? 700 : 500,
+                fontWeight: activeFilter === t.id ? 600 : 500,
                 cursor: 'pointer',
                 display: 'flex',
                 alignItems: 'center',
@@ -98,10 +98,10 @@ export const NotificationsView = ({ onNavigate }) => {
                   style={{
                     fontSize: '0.6875rem',
                     padding: '1px 6px',
-                    borderRadius: '9999px',
-                    backgroundColor: activeFilter === t.id ? 'rgba(255,255,255,0.25)' : 'var(--primary-700)',
-                    color: '#FFFFFF',
-                    fontWeight: 800
+                    borderRadius: '999px',
+                    backgroundColor: activeFilter === t.id ? 'rgba(255,255,255,0.25)' : 'var(--primary-50)',
+                    color: activeFilter === t.id ? '#FFFFFF' : 'var(--color-primary)',
+                    fontWeight: 600
                   }}
                 >
                   {t.badge}

@@ -9,9 +9,9 @@ export const DemoToolbar = ({ currentRoute, onRouteChange }) => {
   const [isExpanded, setIsExpanded] = useState(true);
 
   const personas = [
-    { role: 'employee', name: 'Sophia (Employee)', id: 'usr_001', color: '#2563EB' },
-    { role: 'hr', name: 'Marcus (HR Lead)', id: 'usr_002', color: '#7C3AED' },
-    { role: 'admin', name: 'Elena (Admin / VP)', id: 'usr_003', color: '#BE185D' }
+    { role: 'employee', name: 'Sophia (Employee)', id: 'usr_001', color: 'var(--color-primary)' },
+    { role: 'hr', name: 'Marcus (HR Lead)', id: 'usr_002', color: 'var(--color-primary-hover)' },
+    { role: 'admin', name: 'Elena (Admin / VP)', id: 'usr_003', color: 'var(--color-primary-active)' }
   ];
 
   const screens = [
@@ -37,10 +37,10 @@ export const DemoToolbar = ({ currentRoute, onRouteChange }) => {
         left: '50%',
         transform: 'translateX(-50%)',
         zIndex: 9980,
-        backgroundColor: '#0F131C',
-        border: '1px solid #2A364F',
-        borderRadius: '14px',
-        boxShadow: '0 12px 36px rgba(0, 0, 0, 0.45)',
+        backgroundColor: '#1A1A1A',
+        border: '1px solid #333333',
+        borderRadius: '8px',
+        boxShadow: '0 4px 16px rgba(0, 0, 0, 0.2)',
         color: '#FFFFFF',
         padding: isExpanded ? '0.625rem 1rem' : '0.4rem 0.875rem',
         display: 'flex',
@@ -48,7 +48,8 @@ export const DemoToolbar = ({ currentRoute, onRouteChange }) => {
         gap: '1rem',
         maxWidth: '96vw',
         transition: 'all 0.2s ease',
-        userSelect: 'none'
+        userSelect: 'none',
+        fontFamily: 'var(--font-sans)'
       }}
     >
       {/* Demo Badge */}
@@ -60,13 +61,11 @@ export const DemoToolbar = ({ currentRoute, onRouteChange }) => {
             gap: '0.35rem',
             padding: '3px 8px',
             borderRadius: '6px',
-            backgroundColor: 'rgba(37, 99, 235, 0.25)',
-            border: '1px solid rgba(37, 99, 235, 0.4)',
+            backgroundColor: 'var(--primary-50)',
+            border: '1px solid var(--primary-200)',
             fontSize: '0.6875rem',
-            fontWeight: 800,
-            letterSpacing: '0.05em',
-            color: '#60A5FA',
-            fontFamily: 'var(--font-mono)'
+            fontWeight: 600,
+            color: 'var(--color-primary)'
           }}
         >
           <Sparkles size={12} /> HACKATHON DEMO BAR
@@ -77,7 +76,7 @@ export const DemoToolbar = ({ currentRoute, onRouteChange }) => {
         <>
           {/* Persona Switcher */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
-            <span style={{ fontSize: '0.6875rem', color: '#64748B', fontWeight: 600, textTransform: 'uppercase' }}>Persona:</span>
+            <span style={{ fontSize: '0.6875rem', color: '#AAAAAA', fontWeight: 500, textTransform: 'uppercase' }}>Persona:</span>
             {personas.map((p) => {
               const isCurrent = currentUser?.role === p.role;
               return (
@@ -87,11 +86,11 @@ export const DemoToolbar = ({ currentRoute, onRouteChange }) => {
                   style={{
                     padding: '4px 9px',
                     borderRadius: '6px',
-                    border: `1px solid ${isCurrent ? p.color : '#1E293B'}`,
-                    backgroundColor: isCurrent ? p.color : 'rgba(255,255,255,0.05)',
+                    border: `1px solid ${isCurrent ? 'var(--color-primary)' : '#444444'}`,
+                    backgroundColor: isCurrent ? 'var(--color-primary)' : 'rgba(255,255,255,0.05)',
                     color: '#FFFFFF',
                     fontSize: '0.75rem',
-                    fontWeight: isCurrent ? 700 : 500,
+                    fontWeight: isCurrent ? 600 : 400,
                     cursor: 'pointer',
                     transition: 'all 0.15s ease'
                   }}
@@ -102,21 +101,22 @@ export const DemoToolbar = ({ currentRoute, onRouteChange }) => {
             })}
           </div>
 
-          {/* Screen Jump Selector */}
+          <div style={{ width: '1px', height: '18px', backgroundColor: '#333333' }} />
+
+          {/* Quick Route Selector */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
-            <Compass size={14} color="#64748B" />
+            <Compass size={14} color="#AAAAAA" />
             <select
               value={currentRoute}
               onChange={(e) => onRouteChange(e.target.value)}
               style={{
-                backgroundColor: '#161D2B',
-                color: '#E2E8F0',
-                border: '1px solid #2A364F',
-                borderRadius: '6px',
-                padding: '4px 8px',
+                backgroundColor: '#262626',
+                border: '1px solid #444444',
+                color: '#FFFFFF',
                 fontSize: '0.75rem',
+                padding: '4px 8px',
+                borderRadius: '6px',
                 outline: 'none',
-                fontFamily: 'var(--font-sans)',
                 cursor: 'pointer'
               }}
             >
@@ -128,64 +128,70 @@ export const DemoToolbar = ({ currentRoute, onRouteChange }) => {
             </select>
           </div>
 
-          {/* Latency Toggle */}
-          <button
-            onClick={() => setSimulateLatency(!simulateLatency)}
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '0.35rem',
-              padding: '4px 8px',
-              borderRadius: '6px',
-              border: '1px solid',
-              borderColor: simulateLatency ? '#D97706' : '#2A364F',
-              backgroundColor: simulateLatency ? 'rgba(217, 119, 6, 0.2)' : 'transparent',
-              color: simulateLatency ? '#FBBF24' : '#94A3B8',
-              fontSize: '0.6875rem',
-              fontWeight: 600,
-              cursor: 'pointer'
-            }}
-            title="Simulate realistic AWS API Gateway + Lambda execution delay"
-          >
-            <Zap size={12} />
-            {simulateLatency ? 'Lambda Latency: ON (450ms)' : 'Latency: OFF (0ms)'}
-          </button>
+          <div style={{ width: '1px', height: '18px', backgroundColor: '#333333' }} />
 
-          {/* Reset Seed Button */}
-          <button
-            onClick={resetDemoData}
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '0.35rem',
-              padding: '4px 8px',
-              borderRadius: '6px',
-              border: '1px solid #2A364F',
-              backgroundColor: 'transparent',
-              color: '#94A3B8',
-              fontSize: '0.6875rem',
-              cursor: 'pointer'
-            }}
-            title="Reset all DynamoDB mock datasets to fresh state"
-          >
-            <RotateCcw size={12} />
-            Reset Data
-          </button>
+          {/* Action Utilities */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <button
+              onClick={() => setSimulateLatency(!simulateLatency)}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.35rem',
+                padding: '4px 8px',
+                borderRadius: '6px',
+                border: `1px solid ${simulateLatency ? 'var(--color-warning)' : '#444444'}`,
+                backgroundColor: simulateLatency ? 'rgba(240,173,78,0.15)' : 'transparent',
+                color: simulateLatency ? 'var(--color-warning)' : '#AAAAAA',
+                fontSize: '0.6875rem',
+                fontWeight: 600,
+                cursor: 'pointer'
+              }}
+              title="Toggle AWS Lambda Latency Simulator (450ms)"
+            >
+              <Zap size={11} />
+              Latency: {simulateLatency ? '450ms' : 'Off'}
+            </button>
+
+            <button
+              onClick={() => {
+                if (confirm('Reset demo state to initial hackathon defaults?')) {
+                  resetDemoData();
+                }
+              }}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.35rem',
+                padding: '4px 8px',
+                borderRadius: '6px',
+                border: '1px solid #444444',
+                backgroundColor: 'transparent',
+                color: '#AAAAAA',
+                fontSize: '0.6875rem',
+                cursor: 'pointer'
+              }}
+              title="Reset Mock DynamoDB state"
+            >
+              <RotateCcw size={11} /> Reset
+            </button>
+          </div>
         </>
       )}
 
-      {/* Collapse/Expand Toggle */}
+      {/* Collapse Toggle */}
       <button
         onClick={() => setIsExpanded(!isExpanded)}
         style={{
           background: 'none',
           border: 'none',
-          color: '#64748B',
+          color: '#AAAAAA',
           cursor: 'pointer',
           padding: '2px',
           display: 'flex',
           alignItems: 'center'
         }}
+        aria-label="Toggle Demo Bar"
       >
         {isExpanded ? <ChevronDown size={16} /> : <ChevronUp size={16} />}
       </button>

@@ -63,7 +63,7 @@ export const AdminDashboardView = ({ onNavigate }) => {
       <div className="page-header">
         <div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.25rem' }}>
-            <span style={{ fontSize: '0.75rem', fontWeight: 700, color: '#BE185D', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+            <span style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--color-primary)', textTransform: 'uppercase' }}>
               Executive Management & RBAC Console
             </span>
             <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>•</span>
@@ -94,7 +94,7 @@ export const AdminDashboardView = ({ onNavigate }) => {
           value={totalEmployees}
           subtitle="7 Active • 0 Suspended"
           icon={Users}
-          iconColor="var(--primary-600)"
+          iconColor="var(--color-primary)"
           iconBg="var(--primary-50)"
           trend={{ value: '+8%', isPositive: true, text: 'YoY Growth' }}
         />
@@ -104,8 +104,8 @@ export const AdminDashboardView = ({ onNavigate }) => {
           value={`${attendanceRate}%`}
           subtitle={`${presentToday} Present • ${onLeaveToday} On Approved Leave`}
           icon={Clock}
-          iconColor="var(--emerald-600)"
-          iconBg="var(--emerald-50)"
+          iconColor="var(--color-success)"
+          iconBg="var(--color-success-bg)"
           trend={{ value: '+3.2%', isPositive: true, text: 'vs Last Week' }}
         />
 
@@ -114,8 +114,8 @@ export const AdminDashboardView = ({ onNavigate }) => {
           value={pendingLeaves.length}
           subtitle="Action required by HR/Admin"
           icon={CalendarCheck}
-          iconColor="var(--amber-600)"
-          iconBg="var(--amber-50)"
+          iconColor="var(--color-warning)"
+          iconBg="var(--color-warning-bg)"
           badge={{ text: 'Urgent Triage', variant: 'pending' }}
         />
 
@@ -124,8 +124,8 @@ export const AdminDashboardView = ({ onNavigate }) => {
           value="₹82,50,000"
           subtitle="August 2026 Batch Reconciled"
           icon={CreditCard}
-          iconColor="#8B5CF6"
-          iconBg="#F5F3FF"
+          iconColor="var(--color-primary)"
+          iconBg="var(--primary-50)"
         />
       </div>
 

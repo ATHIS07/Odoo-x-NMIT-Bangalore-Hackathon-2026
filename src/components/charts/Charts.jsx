@@ -107,11 +107,11 @@ export const AttendanceTrendChart = () => {
 
 export const PayrollExpenseChart = () => {
   const departments = [
-    { name: 'Engineering', amount: 3950000, color: 'var(--primary-600)', pct: 48 },
-    { name: 'Product & UX', amount: 1850000, color: '#6366F1', pct: 22 },
-    { name: 'Executive & Ops', amount: 1400000, color: '#EC4899', pct: 17 },
-    { name: 'Talent & HR', amount: 720000, color: '#10B981', pct: 9 },
-    { name: 'Finance & Legal', amount: 330000, color: '#F59E0B', pct: 4 }
+    { name: 'Engineering', amount: 3950000, color: 'var(--color-primary)', pct: 48 },
+    { name: 'Product & UX', amount: 1850000, color: 'var(--color-primary-hover)', pct: 22 },
+    { name: 'Executive & Ops', amount: 1400000, color: 'var(--color-primary-active)', pct: 17 },
+    { name: 'Talent & HR', amount: 720000, color: 'var(--color-success)', pct: 9 },
+    { name: 'Finance & Legal', amount: 330000, color: 'var(--color-warning)', pct: 4 }
   ];
 
   return (
