@@ -24,9 +24,11 @@ export const EmployeeDashboardView = ({ onNavigate }) => {
   const { activeUser } = useAuth();
   const { profiles, getTodayAttendance, clockIn, clockOut, leaves, notifications, companyHolidays } = useHRMS();
 
-  const userProfile = profiles[activeUser.id] || {};
-  const todayRecord = getTodayAttendance(activeUser.id);
+  const safeUser = activeUser || { id: 'usr_001', employeeId: 'DF-8824', name: 'Sophia Vance', designation: 'Senior Staff Frontend Architect', department: 'Engineering' };
+  const userProfile = profiles[safeUser.id] || {};
+  const todayRecord = getTodayAttendance(safeUser.id);
   const isClockedIn = todayRecord && !todayRecord.checkOut;
+  const isClockedOutToday = Boolean(todayRecord && todayRecord.checkIn && todayRecord.checkOut);
 
   // Running work timer
   const [elapsedSeconds, setElapsedSeconds] = useState(28440); // ~7h 54m base
@@ -47,7 +49,12 @@ export const EmployeeDashboardView = ({ onNavigate }) => {
     return `${String(hrs).padStart(2, '0')}:${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
   };
 
-  const userLeaves = leaves.filter((l) => l.userId === activeUser.id);
+  const handleClockOut = async () => {
+    const finalDuration = formatTimer(elapsedSeconds);
+    await clockOut(safeUser.id, finalDuration);
+  };
+
+  const userLeaves = Array.isArray(leaves) ? leaves.filter((l) => l && l.userId === safeUser.id) : [];
   const recentLeaves = userLeaves.slice(0, 3);
 
   return (
@@ -61,12 +68,12 @@ export const EmployeeDashboardView = ({ onNavigate }) => {
             </span>
             <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>•</span>
             <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', fontFamily: 'var(--font-mono)' }}>
-              {activeUser.employeeId}
+              {safeUser.employeeId}
             </span>
           </div>
-          <h1 className="page-title">Welcome back, {activeUser.name.split(' ')[0]}</h1>
+          <h1 className="page-title">Welcome back, {(safeUser.name || 'User').split(' ')[0]}</h1>
           <p className="page-subtitle">
-            {userProfile.jobDetails?.designation || activeUser.designation} • {userProfile.jobDetails?.department || activeUser.department}
+            {userProfile.jobDetails?.designation || safeUser.designation} • {userProfile.jobDetails?.department || safeUser.department}
           </p>
         </div>
 
@@ -151,15 +158,17 @@ export const EmployeeDashboardView = ({ onNavigate }) => {
 
       {/* Top Metrics Grid */}
       <div className="grid-4" style={{ marginBottom: '1.5rem' }}>
-        <MetricCard
-          label="Attendance Status"
-          value={isClockedIn ? 'Clocked In' : todayRecord?.checkOut ? 'Shift Done' : 'Not Punched'}
-          subtitle={todayRecord?.checkIn ? `Since ${todayRecord.checkIn}` : 'Standard shift starts 09:00 AM'}
-          icon={Clock}
-          iconColor={isClockedIn ? 'var(--emerald-600)' : 'var(--text-secondary)'}
-          iconBg="var(--emerald-50)"
-          trend={{ value: '+1.5%', isPositive: true, text: 'vs July' }}
-        />
+        <div onClick={() => onNavigate('attendance')} style={{ cursor: 'pointer' }}>
+          <MetricCard
+            label="Attendance Status"
+            value={isClockedIn ? 'Clocked In' : todayRecord?.checkOut ? 'Shift Done' : 'Not Punched'}
+            subtitle={todayRecord?.checkIn ? `In: ${todayRecord.checkIn} • Click to open log` : 'Click to view My Attendance'}
+            icon={Clock}
+            iconColor={isClockedIn ? 'var(--emerald-600)' : 'var(--text-secondary)'}
+            iconBg="var(--emerald-50)"
+            trend={{ value: 'View Log →', isPositive: true, text: '' }}
+          />
+        </div>
 
         <MetricCard
           label="Leave Balance"
@@ -198,12 +207,32 @@ export const EmployeeDashboardView = ({ onNavigate }) => {
               <Clock size={20} color="var(--primary-600)" />
               Daily Shift & Punch Console
             </div>
-            <Badge variant={isClockedIn ? 'present' : isClockedOutToday ? 'present' : 'pending'}>
-              {isClockedIn ? '● Live Active' : isClockedOutToday ? '✓ Shift Completed' : '○ Offline'}
-            </Badge>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+              <button
+                type="button"
+                onClick={() => onNavigate('attendance')}
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  color: '#714B67',
+                  fontSize: '0.8125rem',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.25rem',
+                  padding: 0
+                }}
+              >
+                My Attendance <ArrowUpRight size={14} />
+              </button>
+              <Badge variant={isClockedIn ? 'present' : isClockedOutToday ? 'present' : 'pending'}>
+                {isClockedIn ? 'Live Active' : isClockedOutToday ? 'Shift Completed' : 'Offline'}
+              </Badge>
+            </div>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem', alignItems: 'center' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.25rem', alignItems: 'stretch' }}>
             {/* Live Elapsed Stopwatch */}
             <div
               style={{
@@ -212,7 +241,7 @@ export const EmployeeDashboardView = ({ onNavigate }) => {
                   : isClockedOutToday
                   ? 'rgba(113, 75, 103, 0.04)'
                   : 'var(--bg-surface-subtle)',
-                padding: '1.5rem',
+                padding: '1.25rem 1.5rem',
                 borderRadius: '12px',
                 textAlign: 'center',
                 border: isClockedIn
@@ -220,6 +249,9 @@ export const EmployeeDashboardView = ({ onNavigate }) => {
                   : isClockedOutToday
                   ? '1px solid rgba(113, 75, 103, 0.2)'
                   : '1px solid var(--border-subtle)',
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'center',
                 transition: 'all 0.2s ease'
               }}
             >
@@ -269,7 +301,7 @@ export const EmployeeDashboardView = ({ onNavigate }) => {
                   variant="success"
                   size="lg"
                   icon={Clock}
-                  onClick={() => clockIn(activeUser.id)}
+                  onClick={() => clockIn(safeUser.id)}
                   style={{ width: '100%', padding: '0.875rem 1.25rem', fontSize: '0.9375rem', fontWeight: 600 }}
                 >
                   Clock In to Shift

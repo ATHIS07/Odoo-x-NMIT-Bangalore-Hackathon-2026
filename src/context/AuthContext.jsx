@@ -9,9 +9,12 @@ export const AuthProvider = ({ children }) => {
   
   // Stored active user or default Sophia (Employee)
   const [currentUser, setCurrentUser] = useState(() => {
-    const saved = localStorage.getItem('odoo_auth_user');
+    const saved = localStorage.getItem('odoo_auth_user') || localStorage.getItem('dayflow_auth_user');
     if (saved) {
-      try { return JSON.parse(saved); } catch (e) { /* ignore */ }
+      try {
+        const parsed = JSON.parse(saved);
+        if (parsed && parsed.id) return parsed;
+      } catch (e) { /* ignore */ }
     }
     return INITIAL_USERS[0]; // Default Sophia Vance (Employee)
   });
@@ -200,7 +203,7 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   // Active Effective User
-  const activeUser = impersonatedUser || currentUser;
+  const activeUser = impersonatedUser || currentUser || INITIAL_USERS[0];
 
   // RBAC Helper flags
   const role = currentUser?.role || 'employee';

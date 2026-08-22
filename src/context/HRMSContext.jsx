@@ -22,35 +22,65 @@ export const HRMSProvider = ({ children }) => {
   const [simulateLatency, setSimulateLatency] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
 
-  // Load from LocalStorage or seed fallback
+  // Load from LocalStorage or seed fallback safely
   const [users, setUsers] = useState(() => {
-    const saved = localStorage.getItem('df_users');
-    return saved ? JSON.parse(saved) : INITIAL_USERS;
+    try {
+      const saved = localStorage.getItem('df_users');
+      const parsed = saved ? JSON.parse(saved) : null;
+      return Array.isArray(parsed) ? parsed : INITIAL_USERS;
+    } catch (e) {
+      return INITIAL_USERS;
+    }
   });
 
   const [profiles, setProfiles] = useState(() => {
-    const saved = localStorage.getItem('df_profiles');
-    return saved ? JSON.parse(saved) : INITIAL_PROFILES;
+    try {
+      const saved = localStorage.getItem('df_profiles');
+      const parsed = saved ? JSON.parse(saved) : null;
+      return parsed && typeof parsed === 'object' ? parsed : INITIAL_PROFILES;
+    } catch (e) {
+      return INITIAL_PROFILES;
+    }
   });
 
   const [attendance, setAttendance] = useState(() => {
-    const saved = localStorage.getItem('df_attendance');
-    return saved ? JSON.parse(saved) : INITIAL_ATTENDANCE;
+    try {
+      const saved = localStorage.getItem('df_attendance');
+      const parsed = saved ? JSON.parse(saved) : null;
+      return Array.isArray(parsed) ? parsed : INITIAL_ATTENDANCE;
+    } catch (e) {
+      return INITIAL_ATTENDANCE;
+    }
   });
 
   const [leaves, setLeaves] = useState(() => {
-    const saved = localStorage.getItem('df_leaves');
-    return saved ? JSON.parse(saved) : INITIAL_LEAVES;
+    try {
+      const saved = localStorage.getItem('df_leaves');
+      const parsed = saved ? JSON.parse(saved) : null;
+      return Array.isArray(parsed) ? parsed : INITIAL_LEAVES;
+    } catch (e) {
+      return INITIAL_LEAVES;
+    }
   });
 
   const [payroll, setPayroll] = useState(() => {
-    const saved = localStorage.getItem('df_payroll');
-    return saved ? JSON.parse(saved) : INITIAL_PAYROLL;
+    try {
+      const saved = localStorage.getItem('df_payroll');
+      const parsed = saved ? JSON.parse(saved) : null;
+      return Array.isArray(parsed) ? parsed : INITIAL_PAYROLL;
+    } catch (e) {
+      return INITIAL_PAYROLL;
+    }
   });
 
   const [notifications, setNotifications] = useState(() => {
-    const saved = localStorage.getItem('df_notifs');
-    return saved ? JSON.parse(saved) : INITIAL_NOTIFICATIONS;
+    try {
+      const saved = localStorage.getItem('df_notifs');
+      const parsed = saved ? JSON.parse(saved) : null;
+      return Array.isArray(parsed) ? parsed : INITIAL_NOTIFICATIONS;
+    } catch (e) {
+      return INITIAL_NOTIFICATIONS;
+    }
   });
 
   // Sync state to local storage

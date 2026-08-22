@@ -22,7 +22,7 @@ export const LeaveApplyView = ({ onNavigate }) => {
   const { activeUser } = useAuth();
   const { profiles, applyLeave, leaves } = useHRMS();
 
-  const userProfile = profiles[activeUser.id] || {};
+  const userProfile = profiles[activeUser?.id] || {};
   const balance = userProfile.leaveBalance || {
     paid: { total: 20, used: 6, remaining: 14 },
     sick: { total: 12, used: 2, remaining: 10 },

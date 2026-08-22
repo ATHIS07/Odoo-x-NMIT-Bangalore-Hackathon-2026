@@ -201,14 +201,64 @@ const MainAppContent = () => {
   );
 };
 
+class ErrorBoundary extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false, error: null };
+  }
+
+  static getDerivedStateFromError(error) {
+    return { hasError: true, error };
+  }
+
+  componentDidCatch(error, errorInfo) {
+    console.error('Unhandled React Error:', error, errorInfo);
+  }
+
+  handleReset = () => {
+    localStorage.clear();
+    window.location.href = '/';
+  };
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div style={{ minHeight: '100vh', width: '100%', backgroundColor: '#F9F9F9', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '2rem', fontFamily: 'sans-serif' }}>
+          <div style={{ backgroundColor: '#FFFFFF', border: '1px solid #E5E5E5', borderRadius: '12px', padding: '2.5rem', maxWidth: '440px', textAlign: 'center', boxShadow: '0 4px 12px rgba(0,0,0,0.05)' }}>
+            <div style={{ width: '48px', height: '48px', borderRadius: '10px', backgroundColor: '#FBEAEA', color: '#DC3545', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.5rem', fontWeight: 700, marginBottom: '1rem', margin: '0 auto 1rem' }}>
+              !
+            </div>
+            <h2 style={{ fontSize: '1.25rem', fontWeight: 700, color: '#1A1A1A', marginBottom: '0.5rem' }}>Workspace Reset Required</h2>
+            <p style={{ fontSize: '0.875rem', color: '#666666', marginBottom: '1rem', lineHeight: 1.5 }}>
+              A rendering exception occurred:
+            </p>
+            <div style={{ backgroundColor: '#FBEAEA', color: '#DC3545', padding: '0.75rem', borderRadius: '6px', fontSize: '0.75rem', fontFamily: 'monospace', textAlign: 'left', marginBottom: '1.5rem', wordBreak: 'break-all', maxHeight: '120px', overflowY: 'auto' }}>
+              {this.state.error?.toString() || 'Unknown rendering error'}
+            </div>
+            <button
+              onClick={this.handleReset}
+              style={{ width: '100%', backgroundColor: '#714B67', color: '#FFFFFF', border: 'none', borderRadius: '6px', padding: '0.75rem 1rem', fontSize: '0.875rem', fontWeight: 600, cursor: 'pointer' }}
+            >
+              Reset Cache & Reload App
+            </button>
+          </div>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
+
 export default function App() {
   return (
-    <ToastProvider>
-      <AuthProvider>
-        <HRMSProvider>
-          <MainAppContent />
-        </HRMSProvider>
-      </AuthProvider>
-    </ToastProvider>
+    <ErrorBoundary>
+      <ToastProvider>
+        <AuthProvider>
+          <HRMSProvider>
+            <MainAppContent />
+          </HRMSProvider>
+        </AuthProvider>
+      </ToastProvider>
+    </ErrorBoundary>
   );
 }
