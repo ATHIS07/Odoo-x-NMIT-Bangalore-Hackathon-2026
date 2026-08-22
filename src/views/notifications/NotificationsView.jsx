@@ -25,14 +25,14 @@ export const NotificationsView = ({ onNavigate }) => {
   const filtered = notifications.filter((n) => {
     if (activeFilter === 'unread') return !n.read;
     if (activeFilter === 'leaves') return n.type.includes('leave');
-    if (activeFilter === 'payroll') return n.type.includes('payroll');
+    if (activeFilter === 'system') return n.type.includes('system') || n.type.includes('batch') || n.type.includes('payroll');
     if (activeFilter === 'attendance') return n.type.includes('attendance');
     return true;
   });
 
   const getIcon = (type) => {
     if (type.includes('leave')) return <CalendarCheck size={18} color="var(--emerald-600)" />;
-    if (type.includes('payroll')) return <CreditCard size={18} color="var(--primary-600)" />;
+    if (type.includes('system') || type.includes('batch') || type.includes('payroll')) return <CreditCard size={18} color="var(--primary-600)" />;
     if (type.includes('attendance')) return <Clock size={18} color="var(--amber-600)" />;
     return <Bell size={18} color="var(--purple-600)" />;
   };
@@ -71,8 +71,8 @@ export const NotificationsView = ({ onNavigate }) => {
             { id: 'all', label: 'All Alerts' },
             { id: 'unread', label: 'Unread Alerts', badge: notifications.filter((n) => !n.read).length },
             { id: 'leaves', label: 'Leave Workflows' },
-            { id: 'payroll', label: 'Payroll & CTC' },
-            { id: 'attendance', label: 'Attendance Pushes' }
+            { id: 'attendance', label: 'Attendance Pushes' },
+            { id: 'system', label: 'System & Reports' }
           ].map((t) => (
             <button
               key={t.id}
@@ -196,7 +196,8 @@ export const NotificationsView = ({ onNavigate }) => {
                           iconPosition="right"
                           onClick={() => {
                             markNotificationAsRead(item.id);
-                            const target = item.link.replace('/', '').replace('/', '-');
+                            let target = item.link.replace(/^\//, '').replace('/', '-');
+                            if (target === 'payroll') target = 'analytics';
                             onNavigate(target);
                           }}
                         >

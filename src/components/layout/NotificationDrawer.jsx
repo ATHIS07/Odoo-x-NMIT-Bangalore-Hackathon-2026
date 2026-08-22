@@ -21,14 +21,14 @@ export const NotificationDrawer = ({ isOpen, onClose, onNavigate }) => {
   const filtered = notifications.filter((n) => {
     if (filter === 'unread') return !n.read;
     if (filter === 'leaves') return n.type.includes('leave');
-    if (filter === 'payroll') return n.type.includes('payroll');
+    if (filter === 'system') return n.type.includes('system') || n.type.includes('batch') || n.type.includes('payroll');
     if (filter === 'attendance') return n.type.includes('attendance');
     return true;
   });
 
   const getIcon = (type) => {
     if (type.includes('leave')) return <CalendarCheck size={16} color="var(--emerald-600)" />;
-    if (type.includes('payroll')) return <CreditCard size={16} color="var(--primary-600)" />;
+    if (type.includes('system') || type.includes('batch') || type.includes('payroll')) return <CreditCard size={16} color="var(--primary-600)" />;
     if (type.includes('attendance')) return <Clock size={16} color="var(--amber-600)" />;
     return <Bell size={16} color="var(--purple-600)" />;
   };
@@ -142,8 +142,8 @@ export const NotificationDrawer = ({ isOpen, onClose, onNavigate }) => {
                 { id: 'all', label: 'All Alerts' },
                 { id: 'unread', label: 'Unread' },
                 { id: 'leaves', label: 'Leaves' },
-                { id: 'payroll', label: 'Payroll' },
-                { id: 'attendance', label: 'Attendance' }
+                { id: 'attendance', label: 'Attendance' },
+                { id: 'system', label: 'System & Reports' }
               ].map((t) => (
                 <button
                   key={t.id}
@@ -172,7 +172,7 @@ export const NotificationDrawer = ({ isOpen, onClose, onNavigate }) => {
                 <div style={{ textAlign: 'center', padding: '3rem 1rem', color: 'var(--text-tertiary)' }}>
                   <Bell size={32} style={{ margin: '0 auto 0.75rem', opacity: 0.4 }} />
                   <div style={{ fontSize: '0.875rem', fontWeight: 600 }}>No notifications found</div>
-                  <div style={{ fontSize: '0.75rem' }}>You're completely caught up on all stream alerts.</div>
+                  <div style={{ fontSize: '0.75rem' }}>You're completely caught up on all alerts.</div>
                 </div>
               ) : (
                 filtered.map((item) => (
@@ -184,7 +184,8 @@ export const NotificationDrawer = ({ isOpen, onClose, onNavigate }) => {
                     onClick={() => {
                       markNotificationAsRead(item.id);
                       if (item.link && onNavigate) {
-                        const target = item.link.replace('/', '').replace('/', '-');
+                        let target = item.link.replace(/^\//, '').replace('/', '-');
+                        if (target === 'payroll') target = 'analytics';
                         onNavigate(target);
                         onClose();
                       }
@@ -246,6 +247,31 @@ export const NotificationDrawer = ({ isOpen, onClose, onNavigate }) => {
                   </motion.div>
                 ))
               )}
+            </div>
+
+            {/* Drawer Footer Actions */}
+            <div
+              style={{
+                padding: '1rem 1.5rem',
+                borderTop: '1px solid var(--border-subtle)',
+                backgroundColor: 'var(--bg-surface-subtle)',
+                display: 'flex',
+                gap: '0.75rem'
+              }}
+            >
+              <Button
+                variant="secondary"
+                style={{ flex: 1 }}
+                onClick={() => {
+                  if (onNavigate) onNavigate('notifications');
+                  onClose();
+                }}
+              >
+                View Full Page Log
+              </Button>
+              <Button variant="ghost" onClick={onClose}>
+                Close
+              </Button>
             </div>
           </motion.div>
         </div>

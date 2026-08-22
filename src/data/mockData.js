@@ -598,7 +598,7 @@ export const INITIAL_NOTIFICATIONS = [
     message: "Your compensation slip for July 2026 (₹2,19,000 Net) has been credited to your HDFC account.",
     read: true,
     timestamp: "3 days ago",
-    link: "/payroll"
+    link: "/analytics"
   },
   {
     id: "notif_03",
@@ -623,12 +623,12 @@ export const INITIAL_NOTIFICATIONS = [
   {
     id: "notif_05",
     userId: "usr_003",
-    type: "payroll_batch",
-    title: "August 2026 Payroll Cycle Open",
-    message: "Automated monthly payroll reconciliation completed. 100% records verified.",
+    type: "system_batch",
+    title: "August 2026 Workforce Report Ready",
+    message: "Automated monthly attendance and leave reconciliation completed. 100% records verified.",
     read: false,
     timestamp: "4 hours ago",
-    link: "/payroll"
+    link: "/analytics"
   }
 ];
 
