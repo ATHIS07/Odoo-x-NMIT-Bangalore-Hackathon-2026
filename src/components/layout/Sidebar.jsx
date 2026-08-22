@@ -63,6 +63,12 @@ export const Sidebar = ({ currentRoute, onRouteChange, onOpenNotifications }) =>
       roles: ['employee', 'hr']
     },
     {
+      id: 'org-chart',
+      label: 'Org Hierarchy & Tree',
+      icon: Users,
+      roles: ['employee', 'hr']
+    },
+    {
       id: 'analytics',
       label: 'Workforce Analytics',
       icon: BarChart3,

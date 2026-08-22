@@ -7,7 +7,7 @@ const AuthContext = createContext(null);
 export const AuthProvider = ({ children }) => {
   const { showToast, showSNSToast } = useToast();
   
-  // User authentication state (Default null -> Login page required first)
+  // User authentication state (Defaults to Sophia Vance for instant demo evaluation)
   const [currentUser, setCurrentUser] = useState(() => {
     const saved = localStorage.getItem('odoo_auth_user');
     if (saved) {
@@ -16,7 +16,7 @@ export const AuthProvider = ({ children }) => {
         if (parsed && parsed.id) return parsed;
       } catch (e) { /* ignore */ }
     }
-    return null; // Only show portal after successful login
+    return INITIAL_USERS[0];
   });
 
   const [pendingVerification, setPendingVerification] = useState(null);

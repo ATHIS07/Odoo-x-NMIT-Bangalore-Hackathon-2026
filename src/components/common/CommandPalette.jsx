@@ -7,6 +7,7 @@ import {
   CalendarCheck,
   CreditCard,
   User,
+  Users,
   Bell,
   BarChart3,
   Sparkles,
@@ -81,6 +82,14 @@ export const CommandPalette = ({ isOpen, onClose, onNavigate, onStartTour, onOpe
       icon: CreditCard,
       shortcut: 'G P',
       action: () => { onNavigate('/payroll'); onClose(); }
+    },
+    {
+      id: 'nav_org_chart',
+      title: 'Organizational Hierarchy & Workforce Tree',
+      category: 'Navigation',
+      icon: Users,
+      shortcut: 'G O',
+      action: () => { onNavigate('/org-chart'); onClose(); }
     },
     {
       id: 'nav_notifications',

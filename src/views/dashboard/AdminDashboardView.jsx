@@ -81,12 +81,15 @@ export const AdminDashboardView = ({ onNavigate }) => {
           </p>
         </div>
 
-        <div style={{ display: 'flex', gap: '0.75rem' }}>
+        <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
+          <Button variant="secondary" icon={Users} onClick={() => onNavigate('org-chart')}>
+            Org Tree
+          </Button>
           <Button variant="secondary" icon={Clock} onClick={() => onNavigate('attendance')}>
-            View Global Attendance
+            Workforce Roster
           </Button>
           <Button variant="primary" icon={CalendarCheck} onClick={() => onNavigate('leave-approvals')}>
-            Review All Leaves ({pendingLeaves.length})
+            Review Leaves ({pendingLeaves.length})
           </Button>
         </div>
       </div>
@@ -346,7 +349,7 @@ export const AdminDashboardView = ({ onNavigate }) => {
                       <Button
                         size="sm"
                         variant="ghost"
-                        onClick={() => onNavigate('profile')}
+                        onClick={() => onNavigate('profile', { userId: u.id })}
                       >
                         Dossier
                       </Button>

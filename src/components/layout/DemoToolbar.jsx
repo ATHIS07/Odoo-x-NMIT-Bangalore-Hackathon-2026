@@ -23,9 +23,10 @@ export const DemoToolbar = ({ currentRoute, onRouteChange }) => {
     { id: 'profile-edit', label: '7. Profile (Edit RBAC)', roleReq: 'all' },
     { id: 'analytics', label: '8. Workforce Analytics', roleReq: 'hr' },
     { id: 'payroll', label: '9. Compensation & Payroll', roleReq: 'all' },
-    { id: 'notifications', label: '10. Notifications Center', roleReq: 'all' },
-    { id: 'signin', label: '11. Sign In Portal', roleReq: 'all' },
-    { id: 'signup', label: '12. Sign Up (OTP Flow)', roleReq: 'all' }
+    { id: 'org-chart', label: '10. Org Hierarchy Tree', roleReq: 'all' },
+    { id: 'notifications', label: '11. Notifications Center', roleReq: 'all' },
+    { id: 'signin', label: '12. Sign In Portal', roleReq: 'all' },
+    { id: 'signup', label: '13. Sign Up (OTP Flow)', roleReq: 'all' }
   ];
 
   if (currentRoute === 'signin' || currentRoute === 'signup') {

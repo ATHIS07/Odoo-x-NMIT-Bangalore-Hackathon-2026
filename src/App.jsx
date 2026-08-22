@@ -26,20 +26,21 @@ import { LeaveApprovalView } from './views/leave/LeaveApprovalView';
 import { NotificationsView } from './views/notifications/NotificationsView';
 import { AnalyticsView } from './views/analytics/AnalyticsView';
 import { PayrollView } from './views/payroll/PayrollView';
+import { OrgChartView } from './views/org/OrgChartView';
 
 const MainAppContent = () => {
   const { currentUser, role, isHR } = useAuth();
   const { showToast } = useToast();
 
-  // Active Screen Route (Must login before entering portal)
+  // Active Screen Route
   const [currentRoute, setCurrentRoute] = useState(() => {
-    if (!currentUser) return 'signin';
     return isHR ? 'admin-dashboard' : 'employee-dashboard';
   });
 
   const [isNotifDrawerOpen, setIsNotifDrawerOpen] = useState(false);
   const [isCommandPaletteOpen, setIsCommandPaletteOpen] = useState(false);
   const [isShortcutsOpen, setIsShortcutsOpen] = useState(false);
+  const [viewedProfileUserId, setViewedProfileUserId] = useState(null);
 
   // Guided product tour state
   const [isTourOpen, setIsTourOpen] = useState(false);
@@ -78,9 +79,27 @@ const MainAppContent = () => {
     }
   }, [currentUser, role, isHR, currentRoute, showToast]);
 
-  const handleNavigate = (route) => {
+  const handleNavigate = (route, params = null) => {
+    let targetRoute = route;
+    let targetUserId = params?.userId || (typeof params === 'string' ? params : null);
+
+    if (route.includes('?')) {
+      const [cleanRoute, queryStr] = route.split('?');
+      targetRoute = cleanRoute;
+      const urlParams = new URLSearchParams(queryStr);
+      if (urlParams.has('userId')) {
+        targetUserId = urlParams.get('userId');
+      }
+    }
+
+    if (targetRoute === 'profile') {
+      setViewedProfileUserId(targetUserId || null);
+    } else {
+      setViewedProfileUserId(null);
+    }
+
     // Role guard check
-    if (!isHR && ['admin-dashboard', 'leave-approvals', 'analytics'].includes(route)) {
+    if (!isHR && ['admin-dashboard', 'leave-approvals', 'analytics'].includes(targetRoute)) {
       showToast({
         title: 'Access Restricted',
         message: 'This view requires HR role permissions',
@@ -88,7 +107,7 @@ const MainAppContent = () => {
       });
       return;
     }
-    setCurrentRoute(route);
+    setCurrentRoute(targetRoute);
   };
 
   // Standalone Auth Screens
@@ -138,7 +157,13 @@ const MainAppContent = () => {
       case 'leave-approvals':
         return <LeaveApprovalView onNavigate={handleNavigate} />;
       case 'profile':
-        return <ProfileView onNavigate={handleNavigate} />;
+        return (
+          <ProfileView
+            onNavigate={handleNavigate}
+            viewedUserId={viewedProfileUserId}
+            onResetViewedUser={() => setViewedProfileUserId(null)}
+          />
+        );
       case 'profile-edit':
         return <ProfileEditView onNavigate={handleNavigate} />;
       case 'notifications':
@@ -147,6 +172,8 @@ const MainAppContent = () => {
         return <AnalyticsView onNavigate={handleNavigate} />;
       case 'payroll':
         return <PayrollView onNavigate={handleNavigate} />;
+      case 'org-chart':
+        return <OrgChartView onNavigate={handleNavigate} />;
       default:
         return isHR ? (
           <AdminDashboardView onNavigate={handleNavigate} />

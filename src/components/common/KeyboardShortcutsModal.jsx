@@ -32,6 +32,8 @@ export const KeyboardShortcutsModal = ({ isOpen, onClose }) => {
         { keys: ['G', 'L'], label: 'Jump to Apply for Leave' },
         { keys: ['G', 'R'], label: 'Jump to Leave Approvals Queue (HR)' },
         { keys: ['G', 'U'], label: 'Jump to Employee Dossier / Profile' },
+        { keys: ['G', 'P'], label: 'Jump to My Payslips & Compensation' },
+        { keys: ['G', 'O'], label: 'Jump to Org Hierarchy & Tree' },
         { keys: ['G', 'E'], label: 'Jump to Workforce Analytics (HR)' },
         { keys: ['G', 'N'], label: 'Jump to Notifications Center' }
       ]
