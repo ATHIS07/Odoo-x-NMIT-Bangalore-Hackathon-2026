@@ -156,26 +156,27 @@ export const EmployeeDashboardView = ({ onNavigate }) => {
           value={isClockedIn ? 'Clocked In' : todayRecord?.checkOut ? 'Shift Done' : 'Not Punched'}
           subtitle={todayRecord?.checkIn ? `Since ${todayRecord.checkIn}` : 'Standard shift starts 09:00 AM'}
           icon={Clock}
-          iconColor={isClockedIn ? 'var(--color-success)' : 'var(--text-secondary)'}
-          iconBg={isClockedIn ? 'var(--color-success-bg)' : 'var(--bg-surface-subtle)'}
+          iconColor={isClockedIn ? 'var(--emerald-600)' : 'var(--text-secondary)'}
+          iconBg="var(--emerald-50)"
+          trend={{ value: '+1.5%', isPositive: true, text: 'vs July' }}
         />
 
         <MetricCard
-          label="Leave Balance (Paid)"
-          value={`${userProfile.leaveBalance?.paid?.remaining ?? 14} Days`}
-          subtitle={`Used: ${userProfile.leaveBalance?.paid?.used ?? 6} of ${userProfile.leaveBalance?.paid?.total ?? 20} days`}
+          label="Leave Balance"
+          value="18 Days"
+          subtitle="12 Earned • 6 Casual"
           icon={CalendarCheck}
-          iconColor="var(--color-primary)"
-          iconBg="var(--primary-50)"
+          iconColor="var(--sky-600)"
+          iconBg="var(--sky-50)"
         />
 
         <MetricCard
-          label="Estimated Net Pay"
-          value="₹2,19,000"
-          subtitle="August 2026 Cycle • Depositing Aug 31"
+          label="Net July Salary"
+          value="₹1,84,200"
+          subtitle="Disbursed on July 31, 2026"
           icon={CreditCard}
-          iconColor="var(--color-success)"
-          iconBg="var(--color-success-bg)"
+          iconColor="var(--emerald-600)"
+          iconBg="var(--emerald-50)"
         />
 
         <MetricCard
@@ -197,8 +198,8 @@ export const EmployeeDashboardView = ({ onNavigate }) => {
               <Clock size={20} color="var(--primary-600)" />
               Daily Shift & Punch Console
             </div>
-            <Badge variant={isClockedIn ? 'present' : 'pending'}>
-              {isClockedIn ? 'Live Active' : 'Offline'}
+            <Badge variant={isClockedIn ? 'present' : isClockedOutToday ? 'present' : 'pending'}>
+              {isClockedIn ? '● Live Active' : isClockedOutToday ? '✓ Shift Completed' : '○ Offline'}
             </Badge>
           </div>
 
@@ -206,16 +207,25 @@ export const EmployeeDashboardView = ({ onNavigate }) => {
             {/* Live Elapsed Stopwatch */}
             <div
               style={{
-                backgroundColor: 'var(--bg-surface-subtle)',
+                backgroundColor: isClockedIn
+                  ? 'rgba(16, 185, 129, 0.04)'
+                  : isClockedOutToday
+                  ? 'rgba(113, 75, 103, 0.04)'
+                  : 'var(--bg-surface-subtle)',
                 padding: '1.5rem',
                 borderRadius: '12px',
                 textAlign: 'center',
-                border: '1px solid var(--border-subtle)'
+                border: isClockedIn
+                  ? '1px solid rgba(16, 185, 129, 0.2)'
+                  : isClockedOutToday
+                  ? '1px solid rgba(113, 75, 103, 0.2)'
+                  : '1px solid var(--border-subtle)',
+                transition: 'all 0.2s ease'
               }}
             >
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}>
                 <span style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)', textTransform: 'uppercase', letterSpacing: '0.05em', fontWeight: 600 }}>
-                  Logged Today Duration
+                  {isClockedOutToday ? "Today's Total Shift Logged" : 'Logged Today Duration'}
                 </span>
                 {elapsedSeconds >= 28800 && isClockedIn && (
                   <span style={{ fontSize: '0.6875rem', backgroundColor: 'var(--color-primary-light)', color: 'var(--color-primary)', padding: '2px 6px', borderRadius: '4px', fontWeight: 600 }}>
@@ -223,18 +233,30 @@ export const EmployeeDashboardView = ({ onNavigate }) => {
                   </span>
                 )}
               </div>
+
               <div
                 style={{
                   fontSize: '2.5rem',
                   fontWeight: 800,
                   fontFamily: 'var(--font-mono)',
-                  color: isClockedIn ? 'var(--text-primary)' : 'var(--text-tertiary)',
+                  color: isClockedIn ? 'var(--emerald-600)' : isClockedOutToday ? '#714B67' : 'var(--text-tertiary)',
                   marginTop: '0.25rem'
                 }}
               >
-                {isClockedIn ? formatTimer(elapsedSeconds) : '00:00:00'}
+                {isClockedIn || isClockedOutToday ? formatTimer(elapsedSeconds) : '00:00:00'}
               </div>
-              <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px', marginTop: '0.5rem' }}>
+
+              {/* Punch Timestamps Summary */}
+              {todayRecord?.checkIn && (
+                <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', marginTop: '0.5rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
+                  <span><strong style={{ color: 'var(--emerald-600)' }}>In:</strong> {todayRecord.checkIn}</span>
+                  {todayRecord.checkOut && (
+                    <span><strong style={{ color: '#DC3545' }}>Out:</strong> {todayRecord.checkOut}</span>
+                  )}
+                </div>
+              )}
+
+              <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px', marginTop: '0.5rem' }}>
                 <MapPin size={13} color="var(--emerald-600)" />
                 <span>Bangalore HQ (Outer Ring Road / NMIT)</span>
               </div>
@@ -242,7 +264,7 @@ export const EmployeeDashboardView = ({ onNavigate }) => {
 
             {/* Actions & Punch Controls */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.875rem', justifyContent: 'center', height: '100%' }}>
-              {!isClockedIn ? (
+              {!isClockedIn && !isClockedOutToday && (
                 <Button
                   variant="success"
                   size="lg"
@@ -252,16 +274,52 @@ export const EmployeeDashboardView = ({ onNavigate }) => {
                 >
                   Clock In to Shift
                 </Button>
-              ) : (
+              )}
+
+              {isClockedIn && (
                 <Button
                   variant="danger"
                   size="lg"
                   icon={Clock}
-                  onClick={() => clockOut(activeUser.id)}
+                  onClick={handleClockOut}
                   style={{ width: '100%', padding: '0.875rem 1.25rem', fontSize: '0.9375rem', fontWeight: 600 }}
                 >
                   Clock Out (End Shift)
                 </Button>
+              )}
+
+              {isClockedOutToday && (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                  <div
+                    style={{
+                      padding: '0.75rem 1rem',
+                      borderRadius: '8px',
+                      backgroundColor: 'rgba(16, 185, 129, 0.08)',
+                      border: '1px solid rgba(16, 185, 129, 0.2)',
+                      color: 'var(--emerald-700)',
+                      fontSize: '0.8125rem',
+                      fontWeight: 600,
+                      textAlign: 'center',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: '0.5rem'
+                    }}
+                  >
+                    <CheckCircle size={16} color="var(--emerald-600)" />
+                    <span>Today's Shift Saved & Synced to Payroll</span>
+                  </div>
+
+                  <Button
+                    variant="secondary"
+                    size="md"
+                    icon={Clock}
+                    onClick={() => clockIn(activeUser.id)}
+                    style={{ width: '100%' }}
+                  >
+                    Clock In for Overtime Session
+                  </Button>
+                </div>
               )}
 
               <div

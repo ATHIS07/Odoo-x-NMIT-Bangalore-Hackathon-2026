@@ -82,7 +82,7 @@ export const HRMSProvider = ({ children }) => {
   const clockIn = useCallback(async (userId) => {
     return runWithLatency(() => {
       const todayStr = '2026-08-22';
-      const nowTimeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      const nowTimeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
 
       setAttendance((prev) => {
         const filtered = prev.filter((a) => !(a.userId === userId && a.date === todayStr));
@@ -94,18 +94,24 @@ export const HRMSProvider = ({ children }) => {
           checkOut: null,
           duration: 'Live Active',
           status: 'present',
-          location: 'SF HQ - Terminal Node A1 (IP: 192.168.10.42)',
-          notes: 'Clock-in punch recorded'
+          location: 'Bangalore HQ (Outer Ring Road / NMIT)',
+          notes: 'Shift clock-in recorded via Employee Portal'
         };
         return [newRecord, ...filtered];
       });
-    });
-  }, [runWithLatency]);
 
-  const clockOut = useCallback(async (userId) => {
+      showToast({
+        title: 'Shift Clocked In',
+        message: `Check-in punch recorded at ${nowTimeStr} IST. Work session active.`,
+        type: 'success'
+      });
+    });
+  }, [runWithLatency, showToast]);
+
+  const clockOut = useCallback(async (userId, formattedDuration) => {
     return runWithLatency(() => {
       const todayStr = '2026-08-22';
-      const nowTimeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      const nowTimeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
 
       setAttendance((prev) =>
         prev.map((rec) => {
@@ -113,15 +119,21 @@ export const HRMSProvider = ({ children }) => {
             return {
               ...rec,
               checkOut: nowTimeStr,
-              duration: '8h 15m (Completed)',
-              notes: 'Shift completed normally'
+              duration: formattedDuration || '8h 02m (Completed)',
+              notes: 'Shift completed normally via Employee Portal'
             };
           }
           return rec;
         })
       );
+
+      showToast({
+        title: 'Shift Clocked Out',
+        message: `Check-out punch recorded at ${nowTimeStr} IST. Total shift logged: ${formattedDuration || '8h 02m'}.`,
+        type: 'info'
+      });
     });
-  }, [runWithLatency]);
+  }, [runWithLatency, showToast]);
 
   // ==========================================
   // LEAVE ACTIONS
