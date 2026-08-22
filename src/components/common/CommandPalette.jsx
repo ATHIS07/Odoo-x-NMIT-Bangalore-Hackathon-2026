@@ -65,16 +65,8 @@ export const CommandPalette = ({ isOpen, onClose, onNavigate }) => {
       action: () => { onNavigate('/leave/approvals'); onClose(); }
     }] : []),
     {
-      id: 'nav_payroll',
-      title: 'Compensation, Slips & Payroll',
-      category: 'Navigation',
-      icon: CreditCard,
-      shortcut: 'G P',
-      action: () => { onNavigate('/payroll'); onClose(); }
-    },
-    {
       id: 'nav_profile',
-      title: 'Employee Profile & S3 Vault',
+      title: 'Employee Profile & Vault',
       category: 'Navigation',
       icon: User,
       shortcut: 'G U',
@@ -82,7 +74,7 @@ export const CommandPalette = ({ isOpen, onClose, onNavigate }) => {
     },
     {
       id: 'nav_notifications',
-      title: 'Notifications & SNS Alerts Center',
+      title: 'Notifications & Activity Center',
       category: 'Navigation',
       icon: Bell,
       shortcut: 'G N',

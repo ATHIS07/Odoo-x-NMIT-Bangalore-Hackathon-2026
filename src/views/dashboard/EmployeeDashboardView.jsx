@@ -82,8 +82,8 @@ export const EmployeeDashboardView = ({ onNavigate }) => {
           <Button variant="secondary" icon={CalendarDays} onClick={() => onNavigate('leave-apply')}>
             Apply for Leave
           </Button>
-          <Button variant="primary" icon={CreditCard} onClick={() => onNavigate('payroll')}>
-            View July Payslip
+          <Button variant="primary" icon={Clock} onClick={() => onNavigate('attendance')}>
+            View My Attendance
           </Button>
         </div>
       </div>
@@ -137,7 +137,7 @@ export const EmployeeDashboardView = ({ onNavigate }) => {
 
         <Card
           onClick={() => {
-            if (confirm('Are you sure you want to sign out of Cognito?')) {
+            if (confirm('Are you sure you want to sign out?')) {
               localStorage.removeItem('odoo_auth_user');
               window.location.reload();
             }
@@ -180,10 +180,10 @@ export const EmployeeDashboardView = ({ onNavigate }) => {
         />
 
         <MetricCard
-          label="Net July Salary"
-          value="₹1,84,200"
-          subtitle="Disbursed on July 31, 2026"
-          icon={CreditCard}
+          label="Working Days"
+          value="22 Days"
+          subtitle="Standard Monthly Shift Cycle"
+          icon={FileText}
           iconColor="var(--emerald-600)"
           iconBg="var(--emerald-50)"
         />
@@ -261,7 +261,7 @@ export const EmployeeDashboardView = ({ onNavigate }) => {
                 </span>
                 {elapsedSeconds >= 28800 && isClockedIn && (
                   <span style={{ fontSize: '0.6875rem', backgroundColor: 'var(--color-primary-light)', color: 'var(--color-primary)', padding: '2px 6px', borderRadius: '4px', fontWeight: 600 }}>
-                    ⚡ Overtime
+                    Overtime
                   </span>
                 )}
               </div>
@@ -396,7 +396,7 @@ export const EmployeeDashboardView = ({ onNavigate }) => {
                   gap: '3px'
                 }}
               >
-                ⚡ Apply Tomorrow
+                Apply Tomorrow
               </button>
               <button
                 onClick={() => onNavigate('leave-apply')}

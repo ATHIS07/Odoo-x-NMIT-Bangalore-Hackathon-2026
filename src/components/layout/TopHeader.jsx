@@ -109,8 +109,8 @@ export const TopHeader = ({ onOpenNotifications, onRouteChange, onOpenCommandPal
         )}
 
         {/* Role Pill */}
-        <Badge variant={role === 'admin' ? 'role-admin' : role === 'hr' ? 'role-hr' : 'role-employee'}>
-          {role.toUpperCase()}
+        <Badge variant={role === 'hr' ? 'role-hr' : 'role-employee'}>
+          {role === 'hr' ? 'HR LEAD' : 'EMPLOYEE'}
         </Badge>
 
         {/* Notification Bell */}

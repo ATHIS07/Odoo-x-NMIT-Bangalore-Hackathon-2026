@@ -10,23 +10,21 @@ export const DemoToolbar = ({ currentRoute, onRouteChange }) => {
 
   const personas = [
     { role: 'employee', name: 'Sophia (Employee)', id: 'usr_001', color: 'var(--color-primary)' },
-    { role: 'hr', name: 'Marcus (HR Lead)', id: 'usr_002', color: 'var(--color-primary-hover)' },
-    { role: 'admin', name: 'Elena (Admin / VP)', id: 'usr_003', color: 'var(--color-primary-active)' }
+    { role: 'hr', name: 'Marcus (HR Lead)', id: 'usr_002', color: 'var(--color-primary-hover)' }
   ];
 
   const screens = [
     { id: 'employee-dashboard', label: '1. Employee Dashboard', roleReq: 'all' },
-    { id: 'admin-dashboard', label: '2. Admin / HR Dashboard', roleReq: 'admin' },
+    { id: 'admin-dashboard', label: '2. HR Management HQ', roleReq: 'hr' },
     { id: 'attendance', label: '3. Attendance Console', roleReq: 'all' },
     { id: 'leave-apply', label: '4. Leave — Apply', roleReq: 'all' },
-    { id: 'leave-approvals', label: '5. Leave — Approvals', roleReq: 'admin' },
-    { id: 'payroll', label: '6. Payroll & Payslips', roleReq: 'all' },
-    { id: 'profile', label: '7. Profile (View)', roleReq: 'all' },
-    { id: 'profile-edit', label: '8. Profile (Edit RBAC)', roleReq: 'all' },
-    { id: 'analytics', label: '9. Analytics & Reports', roleReq: 'admin' },
-    { id: 'notifications', label: '10. Notifications Center', roleReq: 'all' },
-    { id: 'signin', label: '11. Sign In (Cognito)', roleReq: 'all' },
-    { id: 'signup', label: '12. Sign Up (OTP Flow)', roleReq: 'all' }
+    { id: 'leave-approvals', label: '5. Leave — Approvals', roleReq: 'hr' },
+    { id: 'profile', label: '6. Profile (View)', roleReq: 'all' },
+    { id: 'profile-edit', label: '7. Profile (Edit RBAC)', roleReq: 'all' },
+    { id: 'analytics', label: '8. Workforce Analytics', roleReq: 'hr' },
+    { id: 'notifications', label: '9. Notifications Center', roleReq: 'all' },
+    { id: 'signin', label: '10. Sign In Portal', roleReq: 'all' },
+    { id: 'signup', label: '11. Sign Up (OTP Flow)', roleReq: 'all' }
   ];
 
   if (currentRoute === 'signin' || currentRoute === 'signup') {
@@ -151,7 +149,7 @@ export const DemoToolbar = ({ currentRoute, onRouteChange }) => {
                 fontWeight: 600,
                 cursor: 'pointer'
               }}
-              title="Toggle AWS Lambda Latency Simulator (450ms)"
+              title="Toggle Latency Simulator (450ms)"
             >
               <Zap size={11} />
               Latency: {simulateLatency ? '450ms' : 'Off'}
@@ -159,7 +157,7 @@ export const DemoToolbar = ({ currentRoute, onRouteChange }) => {
 
             <button
               onClick={() => {
-                if (confirm('Reset demo state to initial hackathon defaults?')) {
+                if (confirm('Reset workspace state to defaults?')) {
                   resetDemoData();
                 }
               }}
@@ -175,7 +173,7 @@ export const DemoToolbar = ({ currentRoute, onRouteChange }) => {
                 fontSize: '0.6875rem',
                 cursor: 'pointer'
               }}
-              title="Reset Mock DynamoDB state"
+              title="Reset workspace state"
             >
               <RotateCcw size={11} /> Reset
             </button>

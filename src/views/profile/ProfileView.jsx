@@ -188,8 +188,8 @@ export const ProfileView = ({ onNavigate }) => {
                 <h1 style={{ fontSize: '1.75rem', fontWeight: 700, margin: 0, color: 'var(--color-text-heading)' }}>
                   {profile.personalDetails?.fullName || activeUser.name}
                 </h1>
-                <Badge variant={role === 'admin' ? 'role-admin' : role === 'hr' ? 'role-hr' : 'role-employee'}>
-                  {activeUser.role.toUpperCase()}
+                <Badge variant={role === 'hr' ? 'role-hr' : 'role-employee'}>
+                  {role === 'hr' ? 'HR LEAD' : 'EMPLOYEE'}
                 </Badge>
               </div>
 
@@ -328,7 +328,7 @@ export const ProfileView = ({ onNavigate }) => {
                           border: '1px solid rgba(113, 75, 103, 0.2)'
                         }}
                       >
-                        📞 Call Now
+                        <Phone size={13} /> Call Now
                       </a>
                     </div>
                   </div>
@@ -464,9 +464,9 @@ export const ProfileView = ({ onNavigate }) => {
           <Card>
             <div className="card-header">
               <div>
-                <div className="card-title">AWS S3 Encrypted Documents Vault</div>
+                <div className="card-title">Employee Documents Vault</div>
                 <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>
-                  All contracts, tax declarations, and government IDs stored with AES-256 server-side encryption.
+                  All contracts, tax declarations, and government IDs stored with server-side encryption.
                 </div>
               </div>
               <Button size="sm" variant="secondary" onClick={() => onNavigate('profile-edit')}>

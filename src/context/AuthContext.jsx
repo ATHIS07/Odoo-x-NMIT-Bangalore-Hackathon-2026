@@ -39,24 +39,24 @@ export const AuthProvider = ({ children }) => {
     );
 
     if (!matched) {
-      throw new Error('Invalid Cognito credentials: User does not exist in pool');
+      throw new Error('Invalid credentials: User does not exist in directory');
     }
 
     if (password.length < 6) {
-      throw new Error('Password must satisfy AWS Cognito security criteria');
+      throw new Error('Password must be at least 6 characters');
     }
 
     setCurrentUser(matched);
     setImpersonatedUser(null);
     showToast({
-      title: 'Cognito Auth Verified',
+      title: 'Authentication Verified',
       message: `Signed in as ${matched.name} (${matched.role.toUpperCase()})`,
       type: 'success'
     });
     return matched;
   }, [showToast]);
 
-  // Cognito Sign-Up Mock
+  // Sign-Up Mock
   const signUp = useCallback(async ({ employeeId, email, password, role, name }) => {
     // Generate temporary verification state
     const newUser = {
@@ -81,22 +81,22 @@ export const AuthProvider = ({ children }) => {
     });
 
     showSNSToast({
-      title: 'Cognito OTP Dispatched',
+      title: 'Verification Code Sent',
       message: `Verification code 849201 sent to ${email}`,
-      source: 'AWS Cognito SNS'
+      source: 'Odoo Auth'
     });
 
     return newUser;
   }, [showSNSToast]);
 
-  // Cognito Verify OTP Step
+  // Verify OTP Step
   const verifySignUp = useCallback(async (code) => {
     if (!pendingVerification) {
       throw new Error('No pending signup session found');
     }
 
     if (code !== '849201' && code !== '123456') {
-      throw new Error('Invalid Cognito confirmation code. (Hint: Try 849201)');
+      throw new Error('Invalid confirmation code. (Hint: Try 849201)');
     }
 
     const verifiedUser = pendingVerification.user;
@@ -104,7 +104,7 @@ export const AuthProvider = ({ children }) => {
     setPendingVerification(null);
 
     showToast({
-      title: 'Cognito Account Confirmed',
+      title: 'Account Confirmed',
       message: `Welcome to Odoo, ${verifiedUser.name}!`,
       type: 'success'
     });
@@ -121,9 +121,9 @@ export const AuthProvider = ({ children }) => {
       throw new Error('Email not found in enterprise identity directory');
     }
     showSNSToast({
-      title: 'Cognito Reset OTP Dispatched',
+      title: 'Password Reset Code Sent',
       message: `Password reset token 932140 dispatched to ${email}`,
-      source: 'AWS Cognito SNS'
+      source: 'Odoo Auth'
     });
     return { email, code: '932140' };
   }, [showSNSToast]);
@@ -133,11 +133,11 @@ export const AuthProvider = ({ children }) => {
       throw new Error('Invalid or expired reset code. (Demo code: 932140)');
     }
     if (newPassword.length < 8) {
-      throw new Error('New password must meet Cognito enterprise criteria (min 8 chars)');
+      throw new Error('New password must be at least 8 characters');
     }
     showToast({
       title: 'Password Updated',
-      message: 'Your Cognito password has been securely reset. Please sign in.',
+      message: 'Your password has been securely reset. Please sign in.',
       type: 'success'
     });
     return true;
@@ -149,15 +149,15 @@ export const AuthProvider = ({ children }) => {
     setImpersonatedUser(null);
     showToast({
       title: 'Signed Out',
-      message: 'Cognito session tokens revoked safely.',
+      message: 'Session signed out successfully.',
       type: 'info'
     });
   }, [showToast]);
 
-  // Quick Persona Switcher for Hackathon Demo
+  // Quick Persona Switcher
   const switchPersona = useCallback((roleOrUserId) => {
     let target = null;
-    if (['employee', 'hr', 'admin'].includes(roleOrUserId)) {
+    if (['employee', 'hr'].includes(roleOrUserId)) {
       target = INITIAL_USERS.find((u) => u.role === roleOrUserId);
     } else {
       target = INITIAL_USERS.find((u) => u.id === roleOrUserId || u.employeeId === roleOrUserId);
@@ -174,12 +174,12 @@ export const AuthProvider = ({ children }) => {
     }
   }, [showToast]);
 
-  // Admin Impersonation of another employee
+  // HR Impersonation of another employee
   const startImpersonation = useCallback((user) => {
     setImpersonatedUser(user);
     showToast({
       title: 'Viewing as Employee',
-      message: `Admin previewing view for ${user.name}`,
+      message: `HR Lead previewing view for ${user.name}`,
       type: 'info'
     });
   }, [showToast]);
@@ -188,15 +188,16 @@ export const AuthProvider = ({ children }) => {
     setImpersonatedUser(null);
     showToast({
       title: 'Impersonation Ended',
-      message: 'Returned to Administrative console',
+      message: 'Returned to HR Management portal',
       type: 'info'
     });
   }, [showToast]);
 
-  const updateCurrentUser = useCallback((updates) => {
+  // User Profile Update
+  const updateCurrentUser = useCallback((updatedFields) => {
     setCurrentUser((prev) => {
       if (!prev) return prev;
-      const updated = { ...prev, ...updates };
+      const updated = { ...prev, ...updatedFields };
       localStorage.setItem('odoo_auth_user', JSON.stringify(updated));
       return updated;
     });
@@ -205,12 +206,13 @@ export const AuthProvider = ({ children }) => {
   // Active Effective User
   const activeUser = impersonatedUser || currentUser || INITIAL_USERS[0];
 
-  // RBAC Helper flags
-  const role = currentUser?.role || 'employee';
+  // RBAC Helper flags (2 Roles Only: Employee & HR)
+  const rawRole = currentUser?.role || 'employee';
+  const role = rawRole === 'hr' || rawRole === 'admin' ? 'hr' : 'employee';
   const isEmployee = role === 'employee';
   const isHR = role === 'hr';
-  const isAdmin = role === 'admin';
-  const isHRorAdmin = isHR || isAdmin;
+  const isAdmin = false;
+  const isHRorAdmin = isHR;
 
   return (
     <AuthContext.Provider

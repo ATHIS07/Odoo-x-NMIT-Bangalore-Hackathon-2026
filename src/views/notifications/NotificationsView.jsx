@@ -44,7 +44,7 @@ export const NotificationsView = ({ onNavigate }) => {
         <div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.25rem' }}>
             <span style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--primary-600)', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
-              AWS SNS Event Bus
+              System Notification Stream
             </span>
             <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>•</span>
             <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>
@@ -173,7 +173,7 @@ export const NotificationsView = ({ onNavigate }) => {
                         </p>
 
                         <div style={{ fontSize: '0.6875rem', color: 'var(--text-tertiary)', marginTop: '0.5rem', fontFamily: 'var(--font-mono)' }}>
-                          {item.timestamp} • AWS SNS Stream (ARN: arn:aws:sns:us-west-2:dayflow-events)
+                          {item.timestamp} • System Event Stream
                         </div>
                       </div>
                     </div>

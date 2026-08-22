@@ -22,53 +22,47 @@ export const Sidebar = ({ currentRoute, onRouteChange, onOpenNotifications }) =>
   // Role-based navigation structure
   const navItems = [
     {
-      id: isHRorAdmin ? 'admin-dashboard' : 'employee-dashboard',
-      label: isHRorAdmin ? 'Executive HQ' : 'My Workspace',
+      id: isHR ? 'admin-dashboard' : 'employee-dashboard',
+      label: isHR ? 'HR Management HQ' : 'My Workspace',
       icon: LayoutDashboard,
-      roles: ['employee', 'hr', 'admin']
+      roles: ['employee', 'hr']
     },
     {
       id: 'attendance',
-      label: isHRorAdmin ? 'Attendance Roster' : 'My Attendance',
+      label: isHR ? 'Attendance Roster' : 'My Attendance',
       icon: Clock,
-      roles: ['employee', 'hr', 'admin']
+      roles: ['employee', 'hr']
     },
     {
       id: 'leave-apply',
       label: 'Apply for Leave',
       icon: CalendarDays,
-      roles: ['employee', 'hr', 'admin']
+      roles: ['employee', 'hr']
     },
     {
       id: 'leave-approvals',
       label: 'Leave Approvals',
       icon: CheckSquare,
-      roles: ['hr', 'admin'],
+      roles: ['hr'],
       badge: '3 Pending'
-    },
-    {
-      id: 'payroll',
-      label: isHRorAdmin ? 'Payroll & CTC' : 'My Payslips',
-      icon: CreditCard,
-      roles: ['employee', 'hr', 'admin']
     },
     {
       id: 'profile',
       label: 'My Dossier / Profile',
       icon: User,
-      roles: ['employee', 'hr', 'admin']
+      roles: ['employee', 'hr']
     },
     {
       id: 'analytics',
       label: 'Workforce Analytics',
       icon: BarChart3,
-      roles: ['hr', 'admin']
+      roles: ['hr']
     },
     {
       id: 'notifications',
       label: 'Alerts & Activity',
       icon: Bell,
-      roles: ['employee', 'hr', 'admin']
+      roles: ['employee', 'hr']
     }
   ];
 
@@ -129,7 +123,7 @@ export const Sidebar = ({ currentRoute, onRouteChange, onOpenNotifications }) =>
           </div>
           <div style={{ fontSize: '0.6875rem', color: 'var(--color-text-muted)', display: 'flex', alignItems: 'center', gap: '0.3rem', marginTop: '2px' }}>
             <span style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: 'var(--color-success)' }} />
-            AWS DynamoDB Connected
+            Odoo Enterprise Online
           </div>
         </div>
       </div>
@@ -198,11 +192,9 @@ export const Sidebar = ({ currentRoute, onRouteChange, onOpenNotifications }) =>
                 backgroundColor: isActive ? 'var(--primary-50)' : 'transparent',
                 color: isActive ? 'var(--color-primary)' : 'var(--color-text-body)',
                 cursor: 'pointer',
-                fontSize: '0.8125rem',
-                fontWeight: 500,
-                fontFamily: 'var(--font-sans)',
-                textAlign: 'left',
-                transition: 'all 0.15s ease'
+                transition: 'all var(--transition-fast)',
+                fontWeight: isActive ? 600 : 400,
+                fontSize: '0.875rem'
               }}
               onMouseEnter={(e) => {
                 if (!isActive) e.currentTarget.style.backgroundColor = 'var(--bg-sidebar-hover)';
@@ -211,8 +203,8 @@ export const Sidebar = ({ currentRoute, onRouteChange, onOpenNotifications }) =>
                 if (!isActive) e.currentTarget.style.backgroundColor = 'transparent';
               }}
             >
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.625rem' }}>
-                <Icon size={17} color={isActive ? 'var(--color-primary)' : 'var(--color-text-muted)'} />
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                <Icon size={18} color={isActive ? 'var(--color-primary)' : 'var(--color-text-muted)'} />
                 <span>{item.label}</span>
               </div>
               {item.badge && (
@@ -221,8 +213,8 @@ export const Sidebar = ({ currentRoute, onRouteChange, onOpenNotifications }) =>
                     fontSize: '0.6875rem',
                     padding: '2px 6px',
                     borderRadius: '999px',
-                    backgroundColor: 'var(--color-warning-bg)',
-                    color: 'var(--color-warning)',
+                    backgroundColor: isActive ? 'var(--color-primary)' : 'var(--color-primary-tint)',
+                    color: isActive ? '#FFFFFF' : 'var(--color-primary)',
                     fontWeight: 600
                   }}
                 >
@@ -234,54 +226,55 @@ export const Sidebar = ({ currentRoute, onRouteChange, onOpenNotifications }) =>
         })}
       </nav>
 
-      {/* User Badge & Signout Footer */}
+      {/* User Profile Footer & Sign Out */}
       <div
         style={{
-          padding: '1rem',
+          padding: '1rem 1.25rem',
           borderTop: '1px solid var(--color-border)',
-          backgroundColor: '#FFFFFF'
+          backgroundColor: '#FFFFFF',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between'
         }}
       >
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <div
-            onClick={() => onRouteChange('profile')}
-            style={{ display: 'flex', alignItems: 'center', gap: '0.625rem', cursor: 'pointer', flex: 1, minWidth: 0 }}
-          >
-            <img
-              src={activeUser.avatar}
-              alt={activeUser.name}
-              style={{ width: '36px', height: '36px', borderRadius: '50%', objectFit: 'cover', border: '1px solid var(--color-border)' }}
-            />
-            <div style={{ minWidth: 0 }}>
-              <div style={{ fontSize: '0.8125rem', fontWeight: 600, color: 'var(--color-text-heading)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                {activeUser.name}
-              </div>
-              <div style={{ fontSize: '0.6875rem', color: 'var(--color-text-muted)', textTransform: 'uppercase' }}>
-                {activeUser.employeeId} • {activeUser.role}
-              </div>
+        <div
+          onClick={() => onRouteChange('profile')}
+          style={{ display: 'flex', alignItems: 'center', gap: '0.625rem', cursor: 'pointer', flex: 1, minWidth: 0 }}
+        >
+          <img
+            src={activeUser.avatar}
+            alt={activeUser.name}
+            style={{ width: '36px', height: '36px', borderRadius: '50%', objectFit: 'cover', border: '1px solid var(--color-border)' }}
+          />
+          <div style={{ minWidth: 0 }}>
+            <div style={{ fontSize: '0.8125rem', fontWeight: 600, color: 'var(--color-text-heading)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+              {activeUser.name}
+            </div>
+            <div style={{ fontSize: '0.6875rem', color: 'var(--color-text-muted)', textTransform: 'uppercase' }}>
+              {activeUser.employeeId} • {activeUser.role}
             </div>
           </div>
-
-          <button
-            onClick={signOut}
-            title="Sign out of Cognito"
-            style={{
-              background: 'transparent',
-              border: 'none',
-              color: 'var(--color-text-muted)',
-              cursor: 'pointer',
-              padding: '6px',
-              borderRadius: '6px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center'
-            }}
-            onMouseEnter={(e) => (e.currentTarget.style.color = 'var(--color-danger)')}
-            onMouseLeave={(e) => (e.currentTarget.style.color = 'var(--color-text-muted)')}
-          >
-            <LogOut size={16} />
-          </button>
         </div>
+
+        <button
+          onClick={signOut}
+          title="Sign out"
+          style={{
+            background: 'transparent',
+            border: 'none',
+            color: 'var(--color-text-muted)',
+            cursor: 'pointer',
+            padding: '6px',
+            borderRadius: '6px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center'
+          }}
+          onMouseEnter={(e) => (e.currentTarget.style.color = 'var(--color-danger)')}
+          onMouseLeave={(e) => (e.currentTarget.style.color = 'var(--color-text-muted)')}
+        >
+          <LogOut size={16} />
+        </button>
       </div>
     </aside>
   );

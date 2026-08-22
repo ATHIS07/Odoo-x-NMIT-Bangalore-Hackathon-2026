@@ -67,7 +67,7 @@ export const SignUpView = ({ onNavigate }) => {
     const fullCode = otpCode.join('');
     try {
       const verified = await verifySignUp(fullCode);
-      if (verified.role === 'admin' || verified.role === 'hr') {
+      if (verified.role === 'hr') {
         onNavigate('admin-dashboard');
       } else {
         onNavigate('employee-dashboard');

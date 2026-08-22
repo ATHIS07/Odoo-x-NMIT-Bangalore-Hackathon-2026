@@ -37,7 +37,7 @@ export const INITIAL_USERS = [
     employeeId: "DF-0010",
     name: "Elena Rostova",
     email: "elena.rostova@odoo.com",
-    role: "admin",
+    role: "hr",
     department: "Executive Operations",
     designation: "VP of People & Operations",
     avatar: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=240&auto=format&fit=crop&q=80",
@@ -159,10 +159,10 @@ export const INITIAL_PROFILES = {
       compensatory: { total: 5, used: 1, remaining: 4 }
     },
     documents: [
-      { id: "doc_01", name: "Employment_Agreement_Odoo_Signed.pdf", type: "PDF", size: "2.4 MB", uploadDate: "2022-03-15", s3Key: "s3://dayflow-hr-vault/usr_001/contracts/emp_agreement.pdf" },
-      { id: "doc_02", name: "Form16_Tax_Declaration_2025_26.pdf", type: "PDF", size: "1.1 MB", uploadDate: "2026-01-10", s3Key: "s3://dayflow-hr-vault/usr_001/tax/form16_2026.pdf" },
-      { id: "doc_03", name: "Passport_Aadhaar_Identification_Certified.pdf", type: "PDF", size: "3.8 MB", uploadDate: "2022-03-14", s3Key: "s3://dayflow-hr-vault/usr_001/id/id_proof.pdf" },
-      { id: "doc_04", name: "AWS_Certified_Solutions_Architect.pdf", type: "PDF", size: "1.6 MB", uploadDate: "2023-08-20", s3Key: "s3://dayflow-hr-vault/usr_001/certs/aws_csa.pdf" }
+      { id: "doc_01", name: "Employment_Agreement_Odoo_Signed.pdf", type: "PDF", size: "2.4 MB", uploadDate: "2022-03-15", s3Key: "vault/usr_001/contracts/emp_agreement.pdf" },
+      { id: "doc_02", name: "Form16_Tax_Declaration_2025_26.pdf", type: "PDF", size: "1.1 MB", uploadDate: "2026-01-10", s3Key: "vault/usr_001/tax/form16_2026.pdf" },
+      { id: "doc_03", name: "Passport_Aadhaar_Identification_Certified.pdf", type: "PDF", size: "3.8 MB", uploadDate: "2022-03-14", s3Key: "vault/usr_001/id/id_proof.pdf" },
+      { id: "doc_04", name: "System_Architect_Certification.pdf", type: "PDF", size: "1.6 MB", uploadDate: "2023-08-20", s3Key: "vault/usr_001/certs/system_arch.pdf" }
     ]
   },
   usr_002: {

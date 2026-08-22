@@ -150,7 +150,7 @@ export const AdminDashboardView = ({ onNavigate }) => {
             <div style={{ textAlign: 'center', padding: '2.5rem 1rem', color: 'var(--text-tertiary)' }}>
               <CheckCircle size={32} color="var(--emerald-500)" style={{ margin: '0 auto 0.5rem' }} />
               <div style={{ fontSize: '0.875rem', fontWeight: 600 }}>All Approvals Cleared</div>
-              <div style={{ fontSize: '0.75rem' }}>Zero pending leave requests in DynamoDB stream queue.</div>
+              <div style={{ fontSize: '0.75rem' }}>Zero pending leave requests in the queue.</div>
             </div>
           ) : (
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.875rem' }}>

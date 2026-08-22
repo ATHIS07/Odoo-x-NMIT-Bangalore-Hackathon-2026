@@ -121,7 +121,7 @@ export const LeaveApplyView = ({ onNavigate }) => {
           </div>
           <h1 className="page-title">Apply for Leave</h1>
           <p className="page-subtitle">
-            Autonomous leave routing with DynamoDB real-time event dispatching to HR management.
+            Submit leave applications for manager review and entitlement tracking.
           </p>
         </div>
       </div>
@@ -129,38 +129,33 @@ export const LeaveApplyView = ({ onNavigate }) => {
       {/* Quota Metric Tiles */}
       <div className="grid-4" style={{ marginBottom: '1.5rem' }}>
         <MetricCard
-          label="Paid / Casual Balance"
+          label="Paid Leave Balance"
           value={`${balance.paid.remaining} Days`}
-          subtitle={`Used: ${balance.paid.used} / ${balance.paid.total} quota`}
+          subtitle={`${balance.paid.used} used of ${balance.paid.total} total`}
           icon={CalendarCheck}
-          iconColor="var(--primary-600)"
-          iconBg="var(--primary-50)"
-        />
-
-        <MetricCard
-          label="Medical / Sick Balance"
-          value={`${balance.sick.remaining} Days`}
-          subtitle={`Used: ${balance.sick.used} / ${balance.sick.total} quota`}
-          icon={CalendarDays}
           iconColor="var(--emerald-600)"
           iconBg="var(--emerald-50)"
         />
 
         <MetricCard
-          label="Compensatory Off"
-          value={`${balance.compensatory?.remaining || 4} Days`}
-          subtitle={`Used: ${balance.compensatory?.used || 1} / ${balance.compensatory?.total || 5} days`}
+          label="Sick Leave Balance"
+          value={`${balance.sick.remaining} Days`}
+          subtitle={`${balance.sick.used} used of ${balance.sick.total} total`}
           icon={Clock}
+          iconColor="var(--sky-600)"
+          iconBg="var(--sky-50)"
+        />
+
+        <MetricCard
+          label="Unpaid Leave Available"
+          value={`${balance.unpaid.remaining} Days`}
+          subtitle={`${balance.unpaid.used} used of ${balance.unpaid.total} max`}
+          icon={FileText}
           iconColor="var(--color-primary)"
           iconBg="var(--primary-50)"
         />
 
         <MetricCard
-          label="Unpaid Sabbatical"
-          value={`${balance.unpaid?.remaining || 15} Days`}
-          subtitle="Available for study/extended personal"
-          icon={Info}
-          iconColor="var(--text-secondary)"
           iconBg="var(--bg-surface-subtle)"
         />
       </div>
@@ -202,7 +197,7 @@ export const LeaveApplyView = ({ onNavigate }) => {
                 Leave Application Dispatched!
               </h2>
               <p style={{ fontSize: '0.875rem', color: 'var(--text-secondary)', maxWidth: '400px', margin: '0 auto 1.5rem' }}>
-                Your request for <strong>{daysCount} working days</strong> ({leaveType.toUpperCase()}) was pushed to DynamoDB stream and sent to your manager.
+                Your request for <strong>{daysCount} working days</strong> ({leaveType.toUpperCase()}) was submitted and sent to your manager.
               </p>
               <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'center' }}>
                 <Button variant="secondary" onClick={() => setSubmittedSuccess(false)}>
@@ -428,8 +423,9 @@ export const LeaveApplyView = ({ onNavigate }) => {
                 </div>
               </div>
 
-              <div style={{ backgroundColor: 'var(--bg-surface-subtle)', padding: '0.75rem', borderRadius: '8px', fontSize: '0.75rem', color: 'var(--text-secondary)' }}>
-                ℹ️ <strong>Auto-Routing Policy:</strong> Requests under 3 days are reviewed by Lead HR. Extended leaves over 5 days require Executive Admin audit.
+              <div style={{ backgroundColor: 'var(--bg-surface-subtle)', padding: '0.75rem', borderRadius: '8px', fontSize: '0.75rem', color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <Info size={14} color="var(--color-primary)" />
+                <span><strong>Auto-Routing Policy:</strong> Requests under 3 days are reviewed by Lead HR. Extended leaves over 5 days require Executive Admin audit.</span>
               </div>
             </div>
           </Card>

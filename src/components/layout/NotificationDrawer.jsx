@@ -88,7 +88,7 @@ export const NotificationDrawer = ({ isOpen, onClose, onNavigate }) => {
                     fontWeight: 700
                   }}
                 >
-                  SNS Live
+                  Live Alerts
                 </span>
               </div>
 
@@ -239,7 +239,7 @@ export const NotificationDrawer = ({ isOpen, onClose, onNavigate }) => {
                           {item.message}
                         </div>
                         <div style={{ fontSize: '0.6875rem', color: 'var(--text-tertiary)', marginTop: '0.5rem', fontFamily: 'var(--font-mono)' }}>
-                          {item.timestamp} • AWS SNS Stream
+                          {item.timestamp} • System Notification
                         </div>
                       </div>
                     </div>

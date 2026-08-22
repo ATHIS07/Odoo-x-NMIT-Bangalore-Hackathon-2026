@@ -21,17 +21,16 @@ import { ProfileEditView } from './views/profile/ProfileEditView';
 import { AttendanceView } from './views/attendance/AttendanceView';
 import { LeaveApplyView } from './views/leave/LeaveApplyView';
 import { LeaveApprovalView } from './views/leave/LeaveApprovalView';
-import { PayrollView } from './views/payroll/PayrollView';
 import { NotificationsView } from './views/notifications/NotificationsView';
 import { AnalyticsView } from './views/analytics/AnalyticsView';
 
 const MainAppContent = () => {
-  const { currentUser, role, isHRorAdmin } = useAuth();
+  const { currentUser, role, isHR } = useAuth();
   const { showToast } = useToast();
 
   // Active Screen Route
   const [currentRoute, setCurrentRoute] = useState(() => {
-    return isHRorAdmin ? 'admin-dashboard' : 'employee-dashboard';
+    return isHR ? 'admin-dashboard' : 'employee-dashboard';
   });
 
   const [isNotifDrawerOpen, setIsNotifDrawerOpen] = useState(false);
@@ -57,22 +56,22 @@ const MainAppContent = () => {
     }
 
     // Role safety guard
-    if (!isHRorAdmin && ['admin-dashboard', 'leave-approvals', 'analytics'].includes(currentRoute)) {
+    if (!isHR && ['admin-dashboard', 'leave-approvals', 'analytics'].includes(currentRoute)) {
       setCurrentRoute('employee-dashboard');
       showToast({
         title: 'Access Restricted',
-        message: 'View is reserved for Executive HR & Admin personnel',
+        message: 'View is reserved for HR personnel',
         type: 'warning'
       });
     }
-  }, [currentUser, role, isHRorAdmin, currentRoute, showToast]);
+  }, [currentUser, role, isHR, currentRoute, showToast]);
 
   const handleNavigate = (route) => {
     // Role guard check
-    if (!isHRorAdmin && ['admin-dashboard', 'leave-approvals', 'analytics'].includes(route)) {
+    if (!isHR && ['admin-dashboard', 'leave-approvals', 'analytics'].includes(route)) {
       showToast({
         title: 'Access Restricted',
-        message: 'This view requires HR or Administrator role permissions',
+        message: 'This view requires HR role permissions',
         type: 'warning'
       });
       return;
@@ -126,8 +125,6 @@ const MainAppContent = () => {
         return <LeaveApplyView onNavigate={handleNavigate} />;
       case 'leave-approvals':
         return <LeaveApprovalView onNavigate={handleNavigate} />;
-      case 'payroll':
-        return <PayrollView onNavigate={handleNavigate} />;
       case 'profile':
         return <ProfileView onNavigate={handleNavigate} />;
       case 'profile-edit':
@@ -137,7 +134,7 @@ const MainAppContent = () => {
       case 'analytics':
         return <AnalyticsView onNavigate={handleNavigate} />;
       default:
-        return isHRorAdmin ? (
+        return isHR ? (
           <AdminDashboardView onNavigate={handleNavigate} />
         ) : (
           <EmployeeDashboardView onNavigate={handleNavigate} />

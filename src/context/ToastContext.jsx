@@ -16,9 +16,9 @@ export const ToastProvider = ({ children }) => {
     return;
   }, []);
 
-  const showSNSToast = useCallback(({ title, message, type = 'info', source = 'SNS Stream' }) => {
+  const showSNSToast = useCallback(({ title, message, type = 'info' }) => {
     showToast({
-      title: `⚡ [${source}] ${title}`,
+      title,
       message,
       type
     });
@@ -28,7 +28,7 @@ export const ToastProvider = ({ children }) => {
     <ToastContext.Provider value={{ showToast, showSNSToast }}>
       {children}
       
-      {/* Floating SNS Alert Toast Stack */}
+      {/* Floating System Alert Toast Stack */}
       <div className="toast-container" aria-live="polite">
         <AnimatePresence>
           {toasts.map((toast) => {

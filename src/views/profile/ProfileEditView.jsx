@@ -314,15 +314,15 @@ export const ProfileEditView = ({ onNavigate }) => {
               </div>
             </Card>
 
-            {/* Card 3: Job & Compensation (Admin managed) */}
+            {/* Card 3: Job & Compensation (HR Managed) */}
             <Card>
               <div className="card-header">
                 <div className="card-title" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                  {!isHRorAdmin && <Lock size={16} color="var(--text-tertiary)" />}
+                  {!isHR && <Lock size={16} color="var(--text-tertiary)" />}
                   Job & Compensation Structure
                 </div>
-                <Badge variant={isHRorAdmin ? 'role-admin' : 'info'}>
-                  {isHRorAdmin ? 'Admin Unlocked' : 'Read Only'}
+                <Badge variant={isHR ? 'role-hr' : 'info'}>
+                  {isHR ? 'HR Unlocked' : 'Read Only'}
                 </Badge>
               </div>
 

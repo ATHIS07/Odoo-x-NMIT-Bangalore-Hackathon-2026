@@ -210,11 +210,11 @@ export const HRMSProvider = ({ children }) => {
         };
       });
 
-      // Dispatch SNS alert
+      // Dispatch notification
       showSNSToast({
-        title: 'DynamoDB Stream: New Leave Application',
+        title: 'New Leave Application',
         message: `${currentUser.name} applied for ${leaveData.daysCount} days (${leaveData.leaveType.toUpperCase()})`,
-        source: 'AWS SNS Push'
+        source: 'Odoo HRMS'
       });
 
       // Add to notifications
@@ -256,9 +256,9 @@ export const HRMSProvider = ({ children }) => {
 
       if (targetLeave) {
         showSNSToast({
-          title: 'DynamoDB Stream: Leave APPROVED',
-          message: `Leave ${leaveId} for ${targetLeave.employeeName} changed to APPROVED`,
-          source: 'DynamoDB Stream Event'
+          title: 'Leave Application Approved',
+          message: `Leave ${leaveId} for ${targetLeave.employeeName} status updated to APPROVED`,
+          source: 'Odoo HRMS'
         });
 
         // Trigger celebratory confetti for approval
@@ -331,9 +331,9 @@ export const HRMSProvider = ({ children }) => {
         });
 
         showSNSToast({
-          title: 'DynamoDB Stream: Leave REJECTED',
-          message: `Leave ${leaveId} for ${targetLeave.employeeName} declined`,
-          source: 'DynamoDB Stream Event'
+          title: 'Leave Application Declined',
+          message: `Leave ${leaveId} for ${targetLeave.employeeName} status updated to DECLINED`,
+          source: 'Odoo HRMS'
         });
 
         setNotifications((prev) => [
@@ -400,13 +400,13 @@ export const HRMSProvider = ({ children }) => {
 
       showToast({
         title: 'Profile Updated',
-        message: 'Changes saved and synced across DynamoDB records',
+        message: 'Changes saved and updated successfully',
         type: 'success'
       });
     });
   }, [runWithLatency, showToast]);
 
-  // S3 Document Upload Simulation
+  // Document Upload Simulation
   const uploadDocument = useCallback(async (userId, fileData) => {
     return runWithLatency(() => {
       const newDoc = {
@@ -415,7 +415,7 @@ export const HRMSProvider = ({ children }) => {
         type: fileData.type || 'PDF',
         size: fileData.size || '1.8 MB',
         uploadDate: new Date().toISOString().split('T')[0],
-        s3Key: `s3://dayflow-hr-vault/${userId}/documents/${fileData.name}`
+        s3Key: `vault/${userId}/documents/${fileData.name}`
       };
 
       setProfiles((prev) => {
@@ -431,9 +431,9 @@ export const HRMSProvider = ({ children }) => {
       });
 
       showSNSToast({
-        title: 'S3 Object Uploaded',
-        message: `Persisted to ${newDoc.s3Key}`,
-        source: 'AWS S3 Storage'
+        title: 'Document Uploaded',
+        message: `File saved to ${newDoc.name}`,
+        source: 'Storage Vault'
       });
     });
   }, [runWithLatency, showSNSToast]);
@@ -450,14 +450,14 @@ export const HRMSProvider = ({ children }) => {
           ...prev,
           [userId]: {
             ...userProf,
-            salaryStructure: { ...userProf.salaryStructure, ...newSalaryStructure }
+            salaryStructure: { ...(userProf.salaryStructure || {}), ...newSalaryStructure }
           }
         };
       });
 
       showToast({
         title: 'Salary Structure Updated',
-        message: `Admin modified CTC compensation tier for user ${userId}`,
+        message: 'Compensation changes saved',
         type: 'success'
       });
     });
@@ -466,34 +466,28 @@ export const HRMSProvider = ({ children }) => {
   const triggerMonthlyPayrollRun = useCallback(async () => {
     return runWithLatency(() => {
       const augustRun = {
-        id: `pay_2026_08`,
-        userId: 'usr_001',
-        month: 'August 2026',
-        payDate: '2026-08-31',
-        grossPay: 237500,
-        basic: 150000,
-        hra: 60000,
-        specialAllowance: 27500,
-        bonus: 0,
-        deductions: {
-          providentFund: 1800,
-          taxDeduction: 15000,
-          professionalTax: 200,
-          healthInsurance: 1500
-        },
-        totalDeductions: 18500,
-        netPay: 219000,
-        status: 'paid',
-        transactionId: `TXN-DF-AUG26-IN-${Math.floor(100000 + Math.random() * 900000)}`,
-        currency: '₹'
+        id: `pay_run_${Date.now()}`,
+        cycleMonth: 'August 2026',
+        period: 'Aug 01, 2026 - Aug 31, 2026',
+        totalDisbursed: '₹82,50,000',
+        totalEmployees: 7,
+        disbursementDate: '2026-08-31',
+        status: 'Completed',
+        breakdown: {
+          basic: '₹41,25,000',
+          hra: '₹20,62,500',
+          special: '₹12,37,500',
+          pfDeduction: '₹4,95,000',
+          tdsDeduction: '₹4,12,500'
+        }
       };
 
       setPayroll((prev) => [augustRun, ...prev]);
 
       showSNSToast({
-        title: 'Lambda Batch Job: August Payroll Completed',
-        message: 'Disbursed ₹82,50,000 across 7 active employee accounts in India hubs.',
-        source: 'AWS Lambda & SNS'
+        title: 'August Payroll Completed',
+        message: 'Disbursed ₹82,50,000 across 7 active employee accounts.',
+        source: 'Payroll Engine'
       });
     });
   }, [runWithLatency, showSNSToast]);
@@ -527,7 +521,7 @@ export const HRMSProvider = ({ children }) => {
     localStorage.clear();
     showToast({
       title: 'Demo State Reset',
-      message: 'Restored initial seed data across all DynamoDB models.',
+      message: 'Restored initial seed data.',
       type: 'info'
     });
   }, [showToast]);

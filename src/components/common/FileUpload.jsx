@@ -130,7 +130,7 @@ export const FileUpload = ({ onUpload, acceptedFormats = '.pdf,.doc,.docx,.png,.
             Drag and drop your file here, or <span style={{ color: 'var(--primary-600)', textDecoration: 'underline' }}>browse</span>
           </div>
           <div style={{ fontSize: '0.8125rem', color: 'var(--text-tertiary)', marginTop: '0.35rem' }}>
-            Encrypted AWS S3 Bucket Storage • Max size 10MB (PDF, DOCX, PNG)
+            Secure Cloud Storage • Max size 10MB (PDF, DOCX, PNG)
           </div>
         </div>
       ) : (

@@ -79,7 +79,7 @@ export const AttendanceView = () => {
       type: 'success'
     });
     showSNSToast({
-      title: 'DynamoDB Stream: Attendance Regularization',
+      title: 'Attendance Regularization Submitted',
       message: `Pending approval for ${activeUser.name} (${regularizeForm.date})`,
       source: 'Attendance OS'
     });
@@ -119,7 +119,7 @@ export const AttendanceView = () => {
           </div>
           <h1 className="page-title">{isHRorAdmin ? 'Workforce Attendance Roster' : 'My Daily & Weekly Attendance'}</h1>
           <p className="page-subtitle">
-            Sub-millisecond punch logging via DynamoDB streams with Bangalore & Mumbai geolocation terminal tracking.
+            Track daily check-ins, check-outs, shift durations, and geo-verified locations.
           </p>
         </div>
 

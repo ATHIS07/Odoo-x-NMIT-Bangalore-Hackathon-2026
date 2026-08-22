@@ -1,5 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import { X } from 'lucide-react';
 
 export const Badge = ({ children, variant = 'info', dot = true, className = '', style = {} }) => {
   return (
@@ -161,6 +162,7 @@ export const Modal = ({ isOpen, onClose, title, children, maxWidth = '540px' }) 
           <h3 style={{ fontSize: '1.125rem', fontWeight: 700, margin: 0 }}>{title}</h3>
           <button
             onClick={onClose}
+            aria-label="Close modal"
             style={{
               background: 'transparent',
               border: 'none',
@@ -171,7 +173,7 @@ export const Modal = ({ isOpen, onClose, title, children, maxWidth = '540px' }) 
               alignItems: 'center'
             }}
           >
-            ✕
+            <X size={18} />
           </button>
         </div>
         <div style={{ padding: '1.5rem', maxHeight: '80vh', overflowY: 'auto' }}>

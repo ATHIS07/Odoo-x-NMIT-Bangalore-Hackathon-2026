@@ -29,7 +29,7 @@ export const SignInView = ({ onNavigate }) => {
 
     try {
       const user = await signIn({ email, password });
-      if (user.role === 'admin' || user.role === 'hr') {
+      if (user.role === 'hr') {
         onNavigate('admin-dashboard');
       } else {
         onNavigate('employee-dashboard');

@@ -70,13 +70,13 @@ export const LeaveApprovalView = () => {
     setSelectedIds((prev) => prev.filter((id) => id !== leave.id));
   };
 
-  const handleModalSubmit = async () => {
+  const handleModalSubmit = async (actionType) => {
     if (!reviewModalLeave) return;
     setProcessingId(reviewModalLeave.id);
-    if (reviewActionType === 'approve') {
-      await approveLeave(reviewModalLeave.id, adminComment || 'Approved with HR notes.');
+    if (actionType === 'approve') {
+      await approveLeave(reviewModalLeave.id, adminComment || 'Accepted by HR Manager.');
     } else {
-      await rejectLeave(reviewModalLeave.id, adminComment || 'Declined with HR notes.');
+      await rejectLeave(reviewModalLeave.id, adminComment || 'Rejected by HR Manager.');
     }
     setProcessingId(null);
     setSelectedIds((prev) => prev.filter((id) => id !== reviewModalLeave.id));
@@ -149,7 +149,7 @@ export const LeaveApprovalView = () => {
           </div>
           <h1 className="page-title">Leave Approvals & Triage Queue</h1>
           <p className="page-subtitle">
-            Sub-millisecond status transitions wired to DynamoDB streams and automated employee SNS alerts.
+            Review, approve, or reject employee leave applications with automated notifications.
           </p>
         </div>
       </div>
@@ -399,6 +399,19 @@ export const LeaveApprovalView = () => {
                       {l.status === 'pending' && (
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', minWidth: '160px' }}>
                           <Button
+                            variant="primary"
+                            size="sm"
+                            icon={MessageSquare}
+                            onClick={() => {
+                              setReviewModalLeave(l);
+                              setAdminComment('');
+                            }}
+                            style={{ width: '100%' }}
+                          >
+                            Review Application
+                          </Button>
+
+                          <Button
                             variant="success"
                             size="sm"
                             icon={CheckCircle2}
@@ -406,21 +419,7 @@ export const LeaveApprovalView = () => {
                             onClick={() => handleQuickAction(l, 'approve')}
                             style={{ width: '100%' }}
                           >
-                            1-Click Approve
-                          </Button>
-
-                          <Button
-                            variant="secondary"
-                            size="sm"
-                            icon={MessageSquare}
-                            onClick={() => {
-                              setReviewModalLeave(l);
-                              setReviewActionType('approve');
-                              setAdminComment('');
-                            }}
-                            style={{ width: '100%' }}
-                          >
-                            Review & Notes
+                            Accept
                           </Button>
 
                           <Button
@@ -428,14 +427,10 @@ export const LeaveApprovalView = () => {
                             size="sm"
                             icon={XCircle}
                             loading={processingId === l.id}
-                            onClick={() => {
-                              setReviewModalLeave(l);
-                              setReviewActionType('reject');
-                              setAdminComment('');
-                            }}
+                            onClick={() => handleQuickAction(l, 'reject')}
                             style={{ width: '100%' }}
                           >
-                            Decline
+                            Reject
                           </Button>
                         </div>
                       )}
@@ -507,12 +502,12 @@ export const LeaveApprovalView = () => {
         )}
       </AnimatePresence>
 
-      {/* Review & Comment Modal */}
+      {/* Review & Decision Modal */}
       <Modal
         isOpen={!!reviewModalLeave}
         onClose={() => setReviewModalLeave(null)}
-        title={reviewActionType === 'approve' ? `Approve Leave: ${reviewModalLeave?.employeeName}` : `Decline Leave: ${reviewModalLeave?.employeeName}`}
-        maxWidth="520px"
+        title={`Review Leave Application: ${reviewModalLeave?.employeeName}`}
+        maxWidth="540px"
       >
         {reviewModalLeave && (
           <div>
@@ -522,46 +517,43 @@ export const LeaveApprovalView = () => {
               <div style={{ marginTop: '4px' }}><strong>Employee Reason:</strong> "{reviewModalLeave.remarks}"</div>
             </div>
 
-            {reviewActionType === 'reject' && (
-              <div style={{ marginBottom: '0.75rem' }}>
-                <div style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)', marginBottom: '0.35rem', fontWeight: 600 }}>
-                  Quick Rejection Reason Presets:
-                </div>
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.35rem' }}>
-                  {rejectionPresets.map((preset, i) => (
-                    <button
-                      key={i}
-                      type="button"
-                      onClick={() => setAdminComment(preset)}
-                      style={{
-                        padding: '3px 8px',
-                        borderRadius: '4px',
-                        border: '1px solid var(--border-subtle)',
-                        backgroundColor: 'var(--bg-surface-subtle)',
-                        fontSize: '0.6875rem',
-                        color: 'var(--text-secondary)',
-                        cursor: 'pointer'
-                      }}
-                    >
-                      + {preset}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            )}
-
             <div className="form-group">
               <label className="form-label">
-                {reviewActionType === 'approve' ? 'Optional Approval Note / Instructions' : 'Reason for Declining (Mandatory)'}
+                HR Remarks / Review Notes
               </label>
               <textarea
                 rows={3}
-                required={reviewActionType === 'reject'}
-                placeholder={reviewActionType === 'approve' ? 'e.g. Approved. Please ensure handover to peer before departure.' : 'Explain reasoning to employee...'}
+                placeholder="Enter HR approval remarks or rejection reasons here..."
                 value={adminComment}
                 onChange={(e) => setAdminComment(e.target.value)}
                 className="form-textarea"
               />
+            </div>
+
+            <div style={{ marginBottom: '1rem' }}>
+              <div style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)', marginBottom: '0.35rem', fontWeight: 600 }}>
+                Quick Preset Remarks:
+              </div>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.35rem' }}>
+                {rejectionPresets.map((preset, i) => (
+                  <button
+                    key={i}
+                    type="button"
+                    onClick={() => setAdminComment(preset)}
+                    style={{
+                      padding: '3px 8px',
+                      borderRadius: '4px',
+                      border: '1px solid var(--border-subtle)',
+                      backgroundColor: 'var(--bg-surface-subtle)',
+                      fontSize: '0.6875rem',
+                      color: 'var(--text-secondary)',
+                      cursor: 'pointer'
+                    }}
+                  >
+                    + {preset}
+                  </button>
+                ))}
+              </div>
             </div>
 
             <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.75rem', marginTop: '1.25rem' }}>
@@ -569,11 +561,20 @@ export const LeaveApprovalView = () => {
                 Cancel
               </Button>
               <Button
-                variant={reviewActionType === 'approve' ? 'primary' : 'danger'}
+                variant="danger"
+                icon={XCircle}
                 loading={processingId === reviewModalLeave.id}
-                onClick={handleModalSubmit}
+                onClick={() => handleModalSubmit('reject')}
               >
-                Confirm {reviewActionType === 'approve' ? 'Approval' : 'Rejection'}
+                Reject (Decline)
+              </Button>
+              <Button
+                variant="success"
+                icon={CheckCircle2}
+                loading={processingId === reviewModalLeave.id}
+                onClick={() => handleModalSubmit('approve')}
+              >
+                Accept (Approve)
               </Button>
             </div>
           </div>
