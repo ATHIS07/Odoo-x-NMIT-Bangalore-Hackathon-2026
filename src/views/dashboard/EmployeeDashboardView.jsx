@@ -290,7 +290,7 @@ export const EmployeeDashboardView = ({ onNavigate }) => {
 
               <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px', marginTop: '0.5rem' }}>
                 <MapPin size={13} color="var(--emerald-600)" />
-                <span>Bangalore HQ (Outer Ring Road / NMIT)</span>
+                <span>Bangalore HQ (Outer Ring Road Tech Center)</span>
               </div>
             </div>
 

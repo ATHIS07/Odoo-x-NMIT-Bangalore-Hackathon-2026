@@ -382,7 +382,7 @@ export const LeaveApprovalView = () => {
                           {/* Medical certificate attachment if available */}
                           {l.attachment && (
                             <div style={{ marginTop: '0.5rem', display: 'inline-flex', alignItems: 'center', gap: '4px', fontSize: '0.75rem', color: 'var(--primary-600)', fontWeight: 600 }}>
-                              <FileText size={14} /> Attached: {l.attachment} (Verified in S3)
+                              <FileText size={14} /> Attached: {l.attachment} (Verified Document)
                             </div>
                           )}
 

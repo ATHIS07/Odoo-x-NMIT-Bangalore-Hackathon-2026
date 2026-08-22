@@ -14,7 +14,7 @@ export const INITIAL_USERS = [
     designation: "Senior Staff Frontend Architect",
     avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=240&auto=format&fit=crop&q=80",
     phone: "+91 98450 23891",
-    location: "Bangalore, Karnataka (NMIT / Whitefield HQ)",
+    location: "Bangalore, Karnataka (Whitefield Tech Center HQ)",
     joiningDate: "2022-03-15",
     status: "active"
   },
@@ -42,7 +42,7 @@ export const INITIAL_USERS = [
     designation: "VP of People & Operations",
     avatar: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=240&auto=format&fit=crop&q=80",
     phone: "+91 98800 89033",
-    location: "Bangalore, Karnataka (NMIT Tech Park HQ)",
+    location: "Bangalore, Karnataka (Tech Park HQ)",
     joiningDate: "2020-01-10",
     status: "active"
   },
@@ -126,7 +126,7 @@ export const INITIAL_PROFILES = {
       employmentType: "Full-Time Permanent",
       joiningDate: "2022-03-15",
       shift: "General Core Shift (09:30 AM - 06:00 PM IST)",
-      workLocation: "Bangalore HQ (Outer Ring Road / NMIT)",
+      workLocation: "Bangalore HQ (Outer Ring Road Tech Center)",
       costCenter: "CC-ENG-402"
     },
     address: {
@@ -625,7 +625,7 @@ export const INITIAL_NOTIFICATIONS = [
     userId: "usr_003",
     type: "payroll_batch",
     title: "August 2026 Payroll Cycle Open",
-    message: "Automated Lambda payroll validation run completed. 100% records reconciled across India hubs.",
+    message: "Automated monthly payroll reconciliation completed. 100% records verified.",
     read: false,
     timestamp: "4 hours ago",
     link: "/payroll"

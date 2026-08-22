@@ -124,7 +124,7 @@ export const HRMSProvider = ({ children }) => {
           checkOut: null,
           duration: 'Live Active',
           status: 'present',
-          location: 'Bangalore HQ (Outer Ring Road / NMIT)',
+          location: 'Bangalore HQ (Outer Ring Road Tech Center)',
           notes: 'Shift clock-in recorded via Employee Portal'
         };
         return [newRecord, ...filtered];

@@ -40,7 +40,7 @@ export const FileUpload = ({ onUpload, acceptedFormats = '.pdf,.doc,.docx,.png,.
     setUploadSuccess(false);
 
     if (file.size > maxSizeBytes) {
-      setErrorMessage(`File exceeds the 10 MB S3 upload limit (${(file.size / (1024 * 1024)).toFixed(1)} MB)`);
+      setErrorMessage(`File exceeds the 10 MB upload limit (${(file.size / (1024 * 1024)).toFixed(1)} MB)`);
       return;
     }
 
@@ -52,7 +52,7 @@ export const FileUpload = ({ onUpload, acceptedFormats = '.pdf,.doc,.docx,.png,.
     });
   };
 
-  const startS3Upload = async () => {
+  const startFileUpload = async () => {
     if (!selectedFile) return;
 
     setIsUploading(true);
@@ -163,7 +163,7 @@ export const FileUpload = ({ onUpload, acceptedFormats = '.pdf,.doc,.docx,.png,.
                   {selectedFile.name}
                 </div>
                 <div style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)', fontFamily: 'var(--font-mono)' }}>
-                  {selectedFile.size} • Ready for S3 Vault
+                  {selectedFile.size} • Ready for Document Vault
                 </div>
               </div>
             </div>
@@ -182,7 +182,7 @@ export const FileUpload = ({ onUpload, acceptedFormats = '.pdf,.doc,.docx,.png,.
           {isUploading && (
             <div style={{ marginTop: '1rem' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.75rem', color: 'var(--text-secondary)', marginBottom: '0.35rem' }}>
-                <span>Uploading to S3 Bucket...</span>
+                <span>Uploading Document...</span>
                 <span>{uploadProgress}%</span>
               </div>
               <div style={{ height: '6px', width: '100%', backgroundColor: 'var(--bg-surface-subtle)', borderRadius: '9999px', overflow: 'hidden' }}>
@@ -214,7 +214,7 @@ export const FileUpload = ({ onUpload, acceptedFormats = '.pdf,.doc,.docx,.png,.
             >
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                 <CheckCircle size={16} />
-                <span>Uploaded and encrypted to S3 Vault</span>
+                <span>Uploaded and stored in Document Vault</span>
               </div>
               <Button size="sm" variant="ghost" onClick={resetUploader}>
                 Upload Another
@@ -227,8 +227,8 @@ export const FileUpload = ({ onUpload, acceptedFormats = '.pdf,.doc,.docx,.png,.
               <Button size="sm" variant="ghost" onClick={resetUploader}>
                 Cancel
               </Button>
-              <Button size="sm" variant="primary" icon={ArrowUpRight} onClick={startS3Upload}>
-                Confirm S3 Upload
+              <Button size="sm" variant="primary" icon={ArrowUpRight} onClick={startFileUpload}>
+                Confirm Upload
               </Button>
             </div>
           )}

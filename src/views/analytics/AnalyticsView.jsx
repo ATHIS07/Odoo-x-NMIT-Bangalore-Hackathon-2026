@@ -138,7 +138,7 @@ export const AnalyticsView = () => {
           </div>
           <h1 className="page-title">Workforce Analytics & Executive Reports</h1>
           <p className="page-subtitle">
-            Enterprise intelligence across attendance rates, salary slip allocations, and leave utilization patterns.
+            Enterprise intelligence across attendance rates, shift hours, and leave utilization patterns.
           </p>
         </div>
 

@@ -90,25 +90,6 @@ export const TopHeader = ({ onOpenNotifications, onRouteChange, onOpenCommandPal
           {currentTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })} IST
         </div>
 
-        {/* Lambda Latency Simulation Indicator */}
-        {simulateLatency && (
-          <span
-            style={{
-              fontSize: '0.6875rem',
-              padding: '2px 8px',
-              borderRadius: '9999px',
-              backgroundColor: 'rgba(217, 119, 6, 0.1)',
-              color: '#D97706',
-              fontWeight: 600,
-              display: 'flex',
-              alignItems: 'center',
-              gap: '4px'
-            }}
-          >
-            <Zap size={12} /> Lambda ~450ms
-          </span>
-        )}
-
         {/* Role Pill */}
         <Badge variant={role === 'hr' ? 'role-hr' : 'role-employee'}>
           {role === 'hr' ? 'HR LEAD' : 'EMPLOYEE'}

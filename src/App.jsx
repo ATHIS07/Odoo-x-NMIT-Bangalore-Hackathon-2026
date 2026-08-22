@@ -181,7 +181,7 @@ const MainAppContent = () => {
         </main>
       </div>
 
-      {/* Slide-out SNS Notification Center */}
+      {/* Slide-out Notification Drawer */}
       <NotificationDrawer
         isOpen={isNotifDrawerOpen}
         onClose={() => setIsNotifDrawerOpen(false)}
@@ -231,15 +231,14 @@ const MainAppContent = () => {
             currentRoute === 'attendance' ? (currentUser?.role === 'employee' ? 'Attendance' : 'Workforce Roster') :
             currentRoute === 'leave-apply' ? 'Leave Apply' :
             currentRoute === 'leave-approvals' ? 'Leave Approvals' :
-            currentRoute === 'payroll' ? (currentUser?.role === 'employee' ? 'Payslips' : 'Org Payroll') :
             currentRoute === 'profile' ? 'Profile' :
             currentRoute === 'analytics' ? 'Analytics' :
-            currentRoute === 'admin-dashboard' ? 'Executive HQ' : 'Module'
+            currentRoute === 'admin-dashboard' ? 'HR Management HQ' : 'Module'
           }
         />
       )}
 
-      {/* Hackathon Judge Toolbar */}
+      {/* Navigation & Role Toolbar */}
       <DemoToolbar currentRoute={currentRoute} onRouteChange={handleNavigate} />
     </div>
   );

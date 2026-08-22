@@ -139,14 +139,14 @@ export const CommandPalette = ({ isOpen, onClose, onNavigate, onStartTour }) => 
     },
     {
       id: 'act_switch_elena',
-      title: 'Switch Persona: Elena Rostova (VP People & Operations)',
+      title: 'Switch Persona: Elena Rostova (VP HR & Operations)',
       category: 'Persona Switchers',
       icon: Sparkles,
-      action: () => { switchPersona('admin'); onClose(); }
+      action: () => { switchPersona('hr'); onClose(); }
     },
     {
       id: 'act_reset_data',
-      title: 'Reset Demo Database to Seed State',
+      title: 'Reset Workspace to Default State',
       category: 'System',
       icon: RotateCcw,
       action: () => { resetDemoData(); onClose(); }

@@ -88,7 +88,7 @@ export const ProfileView = ({ onNavigate }) => {
     { id: 'personal', label: 'Personal & Contact', icon: User },
     { id: 'job', label: 'Job & Hierarchy', icon: Building2 },
     { id: 'compensation', label: 'Compensation & Bank', icon: CreditCard },
-    { id: 'documents', label: 'S3 Document Vault', icon: FileText }
+    { id: 'documents', label: 'Document Vault', icon: FileText }
   ];
 
   const handleAvatarFileChange = (e) => {
@@ -508,7 +508,7 @@ export const ProfileView = ({ onNavigate }) => {
                         {doc.name}
                       </div>
                       <div style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)', fontFamily: 'var(--font-mono)' }}>
-                        {doc.size} • Uploaded {doc.uploadDate} • {doc.s3Key}
+                        {doc.size} • Uploaded {doc.uploadDate}
                       </div>
                     </div>
                   </div>
@@ -517,7 +517,7 @@ export const ProfileView = ({ onNavigate }) => {
                     size="sm"
                     variant="ghost"
                     icon={Download}
-                    onClick={() => alert(`Downloading verified document from S3 Vault: ${doc.name}`)}
+                    onClick={() => alert(`Downloading verified document: ${doc.name}`)}
                   >
                     Download
                   </Button>

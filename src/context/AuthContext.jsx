@@ -69,7 +69,7 @@ export const AuthProvider = ({ children }) => {
       designation: 'Associate Specialist',
       avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=240&auto=format&fit=crop&q=80',
       phone: '+91 98450 00112',
-      location: 'Bangalore HQ (Outer Ring Road / NMIT)',
+      location: 'Bangalore HQ (Outer Ring Road Tech Center)',
       joiningDate: new Date().toISOString().split('T')[0],
       status: 'active'
     };
