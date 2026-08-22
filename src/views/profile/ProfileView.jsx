@@ -274,8 +274,8 @@ export const ProfileView = ({ onNavigate }) => {
                   <span style={{ fontWeight: 600 }}>{profile.personalDetails?.dateOfBirth}</span>
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                  <span style={{ color: 'var(--text-secondary)', fontSize: '0.875rem' }}>Gender / Pronouns</span>
-                  <span style={{ fontWeight: 600 }}>{profile.personalDetails?.gender} (She/Her)</span>
+                  <span style={{ color: 'var(--text-secondary)', fontSize: '0.875rem' }}>Gender</span>
+                  <span style={{ fontWeight: 600 }}>{profile.personalDetails?.gender || 'Not specified'}</span>
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                   <span style={{ color: 'var(--text-secondary)', fontSize: '0.875rem' }}>Blood Group</span>

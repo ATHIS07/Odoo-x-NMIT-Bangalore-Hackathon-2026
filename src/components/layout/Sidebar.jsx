@@ -15,9 +15,13 @@ import {
   Users
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
+import { useHRMS } from '../../context/HRMSContext';
 
 export const Sidebar = ({ currentRoute, onRouteChange, onOpenNotifications }) => {
   const { activeUser, role, isAdmin, isHR, isHRorAdmin, signOut, impersonatedUser, stopImpersonation } = useAuth();
+  const { leaves } = useHRMS();
+
+  const pendingLeavesCount = leaves ? leaves.filter((l) => l.status === 'pending').length : 0;
 
   // Role-based navigation structure
   const navItems = [
@@ -44,7 +48,7 @@ export const Sidebar = ({ currentRoute, onRouteChange, onOpenNotifications }) =>
       label: 'Leave Approvals',
       icon: CheckSquare,
       roles: ['hr'],
-      badge: '3 Pending'
+      badge: pendingLeavesCount > 0 ? `${pendingLeavesCount} Pending` : null
     },
     {
       id: 'profile',
