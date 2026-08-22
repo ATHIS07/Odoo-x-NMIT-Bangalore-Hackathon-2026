@@ -190,6 +190,15 @@ export const AuthProvider = ({ children }) => {
     });
   }, [showToast]);
 
+  const updateCurrentUser = useCallback((updates) => {
+    setCurrentUser((prev) => {
+      if (!prev) return prev;
+      const updated = { ...prev, ...updates };
+      localStorage.setItem('dayflow_auth_user', JSON.stringify(updated));
+      return updated;
+    });
+  }, []);
+
   // Active Effective User
   const activeUser = impersonatedUser || currentUser;
 
@@ -217,6 +226,7 @@ export const AuthProvider = ({ children }) => {
         verifySignUp,
         requestPasswordReset,
         confirmPasswordReset,
+        updateCurrentUser,
         signOut,
         switchPersona,
         startImpersonation,

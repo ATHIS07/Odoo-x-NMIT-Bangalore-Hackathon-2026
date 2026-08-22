@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { motion } from 'framer-motion';
 import {
   User,
@@ -13,16 +13,21 @@ import {
   ShieldCheck,
   Download,
   ExternalLink,
-  Lock
+  Lock,
+  Camera,
+  UploadCloud
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { useHRMS } from '../../context/HRMSContext';
+import { useToast } from '../../context/ToastContext';
 import { Button, Card, Badge } from '../../components/common/CommonUI';
 
 export const ProfileView = ({ onNavigate }) => {
-  const { activeUser, role, isHRorAdmin } = useAuth();
-  const { profiles } = useHRMS();
+  const { activeUser, role, isHRorAdmin, updateCurrentUser } = useAuth();
+  const { profiles, updateProfile } = useHRMS();
+  const { showToast } = useToast();
 
+  const avatarInputRef = useRef(null);
   const [activeTab, setActiveTab] = useState('personal');
 
   const profile = profiles[activeUser.id] || {
@@ -86,43 +91,101 @@ export const ProfileView = ({ onNavigate }) => {
     { id: 'documents', label: 'S3 Document Vault', icon: FileText }
   ];
 
+  const handleAvatarFileChange = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith('image/')) {
+      showToast({
+        title: 'Invalid File',
+        message: 'Please select a valid image file (PNG, JPG, WebP)',
+        type: 'error'
+      });
+      return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      showToast({
+        title: 'File Too Large',
+        message: 'Image size should be under 5 MB',
+        type: 'error'
+      });
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = async (event) => {
+      const base64Data = event.target.result;
+      await updateProfile(activeUser.id, { avatar: base64Data });
+      if (updateCurrentUser) {
+        updateCurrentUser({ avatar: base64Data });
+      }
+      showToast({
+        title: 'Profile Photo Updated',
+        message: 'New photo successfully uploaded from your local computer',
+        type: 'success'
+      });
+    };
+    reader.readAsDataURL(file);
+  };
+
   return (
     <div className="page-wrapper">
+      {/* Hidden File Input for Instant Avatar Upload */}
+      <input
+        ref={avatarInputRef}
+        type="file"
+        accept="image/png, image/jpeg, image/jpg, image/webp, image/gif"
+        onChange={handleAvatarFileChange}
+        style={{ display: 'none' }}
+      />
+
       {/* Profile Header Dossier Card */}
       <Card elevated style={{ marginBottom: '2rem', padding: '2rem' }}>
         <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '1.5rem', flexWrap: 'wrap' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
-            <div style={{ position: 'relative' }}>
+            <div style={{ position: 'relative' }} className="avatar-upload-container">
               <img
                 src={activeUser.avatar}
                 alt={activeUser.name}
                 style={{
                   width: '96px',
                   height: '96px',
-                  borderRadius: '20px',
+                  borderRadius: '16px',
                   objectFit: 'cover',
-                  border: '3px solid var(--primary-600)',
-                  boxShadow: 'var(--shadow-md)'
+                  border: '3px solid var(--color-primary)',
+                  boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
                 }}
               />
-              <span
+              <button
+                type="button"
+                onClick={() => avatarInputRef.current?.click()}
                 style={{
                   position: 'absolute',
                   bottom: '-4px',
                   right: '-4px',
-                  width: '20px',
-                  height: '20px',
+                  width: '32px',
+                  height: '32px',
                   borderRadius: '50%',
-                  backgroundColor: 'var(--emerald-500)',
-                  border: '3px solid var(--bg-surface)'
+                  backgroundColor: 'var(--color-primary)',
+                  color: '#FFFFFF',
+                  border: '2px solid #FFFFFF',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  cursor: 'pointer',
+                  boxShadow: '0 2px 6px rgba(0,0,0,0.2)',
+                  transition: 'all 0.15s ease'
                 }}
-                title="Active Employee Status"
-              />
+                title="Upload profile photo from computer"
+              >
+                <Camera size={16} />
+              </button>
             </div>
 
             <div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.35rem' }}>
-                <h1 style={{ fontSize: '1.75rem', fontWeight: 800, margin: 0 }}>
+                <h1 style={{ fontSize: '1.75rem', fontWeight: 700, margin: 0, color: 'var(--color-text-heading)' }}>
                   {profile.personalDetails?.fullName || activeUser.name}
                 </h1>
                 <Badge variant={role === 'admin' ? 'role-admin' : role === 'hr' ? 'role-hr' : 'role-employee'}>
@@ -130,13 +193,13 @@ export const ProfileView = ({ onNavigate }) => {
                 </Badge>
               </div>
 
-              <div style={{ fontSize: '0.9375rem', color: 'var(--text-secondary)', fontWeight: 600 }}>
+              <div style={{ fontSize: '0.9375rem', color: 'var(--color-text-body)', fontWeight: 500 }}>
                 {profile.jobDetails?.designation || activeUser.designation} • {profile.jobDetails?.department || activeUser.department}
               </div>
 
-              <div style={{ display: 'flex', gap: '1.25rem', marginTop: '0.75rem', fontSize: '0.8125rem', color: 'var(--text-tertiary)', flexWrap: 'wrap' }}>
+              <div style={{ display: 'flex', gap: '1.25rem', marginTop: '0.75rem', fontSize: '0.8125rem', color: 'var(--color-text-muted)', flexWrap: 'wrap' }}>
                 <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                  <Mail size={14} color="var(--primary-600)" /> {activeUser.email}
+                  <Mail size={14} color="var(--color-primary)" /> {activeUser.email}
                 </span>
                 <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
                   <Phone size={14} /> {profile.phone || activeUser.phone}
@@ -144,7 +207,7 @@ export const ProfileView = ({ onNavigate }) => {
                 <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
                   <MapPin size={14} /> {profile.address?.city || activeUser.location}
                 </span>
-                <span style={{ display: 'flex', alignItems: 'center', gap: '4px', fontFamily: 'var(--font-mono)' }}>
+                <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
                   ID: {activeUser.employeeId}
                 </span>
               </div>
