@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Eye, EyeOff, AlertCircle, ArrowLeft, Database, Globe } from 'lucide-react';
+import { Eye, EyeOff, AlertCircle, ArrowLeft, Database, Globe, Code, Sparkles, UserCheck, Shield, RefreshCw } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
+import { ApiInspectorModal } from '../../components/common/ApiInspectorModal';
 
 export const SignUpView = ({ onNavigate }) => {
-  const { signUp, verifySignUp } = useAuth();
+  const { signUp, verifySignUp, directSignUp } = useAuth();
 
   const [step, setStep] = useState(1); // 1: Form, 2: OTP Verification
   const [formData, setFormData] = useState({
@@ -13,7 +14,8 @@ export const SignUpView = ({ onNavigate }) => {
     email: 'julian.hayes@odoo.com',
     password: 'Odoo@2026Secure!',
     department: 'Engineering',
-    role: 'employee'
+    role: 'employee',
+    phone: '+91 98450 78192'
   });
 
   const [showPassword, setShowPassword] = useState(false);
@@ -21,8 +23,12 @@ export const SignUpView = ({ onNavigate }) => {
   const [otpCode, setOtpCode] = useState(['8', '4', '9', '2', '0', '1']);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [directLoading, setDirectLoading] = useState(false);
   const [resendTimer, setResendTimer] = useState(45);
   const [canResend, setCanResend] = useState(false);
+
+  // API Inspector Modal State
+  const [isApiModalOpen, setIsApiModalOpen] = useState(false);
 
   // Countdown timer for OTP resend
   useEffect(() => {
@@ -36,6 +42,11 @@ export const SignUpView = ({ onNavigate }) => {
     }
     return () => clearInterval(interval);
   }, [step, resendTimer]);
+
+  const handleGenerateId = () => {
+    const randomNum = Math.floor(1000 + Math.random() * 9000);
+    setFormData((prev) => ({ ...prev, employeeId: `DF-${randomNum}` }));
+  };
 
   const handleRegisterSubmit = async (e) => {
     e.preventDefault();
@@ -56,6 +67,27 @@ export const SignUpView = ({ onNavigate }) => {
       setError(err.message || 'Registration failed');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleDirectCreate = async () => {
+    setError('');
+    if (!agreedTerms) {
+      setError('Please accept the Terms of Service to proceed.');
+      return;
+    }
+    setDirectLoading(true);
+    try {
+      const verified = await directSignUp(formData);
+      if (verified.role === 'hr') {
+        onNavigate('admin-dashboard');
+      } else {
+        onNavigate('employee-dashboard');
+      }
+    } catch (err) {
+      setError(err.message || 'Direct creation failed');
+    } finally {
+      setDirectLoading(false);
     }
   };
 
@@ -121,6 +153,11 @@ export const SignUpView = ({ onNavigate }) => {
     }
   };
 
+  const handleAutofillOtp = () => {
+    setOtpCode(['8', '4', '9', '2', '0', '1']);
+    setError('');
+  };
+
   return (
     <div className="auth-odoo-wrapper">
       {/* Odoo Enterprise Portal Header Bar */}
@@ -151,7 +188,30 @@ export const SignUpView = ({ onNavigate }) => {
           </span>
         </div>
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: '1.25rem', fontSize: '0.8125rem', color: '#4C4C4C' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', fontSize: '0.8125rem', color: '#4C4C4C' }}>
+          {/* API Inspector Button */}
+          <button
+            type="button"
+            onClick={() => setIsApiModalOpen(true)}
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '0.35rem',
+              padding: '4px 10px',
+              borderRadius: '6px',
+              backgroundColor: '#F5EFF3',
+              border: '1px solid #D5BDCF',
+              color: '#714B67',
+              fontSize: '0.75rem',
+              fontWeight: 600,
+              cursor: 'pointer'
+            }}
+            title="Inspect REST API Specs, Headers and Endpoints"
+          >
+            <Code size={13} />
+            <span>API Docs</span>
+          </button>
+
           <span style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', color: '#8A8A8A' }}>
             <Database size={13} color="#714B67" />
             <span style={{ fontFamily: 'var(--font-sans)' }}>enterprise.odoo.com</span>
@@ -165,31 +225,57 @@ export const SignUpView = ({ onNavigate }) => {
 
       {/* Main Odoo Register Card */}
       <motion.div
-        initial={{ opacity: 0, y: 6 }}
+        initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.2 }}
+        transition={{ duration: 0.25 }}
         className="auth-odoo-card"
-        style={{ maxWidth: '440px' }}
+        style={{ maxWidth: '480px' }}
       >
-        {/* Database Status Tag */}
-        <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '1.5rem' }}>
-          <div
+        {/* Navigation Switcher Tabs (Sign In vs Sign Up) */}
+        <div
+          style={{
+            display: 'flex',
+            backgroundColor: '#F5F5F5',
+            padding: '3px',
+            borderRadius: '8px',
+            marginBottom: '1.5rem'
+          }}
+        >
+          <button
+            type="button"
+            onClick={() => onNavigate('signin')}
             style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '0.4rem',
-              padding: '3px 10px',
-              borderRadius: '999px',
-              backgroundColor: '#F5EFF3',
-              border: '1px solid #EADEE7',
-              fontSize: '0.75rem',
+              flex: 1,
+              padding: '0.5rem 0',
+              border: 'none',
+              borderRadius: '6px',
+              backgroundColor: 'transparent',
+              color: '#666666',
               fontWeight: 500,
-              color: '#714B67'
+              fontSize: '0.875rem',
+              cursor: 'pointer',
+              transition: 'all 0.15s ease'
             }}
           >
-            <span style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#28A745', display: 'inline-block' }} />
-            New Identity Provisioning
-          </div>
+            Sign In
+          </button>
+          <button
+            type="button"
+            style={{
+              flex: 1,
+              padding: '0.5rem 0',
+              border: 'none',
+              borderRadius: '6px',
+              backgroundColor: '#FFFFFF',
+              color: '#714B67',
+              fontWeight: 600,
+              fontSize: '0.875rem',
+              boxShadow: '0 1px 3px rgba(0,0,0,0.08)',
+              cursor: 'default'
+            }}
+          >
+            Sign Up
+          </button>
         </div>
 
         <AnimatePresence mode="wait">
@@ -201,7 +287,7 @@ export const SignUpView = ({ onNavigate }) => {
               exit={{ opacity: 0 }}
             >
               {/* Heading */}
-              <div style={{ textAlign: 'center', marginBottom: '1.5rem' }}>
+              <div style={{ textAlign: 'center', marginBottom: '1.25rem' }}>
                 <h1 style={{ fontSize: '1.375rem', fontWeight: 600, color: '#1A1A1A', marginBottom: '0.25rem' }}>
                   Create your account
                 </h1>
@@ -212,7 +298,7 @@ export const SignUpView = ({ onNavigate }) => {
 
               <form onSubmit={handleRegisterSubmit}>
                 {/* Full Name */}
-                <div style={{ marginBottom: '1.25rem' }}>
+                <div style={{ marginBottom: '1rem' }}>
                   <label style={{ display: 'block', fontSize: '0.8125rem', fontWeight: 500, color: '#4C4C4C', marginBottom: '0.35rem' }}>
                     Full Name
                   </label>
@@ -227,11 +313,32 @@ export const SignUpView = ({ onNavigate }) => {
                 </div>
 
                 {/* Employee ID & Department Grid */}
-                <div className="grid-2" style={{ gap: '0.75rem', marginBottom: '1.25rem' }}>
+                <div className="grid-2" style={{ gap: '0.75rem', marginBottom: '1rem' }}>
                   <div>
-                    <label style={{ display: 'block', fontSize: '0.8125rem', fontWeight: 500, color: '#4C4C4C', marginBottom: '0.35rem' }}>
-                      Employee ID
-                    </label>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.35rem' }}>
+                      <label style={{ fontSize: '0.8125rem', fontWeight: 500, color: '#4C4C4C', margin: 0 }}>
+                        Employee ID
+                      </label>
+                      <button
+                        type="button"
+                        onClick={handleGenerateId}
+                        style={{
+                          background: 'none',
+                          border: 'none',
+                          color: '#714B67',
+                          fontSize: '0.6875rem',
+                          fontWeight: 600,
+                          cursor: 'pointer',
+                          padding: 0,
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '2px'
+                        }}
+                        title="Auto-generate Employee ID"
+                      >
+                        <RefreshCw size={10} /> Auto
+                      </button>
+                    </div>
                     <input
                       type="text"
                       required
@@ -261,10 +368,68 @@ export const SignUpView = ({ onNavigate }) => {
                   </div>
                 </div>
 
-                {/* Email Address */}
-                <div style={{ marginBottom: '1.25rem' }}>
+                {/* Role Selector (Employee vs HR) */}
+                <div style={{ marginBottom: '1rem' }}>
                   <label style={{ display: 'block', fontSize: '0.8125rem', fontWeight: 500, color: '#4C4C4C', marginBottom: '0.35rem' }}>
-                    Email
+                    Account Role & Permissions
+                  </label>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem' }}>
+                    <button
+                      type="button"
+                      onClick={() => setFormData({ ...formData, role: 'employee' })}
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '0.5rem',
+                        padding: '8px 10px',
+                        borderRadius: '6px',
+                        border: `1px solid ${formData.role === 'employee' ? '#714B67' : '#E5E5E5'}`,
+                        backgroundColor: formData.role === 'employee' ? '#F5EFF3' : '#FFFFFF',
+                        color: formData.role === 'employee' ? '#714B67' : '#4C4C4C',
+                        fontSize: '0.75rem',
+                        fontWeight: formData.role === 'employee' ? 600 : 500,
+                        cursor: 'pointer',
+                        textAlign: 'left'
+                      }}
+                    >
+                      <UserCheck size={14} />
+                      <div>
+                        <div style={{ fontWeight: 600 }}>Employee</div>
+                        <div style={{ fontSize: '0.6875rem', color: '#8A8A8A' }}>Self-Service</div>
+                      </div>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => setFormData({ ...formData, role: 'hr' })}
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '0.5rem',
+                        padding: '8px 10px',
+                        borderRadius: '6px',
+                        border: `1px solid ${formData.role === 'hr' ? '#714B67' : '#E5E5E5'}`,
+                        backgroundColor: formData.role === 'hr' ? '#F5EFF3' : '#FFFFFF',
+                        color: formData.role === 'hr' ? '#714B67' : '#4C4C4C',
+                        fontSize: '0.75rem',
+                        fontWeight: formData.role === 'hr' ? 600 : 500,
+                        cursor: 'pointer',
+                        textAlign: 'left'
+                      }}
+                    >
+                      <Shield size={14} />
+                      <div>
+                        <div style={{ fontWeight: 600 }}>HR Admin</div>
+                        <div style={{ fontSize: '0.6875rem', color: '#8A8A8A' }}>Full HQ Access</div>
+                      </div>
+                    </button>
+                  </div>
+                </div>
+
+                {/* Email Address */}
+                <div style={{ marginBottom: '1rem' }}>
+                  <label style={{ display: 'block', fontSize: '0.8125rem', fontWeight: 500, color: '#4C4C4C', marginBottom: '0.35rem' }}>
+                    Work Email
                   </label>
                   <input
                     type="email"
@@ -272,7 +437,7 @@ export const SignUpView = ({ onNavigate }) => {
                     value={formData.email}
                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                     className="auth-odoo-input"
-                    placeholder="julian.hayes@company.com"
+                    placeholder="julian.hayes@odoo.com"
                   />
                 </div>
 
@@ -289,7 +454,7 @@ export const SignUpView = ({ onNavigate }) => {
                       onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                       className="auth-odoo-input"
                       style={{ paddingRight: '2.5rem' }}
-                      placeholder="Create a password"
+                      placeholder="Create a secure password"
                     />
                     <button
                       type="button"
@@ -315,7 +480,7 @@ export const SignUpView = ({ onNavigate }) => {
                 </div>
 
                 {/* Terms Checkbox */}
-                <div style={{ marginBottom: '1.5rem' }}>
+                <div style={{ marginBottom: '1.25rem' }}>
                   <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.8125rem', color: '#4C4C4C', cursor: 'pointer' }}>
                     <input
                       type="checkbox"
@@ -346,17 +511,44 @@ export const SignUpView = ({ onNavigate }) => {
                   </div>
                 )}
 
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className="auth-odoo-btn"
-                >
-                  {loading ? 'Creating Account...' : 'Sign up'}
-                </button>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.625rem' }}>
+                  <button
+                    type="submit"
+                    disabled={loading || directLoading}
+                    className="auth-odoo-btn"
+                  >
+                    {loading ? 'Dispatched OTP via API...' : 'Sign up (Verify with OTP)'}
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={handleDirectCreate}
+                    disabled={loading || directLoading}
+                    style={{
+                      width: '100%',
+                      backgroundColor: '#FFFFFF',
+                      color: '#714B67',
+                      border: '1px solid #714B67',
+                      borderRadius: '6px',
+                      padding: '0.625rem 1rem',
+                      fontSize: '0.8125rem',
+                      fontWeight: 600,
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: '0.35rem',
+                      transition: 'all 0.15s ease'
+                    }}
+                  >
+                    <Sparkles size={13} color="#714B67" />
+                    <span>{directLoading ? 'Creating identity...' : 'Instant Create & Sign In (Demo)'}</span>
+                  </button>
+                </div>
               </form>
 
               {/* Bottom Login Link */}
-              <div style={{ marginTop: '1.75rem', textAlign: 'center', fontSize: '0.875rem', color: '#4C4C4C' }}>
+              <div style={{ marginTop: '1.5rem', textAlign: 'center', fontSize: '0.875rem', color: '#4C4C4C' }}>
                 Already have an account?{' '}
                 <button
                   type="button"
@@ -365,7 +557,7 @@ export const SignUpView = ({ onNavigate }) => {
                     background: 'none',
                     border: 'none',
                     color: '#714B67',
-                    fontWeight: 500,
+                    fontWeight: 600,
                     cursor: 'pointer',
                     padding: 0
                   }}
@@ -382,13 +574,36 @@ export const SignUpView = ({ onNavigate }) => {
               exit={{ opacity: 0 }}
             >
               {/* Heading */}
-              <div style={{ textAlign: 'center', marginBottom: '1.5rem' }}>
+              <div style={{ textAlign: 'center', marginBottom: '1.25rem' }}>
                 <h1 style={{ fontSize: '1.375rem', fontWeight: 600, color: '#1A1A1A', marginBottom: '0.25rem' }}>
-                  Verify code
+                  Verify your account
                 </h1>
                 <p style={{ fontSize: '0.875rem', color: '#8A8A8A' }}>
-                  Enter the 6-digit code sent to <strong>{formData.email}</strong>
+                  Enter the 6-digit OTP code sent to <strong>{formData.email}</strong>
                 </p>
+              </div>
+
+              {/* Quick autofill hint */}
+              <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '1rem' }}>
+                <button
+                  type="button"
+                  onClick={handleAutofillOtp}
+                  style={{
+                    background: '#F5EFF3',
+                    border: '1px solid #D5BDCF',
+                    color: '#714B67',
+                    borderRadius: '999px',
+                    padding: '3px 10px',
+                    fontSize: '0.75rem',
+                    fontWeight: 600,
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '4px'
+                  }}
+                >
+                  <Sparkles size={11} /> Autofill Demo Code (849201)
+                </button>
               </div>
 
               <form onSubmit={handleVerifyOtp}>
@@ -403,7 +618,7 @@ export const SignUpView = ({ onNavigate }) => {
                       onChange={(e) => handleOtpChange(idx, e.target.value)}
                       onKeyDown={(e) => handleOtpKeyDown(idx, e)}
                       className="auth-otp-input-box"
-                      style={{ width: '44px', height: '50px', fontSize: '1.25rem' }}
+                      style={{ width: '46px', height: '52px', fontSize: '1.25rem', textAlign: 'center', borderRadius: '8px', border: '1px solid #CCCCCC' }}
                     />
                   ))}
                 </div>
@@ -432,7 +647,7 @@ export const SignUpView = ({ onNavigate }) => {
                   disabled={loading}
                   className="auth-odoo-btn"
                 >
-                  {loading ? 'Verifying...' : 'Verify & Log in'}
+                  {loading ? 'Verifying via API...' : 'Verify OTP & Activate Session'}
                 </button>
               </form>
 
@@ -451,7 +666,7 @@ export const SignUpView = ({ onNavigate }) => {
                     gap: '0.25rem'
                   }}
                 >
-                  <ArrowLeft size={14} /> Back
+                  <ArrowLeft size={14} /> Back to details
                 </button>
 
                 <button
@@ -480,8 +695,14 @@ export const SignUpView = ({ onNavigate }) => {
         <div>
           Powered by <strong style={{ color: '#714B67' }}>Odoo Enterprise</strong> • Open Source Business Software
         </div>
-        <div style={{ display: 'flex', gap: '1rem' }}>
-          <a href="#databases" onClick={(e) => e.preventDefault()} style={{ color: '#8A8A8A', textDecoration: 'none' }}>Manage Databases</a>
+        <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+          <button
+            type="button"
+            onClick={() => setIsApiModalOpen(true)}
+            style={{ background: 'none', border: 'none', color: '#714B67', fontSize: '0.8125rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px', fontWeight: 500 }}
+          >
+            <Code size={13} /> REST API Endpoints
+          </button>
           <span>•</span>
           <a href="#help" onClick={(e) => e.preventDefault()} style={{ color: '#8A8A8A', textDecoration: 'none' }}>Help</a>
           <span>•</span>
@@ -490,6 +711,13 @@ export const SignUpView = ({ onNavigate }) => {
           <a href="#privacy" onClick={(e) => e.preventDefault()} style={{ color: '#8A8A8A', textDecoration: 'none' }}>Privacy</a>
         </div>
       </footer>
+
+      {/* API Inspector Modal */}
+      <ApiInspectorModal
+        isOpen={isApiModalOpen}
+        onClose={() => setIsApiModalOpen(false)}
+        defaultEndpoint="signup"
+      />
     </div>
   );
 };

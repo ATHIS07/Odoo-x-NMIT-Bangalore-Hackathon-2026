@@ -64,7 +64,9 @@ const MainAppContent = () => {
   // Sync route on role switch
   useEffect(() => {
     if (!currentUser) {
-      setCurrentRoute('signin');
+      if (currentRoute !== 'signup' && currentRoute !== 'signin') {
+        setCurrentRoute('signin');
+      }
       return;
     }
 
@@ -99,7 +101,7 @@ const MainAppContent = () => {
     }
 
     // Role guard check
-    if (!isHR && ['admin-dashboard', 'leave-approvals', 'analytics'].includes(targetRoute)) {
+    if (currentUser && !isHR && ['admin-dashboard', 'leave-approvals', 'analytics'].includes(targetRoute)) {
       showToast({
         title: 'Access Restricted',
         message: 'This view requires HR role permissions',
@@ -110,35 +112,31 @@ const MainAppContent = () => {
     setCurrentRoute(targetRoute);
   };
 
-  // Standalone Auth Screens
-  if (!currentUser || currentRoute === 'signin') {
+  // Standalone Auth Screens (Sign In or Sign Up)
+  if (!currentUser || currentRoute === 'signin' || currentRoute === 'signup') {
     return (
       <AnimatePresence mode="wait">
-        <motion.div
-          key="signin"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.2 }}
-        >
-          <SignInView onNavigate={handleNavigate} />
-        </motion.div>
-      </AnimatePresence>
-    );
-  }
-
-  if (currentRoute === 'signup') {
-    return (
-      <AnimatePresence mode="wait">
-        <motion.div
-          key="signup"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.2 }}
-        >
-          <SignUpView onNavigate={handleNavigate} />
-        </motion.div>
+        {currentRoute === 'signup' ? (
+          <motion.div
+            key="signup"
+            initial={{ opacity: 0, y: 6 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -6 }}
+            transition={{ duration: 0.2 }}
+          >
+            <SignUpView onNavigate={handleNavigate} />
+          </motion.div>
+        ) : (
+          <motion.div
+            key="signin"
+            initial={{ opacity: 0, y: 6 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -6 }}
+            transition={{ duration: 0.2 }}
+          >
+            <SignInView onNavigate={handleNavigate} />
+          </motion.div>
+        )}
       </AnimatePresence>
     );
   }

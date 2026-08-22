@@ -1349,3 +1349,45 @@ button:focus-visible, a:focus-visible {
     visibility: visible !important;
   }
 }
+
+.auth-otp-input-box {
+  background-color: #FFFFFF;
+  border: 1.5px solid #D5BDCF;
+  border-radius: 8px;
+  text-align: center;
+  font-family: var(--font-mono, monospace);
+  font-weight: 700;
+  color: #1A1A1A;
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.auth-otp-input-box:focus {
+  border-color: #714B67;
+  box-shadow: 0 0 0 3px rgba(113, 75, 103, 0.15);
+}
+
+.auth-modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  padding: 1rem;
+}
+
+.auth-modal-content {
+  background-color: #FFFFFF;
+  border-radius: 12px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+  width: 100%;
+  max-width: 440px;
+  position: relative;
+}
+

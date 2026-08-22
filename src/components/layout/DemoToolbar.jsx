@@ -9,8 +9,9 @@ export const DemoToolbar = ({ currentRoute, onRouteChange }) => {
   const [isExpanded, setIsExpanded] = useState(true);
 
   const personas = [
-    { role: 'employee', name: 'Sophia (Employee)', id: 'usr_001', color: 'var(--color-primary)' },
-    { role: 'hr', name: 'Marcus (HR Lead)', id: 'usr_002', color: 'var(--color-primary-hover)' }
+    { role: 'employee', name: 'Sophia (Emp 1)', id: 'usr_001', color: 'var(--color-primary)' },
+    { role: 'employee', name: 'Liam (Emp 2)', id: 'usr_004', color: 'var(--color-primary)' },
+    { role: 'hr', name: 'Marcus (HR 1)', id: 'usr_002', color: 'var(--color-primary-hover)' }
   ];
 
   const screens = [
@@ -83,11 +84,11 @@ export const DemoToolbar = ({ currentRoute, onRouteChange }) => {
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
             <span style={{ fontSize: '0.6875rem', color: '#AAAAAA', fontWeight: 500, textTransform: 'uppercase' }}>Persona:</span>
             {personas.map((p) => {
-              const isCurrent = currentUser?.role === p.role;
+              const isCurrent = currentUser?.id === p.id;
               return (
                 <button
-                  key={p.role}
-                  onClick={() => switchPersona(p.role)}
+                  key={p.id}
+                  onClick={() => switchPersona(p.id)}
                   style={{
                     padding: '4px 9px',
                     borderRadius: '6px',

@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { INITIAL_USERS } from '../data/mockData';
+import { authApi } from '../services/authApi';
 import { useToast } from './ToastContext';
 
 const AuthContext = createContext(null);
@@ -31,120 +32,128 @@ export const AuthProvider = ({ children }) => {
     }
   }, [currentUser]);
 
-  // Cognito Sign-In Mock
+  // Sign-In via standard authApi service
   const signIn = useCallback(async ({ email, password }) => {
-    // Check credentials against mock users
-    const matched = INITIAL_USERS.find(
-      (u) => u.email.toLowerCase() === email.trim().toLowerCase()
-    );
-
-    if (!matched) {
-      throw new Error('Invalid credentials: User does not exist in directory');
+    try {
+      const response = await authApi.login({ email, password });
+      const user = response.user;
+      setCurrentUser(user);
+      setImpersonatedUser(null);
+      showToast({
+        title: 'Authentication Verified',
+        message: `Signed in as ${user.name} (${user.role.toUpperCase()})`,
+        type: 'success'
+      });
+      return user;
+    } catch (err) {
+      throw err;
     }
-
-    if (password.length < 6) {
-      throw new Error('Password must be at least 6 characters');
-    }
-
-    setCurrentUser(matched);
-    setImpersonatedUser(null);
-    showToast({
-      title: 'Authentication Verified',
-      message: `Signed in as ${matched.name} (${matched.role.toUpperCase()})`,
-      type: 'success'
-    });
-    return matched;
   }, [showToast]);
 
-  // Sign-Up Mock
-  const signUp = useCallback(async ({ employeeId, email, password, role, name }) => {
-    // Generate temporary verification state
-    const newUser = {
-      id: `usr_${Date.now()}`,
-      employeeId: employeeId.toUpperCase(),
-      name: name || email.split('@')[0],
-      email: email.trim().toLowerCase(),
-      role: role || 'employee',
-      department: 'Engineering',
-      designation: 'Associate Specialist',
-      avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=240&auto=format&fit=crop&q=80',
-      phone: '+91 98450 00112',
-      location: 'Bangalore HQ (Outer Ring Road Tech Center)',
-      joiningDate: new Date().toISOString().split('T')[0],
-      status: 'active'
-    };
+  // Sign-Up via standard authApi service
+  const signUp = useCallback(async (userData) => {
+    try {
+      const response = await authApi.signup(userData);
+      setPendingVerification({
+        user: response.user,
+        code: response.verificationCode || '849201',
+        tempToken: response.tempToken,
+        expiresIn: 300
+      });
 
-    setPendingVerification({
-      user: newUser,
-      code: '849201', // Standard demo verification code
-      expiresIn: 300 // 5 minutes
-    });
+      showSNSToast({
+        title: 'Verification Code Dispatched',
+        message: `Verification code ${response.verificationCode || '849201'} sent to ${userData.email}`,
+        source: 'Odoo Auth Gateway'
+      });
 
-    showSNSToast({
-      title: 'Verification Code Sent',
-      message: `Verification code 849201 sent to ${email}`,
-      source: 'Odoo Auth'
-    });
-
-    return newUser;
+      return response;
+    } catch (err) {
+      throw err;
+    }
   }, [showSNSToast]);
 
-  // Verify OTP Step
+  // Verify OTP Step via standard authApi service
   const verifySignUp = useCallback(async (code) => {
-    if (!pendingVerification) {
-      throw new Error('No pending signup session found');
+    try {
+      const response = await authApi.verifyOtp({
+        code,
+        tempToken: pendingVerification?.tempToken,
+        email: pendingVerification?.user?.email
+      });
+      const verifiedUser = response.user;
+      setCurrentUser(verifiedUser);
+      setPendingVerification(null);
+
+      showToast({
+        title: 'Account Provisioned & Confirmed',
+        message: `Welcome to Odoo, ${verifiedUser.name}!`,
+        type: 'success'
+      });
+
+      return verifiedUser;
+    } catch (err) {
+      throw err;
     }
-
-    if (code !== '849201' && code !== '123456') {
-      throw new Error('Invalid confirmation code. (Hint: Try 849201)');
-    }
-
-    const verifiedUser = pendingVerification.user;
-    setCurrentUser(verifiedUser);
-    setPendingVerification(null);
-
-    showToast({
-      title: 'Account Confirmed',
-      message: `Welcome to Odoo, ${verifiedUser.name}!`,
-      type: 'success'
-    });
-
-    return verifiedUser;
   }, [pendingVerification, showToast]);
+
+  // Direct Sign-Up (Immediate provision without OTP wait)
+  const directSignUp = useCallback(async (userData) => {
+    try {
+      const signupRes = await authApi.signup(userData);
+      const verifyRes = await authApi.verifyOtp({
+        code: signupRes.verificationCode || '849201',
+        tempToken: signupRes.tempToken,
+        email: userData.email
+      });
+      const verifiedUser = verifyRes.user;
+      setCurrentUser(verifiedUser);
+      setPendingVerification(null);
+
+      showToast({
+        title: 'Account Created',
+        message: `Welcome aboard, ${verifiedUser.name}!`,
+        type: 'success'
+      });
+
+      return verifiedUser;
+    } catch (err) {
+      throw err;
+    }
+  }, [showToast]);
 
   // Password Reset Flow Mock
   const requestPasswordReset = useCallback(async (email) => {
-    const matched = INITIAL_USERS.find(
-      (u) => u.email.toLowerCase() === email.trim().toLowerCase()
-    );
-    if (!matched) {
-      throw new Error('Email not found in enterprise identity directory');
+    try {
+      const response = await authApi.forgotPassword({ email });
+      showSNSToast({
+        title: 'Password Reset Code Sent',
+        message: `Reset token ${response.resetToken || '932140'} dispatched to ${email}`,
+        source: 'Odoo Auth Gateway'
+      });
+      return response;
+    } catch (err) {
+      throw err;
     }
-    showSNSToast({
-      title: 'Password Reset Code Sent',
-      message: `Password reset token 932140 dispatched to ${email}`,
-      source: 'Odoo Auth'
-    });
-    return { email, code: '932140' };
   }, [showSNSToast]);
 
   const confirmPasswordReset = useCallback(async ({ email, code, newPassword }) => {
-    if (code !== '932140' && code !== '123456') {
-      throw new Error('Invalid or expired reset code. (Demo code: 932140)');
+    try {
+      await authApi.resetPassword({ email, code, newPassword });
+      showToast({
+        title: 'Password Updated',
+        message: 'Your password has been securely reset. Please sign in.',
+        type: 'success'
+      });
+      return true;
+    } catch (err) {
+      throw err;
     }
-    if (newPassword.length < 8) {
-      throw new Error('New password must be at least 8 characters');
-    }
-    showToast({
-      title: 'Password Updated',
-      message: 'Your password has been securely reset. Please sign in.',
-      type: 'success'
-    });
-    return true;
   }, [showToast]);
 
   // Sign Out
-  const signOut = useCallback(() => {
+  const signOut = useCallback(async () => {
+    await authApi.logout();
     setCurrentUser(null);
     setImpersonatedUser(null);
     showToast({
@@ -156,16 +165,26 @@ export const AuthProvider = ({ children }) => {
 
   // Quick Persona Switcher
   const switchPersona = useCallback((roleOrUserId) => {
+    let allUsers = INITIAL_USERS;
+    try {
+      const saved = localStorage.getItem('df_users');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed)) allUsers = parsed;
+      }
+    } catch (e) { /* ignore */ }
+
     let target = null;
     if (['employee', 'hr'].includes(roleOrUserId)) {
-      target = INITIAL_USERS.find((u) => u.role === roleOrUserId);
+      target = allUsers.find((u) => u.role === roleOrUserId);
     } else {
-      target = INITIAL_USERS.find((u) => u.id === roleOrUserId || u.employeeId === roleOrUserId);
+      target = allUsers.find((u) => u.id === roleOrUserId || u.employeeId === roleOrUserId);
     }
 
     if (target) {
       setCurrentUser(target);
       setImpersonatedUser(null);
+      localStorage.setItem('odoo_auth_user', JSON.stringify(target));
       showToast({
         title: 'Role Switched',
         message: `Switched identity to ${target.name} (${target.role.toUpperCase()})`,
@@ -229,6 +248,7 @@ export const AuthProvider = ({ children }) => {
         signIn,
         signUp,
         verifySignUp,
+        directSignUp,
         requestPasswordReset,
         confirmPasswordReset,
         updateCurrentUser,
@@ -250,3 +270,4 @@ export const useAuth = () => {
   }
   return context;
 };
+
