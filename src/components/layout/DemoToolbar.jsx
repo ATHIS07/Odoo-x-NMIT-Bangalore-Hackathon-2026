@@ -29,6 +29,10 @@ export const DemoToolbar = ({ currentRoute, onRouteChange }) => {
     { id: 'signup', label: '12. Sign Up (OTP Flow)', roleReq: 'all' }
   ];
 
+  if (currentRoute === 'signin' || currentRoute === 'signup') {
+    return null;
+  }
+
   return (
     <div
       style={{

@@ -92,7 +92,6 @@ const MainAppContent = () => {
           transition={{ duration: 0.2 }}
         >
           <SignInView onNavigate={handleNavigate} />
-          <DemoToolbar currentRoute={currentRoute} onRouteChange={handleNavigate} />
         </motion.div>
       </AnimatePresence>
     );
@@ -109,7 +108,6 @@ const MainAppContent = () => {
           transition={{ duration: 0.2 }}
         >
           <SignUpView onNavigate={handleNavigate} />
-          <DemoToolbar currentRoute={currentRoute} onRouteChange={handleNavigate} />
         </motion.div>
       </AnimatePresence>
     );

@@ -970,3 +970,73 @@ a:hover {
     width: 100% !important;
   }
 }
+
+/* Odoo Minimal Centered Auth Portal Layout */
+.auth-odoo-wrapper {
+  min-height: 100vh;
+  width: 100%;
+  background-color: #F9F9F9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2.5rem 1rem;
+  font-family: var(--font-sans);
+}
+
+.auth-odoo-card {
+  background-color: #FFFFFF;
+  border: 1px solid #E5E5E5;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  max-width: 420px;
+  width: 100%;
+  padding: 2.5rem 2.25rem;
+}
+
+.auth-odoo-input {
+  width: 100%;
+  background-color: #FFFFFF;
+  border: 1px solid #E5E5E5;
+  border-radius: 6px;
+  padding: 0.625rem 0.875rem;
+  font-size: 0.875rem;
+  font-family: var(--font-sans);
+  color: #1A1A1A;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  outline: none;
+}
+
+.auth-odoo-input:focus {
+  border-color: #714B67;
+  box-shadow: 0 0 0 3px rgba(113, 75, 103, 0.12);
+}
+
+.auth-odoo-btn {
+  width: 100%;
+  background-color: #714B67;
+  color: #FFFFFF;
+  border: none;
+  border-radius: 6px;
+  padding: 0.75rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  font-family: var(--font-sans);
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.auth-odoo-btn:hover {
+  background-color: #875A7B;
+}
+
+.auth-odoo-btn:active {
+  background-color: #5F3F56;
+}
+
+.auth-odoo-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
