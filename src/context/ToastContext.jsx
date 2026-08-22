@@ -12,17 +12,9 @@ export const ToastProvider = ({ children }) => {
   }, []);
 
   const showToast = useCallback(({ title, message, type = 'info', duration = 4500, link = null }) => {
-    const id = `toast_${Date.now()}_${Math.random().toString(36).substr(2, 5)}`;
-    const newToast = { id, title, message, type, link };
-    
-    setToasts((prev) => [newToast, ...prev].slice(0, 5));
-
-    if (duration > 0) {
-      setTimeout(() => {
-        removeToast(id);
-      }, duration);
-    }
-  }, [removeToast]);
+    // Floating toast notifications disabled as requested
+    return;
+  }, []);
 
   const showSNSToast = useCallback(({ title, message, type = 'info', source = 'SNS Stream' }) => {
     showToast({
