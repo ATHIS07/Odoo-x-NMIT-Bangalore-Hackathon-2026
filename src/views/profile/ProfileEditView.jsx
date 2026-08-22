@@ -1,43 +1,25 @@
 import React, { useState, useRef } from 'react';
-import { motion } from 'framer-motion';
 import {
   Lock,
   Save,
   ArrowLeft,
-  ShieldAlert,
-  Sparkles,
-  UploadCloud,
-  CheckCircle,
   Camera,
-  Image as ImageIcon,
-  Link as LinkIcon,
-  Trash2,
-  RefreshCw,
+  UploadCloud,
+  RotateCcw,
+  CheckCircle,
   AlertCircle
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { useHRMS } from '../../context/HRMSContext';
 import { Button, Card, Badge } from '../../components/common/CommonUI';
-import { FileUpload } from '../../components/common/FileUpload';
-
-const PRESET_AVATARS = [
-  'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=240&auto=format&fit=crop&q=80',
-  'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=240&auto=format&fit=crop&q=80',
-  'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=240&auto=format&fit=crop&q=80',
-  'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=240&auto=format&fit=crop&q=80',
-  'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=240&auto=format&fit=crop&q=80',
-  'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=240&auto=format&fit=crop&q=80'
-];
 
 export const ProfileEditView = ({ onNavigate }) => {
   const { activeUser, role, isHRorAdmin, updateCurrentUser } = useAuth();
-  const { profiles, updateProfile, uploadDocument } = useHRMS();
+  const { profiles, updateProfile } = useHRMS();
 
   const fileInputRef = useRef(null);
-  const [avatarUploadMode, setAvatarUploadMode] = useState('upload'); // 'upload' | 'url'
-  const [isDragging, setIsDragging] = useState(false);
-  const [avatarFileMeta, setAvatarFileMeta] = useState(null);
   const [avatarError, setAvatarError] = useState('');
+  const [saving, setSaving] = useState(false);
 
   const currentProf = profiles[activeUser.id] || {};
 
@@ -62,71 +44,37 @@ export const ProfileEditView = ({ onNavigate }) => {
     specialAllowance: currentProf.salaryStructure?.specialAllowance || 330000
   });
 
-  const [saving, setSaving] = useState(false);
-
-  // Handle local image file upload & conversion to base64
-  const processImageFile = (file) => {
+  // Handle local computer image upload
+  const handleFileChange = (e) => {
     setAvatarError('');
+    const file = e.target.files?.[0];
     if (!file) return;
 
     if (!file.type.startsWith('image/')) {
-      setAvatarError('Please select a valid image file (PNG, JPG, JPEG, WebP, GIF)');
+      setAvatarError('Please select a valid image file (PNG, JPG, WebP)');
       return;
     }
 
     if (file.size > 5 * 1024 * 1024) {
-      setAvatarError('Image size exceeds 5 MB. Please select a smaller photo.');
+      setAvatarError('Image size should be under 5 MB');
       return;
     }
 
     const reader = new FileReader();
-    reader.onload = (e) => {
-      const base64Data = e.target.result;
-      setFormData((prev) => ({ ...prev, avatar: base64Data }));
-      setAvatarFileMeta({
-        name: file.name,
-        size: (file.size / 1024).toFixed(1) + ' KB',
-        type: file.type.split('/')[1]?.toUpperCase() || 'IMG'
-      });
+    reader.onload = (event) => {
+      setFormData((prev) => ({ ...prev, avatar: event.target.result }));
     };
     reader.onerror = () => {
-      setAvatarError('Failed to read image from local disk.');
+      setAvatarError('Failed to read image from computer');
     };
     reader.readAsDataURL(file);
-  };
-
-  const handleFileChange = (e) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      processImageFile(file);
-    }
-  };
-
-  const handleDragOver = (e) => {
-    e.preventDefault();
-    setIsDragging(true);
-  };
-
-  const handleDragLeave = (e) => {
-    e.preventDefault();
-    setIsDragging(false);
-  };
-
-  const handleDrop = (e) => {
-    e.preventDefault();
-    setIsDragging(false);
-    const file = e.dataTransfer.files?.[0];
-    if (file) {
-      processImageFile(file);
-    }
   };
 
   const handleResetAvatar = () => {
     setFormData((prev) => ({
       ...prev,
-      avatar: activeUser.avatar || PRESET_AVATARS[0]
+      avatar: activeUser.avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=240&auto=format&fit=crop&q=80'
     }));
-    setAvatarFileMeta(null);
     setAvatarError('');
     if (fileInputRef.current) fileInputRef.current.value = '';
   };
@@ -183,10 +131,6 @@ export const ProfileEditView = ({ onNavigate }) => {
     onNavigate('profile');
   };
 
-  const handleDocumentUpload = async (file) => {
-    await uploadDocument(activeUser.id, file);
-  };
-
   return (
     <div className="page-wrapper">
       {/* Header */}
@@ -204,7 +148,7 @@ export const ProfileEditView = ({ onNavigate }) => {
           <p className="page-subtitle">
             {isHRorAdmin
               ? 'Admin access: full authority to modify salary structures, job designations, and organization reporting lines.'
-              : 'Employee self-service: update your residential address, emergency contact, and profile avatar.'}
+              : 'Employee self-service: update your legal name, residential address, emergency contact, and profile photo.'}
           </p>
         </div>
 
@@ -218,33 +162,45 @@ export const ProfileEditView = ({ onNavigate }) => {
         </div>
       </div>
 
-      {/* RBAC Notice Banner */}
+      {/* RBAC Notice Banner for regular employees */}
       {!isHRorAdmin && (
         <div
           style={{
-            padding: '1rem 1.25rem',
+            padding: '0.875rem 1.25rem',
             borderRadius: '6px',
             backgroundColor: 'var(--primary-50)',
             border: '1px solid var(--primary-100)',
             color: 'var(--color-primary)',
-            marginBottom: '1.75rem',
+            marginBottom: '1.5rem',
             display: 'flex',
             alignItems: 'center',
             gap: '0.75rem',
-            fontSize: '0.875rem'
+            fontSize: '0.8125rem'
           }}
         >
-          <Lock size={18} color="var(--color-primary)" />
+          <Lock size={16} color="var(--color-primary)" />
           <div>
-            <strong>Employee Self-Service Security Policy:</strong> Job designation, department, and salary compensation are locked and governed by HR administration. To request modifications to job parameters, please reach out to your HR Partner.
+            <strong>Self-Service Scope:</strong> You can edit your name, phone number, address, emergency contact, and photo. Department, designation, and salary are managed by HR.
           </div>
         </div>
       )}
 
+      {/* Hidden File Input */}
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept="image/png, image/jpeg, image/jpg, image/webp, image/gif"
+        onChange={handleFileChange}
+        style={{ display: 'none' }}
+      />
+
       <form onSubmit={handleSave}>
-        <div style={{ display: 'grid', gridTemplateColumns: '1.4fr 1fr', gap: '1.5rem' }}>
-          {/* Left Column: Personal & Contact Information */}
+        <div style={{ display: 'grid', gridTemplateColumns: '1.4fr 1fr', gap: '1.5rem', alignItems: 'start' }}>
+          
+          {/* Left Column: Personal, Address & Emergency Details */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+            
+            {/* Card 1: Personal & Contact */}
             <Card>
               <div className="card-header">
                 <div className="card-title">Personal & Contact Details</div>
@@ -259,17 +215,18 @@ export const ProfileEditView = ({ onNavigate }) => {
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                     className="form-input"
-                    placeholder="Enter your full legal name"
+                    placeholder="Enter full legal name"
                   />
                 </div>
 
                 <div className="form-group">
-                  <label className="form-label">Primary Mobile Phone</label>
+                  <label className="form-label">Primary Phone Number</label>
                   <input
                     type="text"
                     value={formData.phone}
                     onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                     className="form-input font-mono"
+                    placeholder="+91 98450 12345"
                   />
                 </div>
               </div>
@@ -281,6 +238,7 @@ export const ProfileEditView = ({ onNavigate }) => {
                   value={formData.street}
                   onChange={(e) => setFormData({ ...formData, street: e.target.value })}
                   className="form-input"
+                  placeholder="Street address"
                 />
               </div>
 
@@ -317,6 +275,7 @@ export const ProfileEditView = ({ onNavigate }) => {
               </div>
             </Card>
 
+            {/* Card 2: Emergency Contact */}
             <Card>
               <div className="card-header">
                 <div className="card-title">Emergency Contact Person</div>
@@ -355,7 +314,7 @@ export const ProfileEditView = ({ onNavigate }) => {
               </div>
             </Card>
 
-            {/* Admin-only Job Details & Compensation fields */}
+            {/* Card 3: Job & Compensation (Admin managed) */}
             <Card>
               <div className="card-header">
                 <div className="card-title" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
@@ -428,249 +387,80 @@ export const ProfileEditView = ({ onNavigate }) => {
             </Card>
           </div>
 
-          {/* Right Column: Profile Picture (Local Computer Upload + URL) & S3 Upload */}
+          {/* Right Column: Clean & Aligned Profile Photo Card */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
             <Card>
               <div className="card-header">
                 <div className="card-title" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                   <Camera size={18} color="var(--color-primary)" />
-                  Profile Photo & Avatar
+                  Profile Photo
                 </div>
-                {avatarFileMeta && (
-                  <Badge variant="present">Local File Loaded</Badge>
-                )}
               </div>
 
-              {/* Avatar Live Preview Card */}
+              {/* Photo Preview & Action Buttons */}
               <div style={{ display: 'flex', alignItems: 'center', gap: '1.25rem', padding: '1rem', backgroundColor: 'var(--color-bg-secondary)', borderRadius: '8px', border: '1px solid var(--color-border)', marginBottom: '1.25rem' }}>
-                <div style={{ position: 'relative' }}>
-                  <img
-                    src={formData.avatar}
-                    alt={formData.name}
-                    style={{
-                      width: '80px',
-                      height: '80px',
-                      borderRadius: '12px',
-                      objectFit: 'cover',
-                      border: '2px solid var(--color-primary)',
-                      boxShadow: '0 2px 6px rgba(0,0,0,0.06)'
-                    }}
-                  />
-                  <button
-                    type="button"
-                    onClick={() => fileInputRef.current?.click()}
-                    style={{
-                      position: 'absolute',
-                      bottom: '-6px',
-                      right: '-6px',
-                      width: '28px',
-                      height: '28px',
-                      borderRadius: '50%',
-                      backgroundColor: 'var(--color-primary)',
-                      color: '#FFFFFF',
-                      border: '2px solid #FFFFFF',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      cursor: 'pointer',
-                      boxShadow: '0 2px 4px rgba(0,0,0,0.15)'
-                    }}
-                    title="Upload new image from your computer"
-                  >
-                    <Camera size={14} />
-                  </button>
-                </div>
-
+                <img
+                  src={formData.avatar}
+                  alt={formData.name}
+                  style={{
+                    width: '80px',
+                    height: '80px',
+                    borderRadius: '12px',
+                    objectFit: 'cover',
+                    border: '2px solid var(--color-primary)',
+                    flexShrink: 0
+                  }}
+                />
                 <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ fontWeight: 600, fontSize: '0.875rem', color: 'var(--color-text-heading)' }}>
+                  <div style={{ fontWeight: 600, fontSize: '0.875rem', color: 'var(--color-text-heading)', marginBottom: '0.25rem' }}>
                     {formData.name}
                   </div>
-                  <div style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)', marginTop: '2px' }}>
-                    {avatarFileMeta ? `${avatarFileMeta.name} (${avatarFileMeta.size})` : 'Active Employee Photo'}
+                  <div style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)', marginBottom: '0.625rem' }}>
+                    JPG, PNG, WebP or GIF (max 5MB)
                   </div>
-                  <div style={{ display: 'flex', gap: '0.5rem', marginTop: '0.5rem' }}>
-                    <button
+                  <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+                    <Button
                       type="button"
+                      variant="primary"
+                      size="sm"
+                      icon={UploadCloud}
                       onClick={() => fileInputRef.current?.click()}
-                      style={{
-                        padding: '3px 8px',
-                        borderRadius: '4px',
-                        backgroundColor: 'var(--primary-50)',
-                        border: '1px solid var(--primary-200)',
-                        color: 'var(--color-primary)',
-                        fontSize: '0.6875rem',
-                        fontWeight: 600,
-                        cursor: 'pointer'
-                      }}
                     >
-                      Change Photo
-                    </button>
-                    <button
+                      Upload from Computer
+                    </Button>
+                    <Button
                       type="button"
+                      variant="secondary"
+                      size="sm"
+                      icon={RotateCcw}
                       onClick={handleResetAvatar}
-                      style={{
-                        padding: '3px 8px',
-                        borderRadius: '4px',
-                        backgroundColor: 'transparent',
-                        border: '1px solid var(--color-border)',
-                        color: 'var(--color-text-body)',
-                        fontSize: '0.6875rem',
-                        cursor: 'pointer'
-                      }}
                     >
-                      Reset Default
-                    </button>
+                      Reset
+                    </Button>
                   </div>
                 </div>
               </div>
-
-              {/* Mode Selector Tabs: Upload from Computer vs Image URL */}
-              <div style={{ display: 'flex', gap: '4px', padding: '3px', backgroundColor: 'var(--color-bg-secondary)', borderRadius: '6px', border: '1px solid var(--color-border)', marginBottom: '1rem' }}>
-                <button
-                  type="button"
-                  onClick={() => setAvatarUploadMode('upload')}
-                  style={{
-                    flex: 1,
-                    padding: '0.375rem 0.5rem',
-                    borderRadius: '4px',
-                    border: 'none',
-                    backgroundColor: avatarUploadMode === 'upload' ? '#FFFFFF' : 'transparent',
-                    color: avatarUploadMode === 'upload' ? 'var(--color-primary)' : 'var(--color-text-body)',
-                    fontWeight: avatarUploadMode === 'upload' ? 600 : 400,
-                    fontSize: '0.75rem',
-                    cursor: 'pointer',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    gap: '0.35rem',
-                    boxShadow: avatarUploadMode === 'upload' ? '0 1px 2px rgba(0,0,0,0.05)' : 'none'
-                  }}
-                >
-                  <UploadCloud size={13} />
-                  Upload from Computer
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setAvatarUploadMode('url')}
-                  style={{
-                    flex: 1,
-                    padding: '0.375rem 0.5rem',
-                    borderRadius: '4px',
-                    border: 'none',
-                    backgroundColor: avatarUploadMode === 'url' ? '#FFFFFF' : 'transparent',
-                    color: avatarUploadMode === 'url' ? 'var(--color-primary)' : 'var(--color-text-body)',
-                    fontWeight: avatarUploadMode === 'url' ? 600 : 400,
-                    fontSize: '0.75rem',
-                    cursor: 'pointer',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    gap: '0.35rem',
-                    boxShadow: avatarUploadMode === 'url' ? '0 1px 2px rgba(0,0,0,0.05)' : 'none'
-                  }}
-                >
-                  <LinkIcon size={13} />
-                  Web Image URL
-                </button>
-              </div>
-
-              {/* Hidden File Input */}
-              <input
-                ref={fileInputRef}
-                type="file"
-                accept="image/png, image/jpeg, image/jpg, image/webp, image/gif"
-                onChange={handleFileChange}
-                style={{ display: 'none' }}
-              />
-
-              {avatarUploadMode === 'upload' ? (
-                /* Drag & Drop Local File Dropzone */
-                <div
-                  onDragOver={handleDragOver}
-                  onDragLeave={handleDragLeave}
-                  onDrop={handleDrop}
-                  onClick={() => fileInputRef.current?.click()}
-                  style={{
-                    padding: '1.5rem 1rem',
-                    borderRadius: '8px',
-                    border: isDragging ? '2px dashed var(--color-primary)' : '2px dashed var(--color-border)',
-                    backgroundColor: isDragging ? 'var(--primary-50)' : 'var(--color-bg-secondary)',
-                    textAlign: 'center',
-                    cursor: 'pointer',
-                    transition: 'all 0.15s ease',
-                    marginBottom: '1rem'
-                  }}
-                >
-                  <div style={{ width: '40px', height: '40px', borderRadius: '50%', backgroundColor: 'var(--primary-50)', color: 'var(--color-primary)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 0.75rem' }}>
-                    <UploadCloud size={20} />
-                  </div>
-                  <div style={{ fontSize: '0.8125rem', fontWeight: 600, color: 'var(--color-text-heading)', marginBottom: '0.25rem' }}>
-                    Choose a photo or drag & drop here
-                  </div>
-                  <div style={{ fontSize: '0.6875rem', color: 'var(--color-text-muted)' }}>
-                    PNG, JPG, JPEG, WEBP, or GIF (max 5 MB)
-                  </div>
-                </div>
-              ) : (
-                /* Web Image URL Input */
-                <div className="form-group" style={{ marginBottom: '1rem' }}>
-                  <label className="form-label">Image Web URL</label>
-                  <input
-                    type="text"
-                    value={formData.avatar}
-                    onChange={(e) => setFormData({ ...formData, avatar: e.target.value })}
-                    className="form-input"
-                    placeholder="https://images.unsplash.com/..."
-                  />
-                </div>
-              )}
 
               {avatarError && (
-                <div style={{ color: 'var(--color-danger)', fontSize: '0.75rem', marginBottom: '0.75rem', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                <div style={{ color: 'var(--color-danger)', fontSize: '0.75rem', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '4px' }}>
                   <AlertCircle size={14} /> {avatarError}
                 </div>
               )}
 
-              {/* Preset Quick Avatars */}
-              <div>
-                <div style={{ fontSize: '0.6875rem', color: 'var(--color-text-muted)', textTransform: 'uppercase', marginBottom: '0.5rem', fontWeight: 600 }}>
-                  Or Choose from Enterprise Presets:
-                </div>
-                <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
-                  {PRESET_AVATARS.map((url, i) => (
-                    <img
-                      key={i}
-                      src={url}
-                      alt={`Preset ${i + 1}`}
-                      onClick={() => {
-                        setFormData((prev) => ({ ...prev, avatar: url }));
-                        setAvatarFileMeta(null);
-                        setAvatarError('');
-                      }}
-                      style={{
-                        width: '36px',
-                        height: '36px',
-                        borderRadius: '8px',
-                        objectFit: 'cover',
-                        cursor: 'pointer',
-                        border: formData.avatar === url ? '2px solid var(--color-primary)' : '1px solid var(--color-border)',
-                        opacity: formData.avatar === url ? 1 : 0.75,
-                        transition: 'all 0.15s ease'
-                      }}
-                      title={`Select Avatar ${i + 1}`}
-                    />
-                  ))}
-                </div>
+              {/* Alternative Image URL Input */}
+              <div className="form-group" style={{ marginBottom: 0 }}>
+                <label className="form-label">Image Web URL (Optional)</label>
+                <input
+                  type="text"
+                  value={formData.avatar}
+                  onChange={(e) => setFormData({ ...formData, avatar: e.target.value })}
+                  className="form-input"
+                  placeholder="https://images.unsplash.com/..."
+                />
               </div>
-            </Card>
-
-            <Card>
-              <div className="card-header">
-                <div className="card-title">Upload S3 Encrypted Document</div>
-              </div>
-              <FileUpload onUpload={handleDocumentUpload} />
             </Card>
           </div>
+
         </div>
       </form>
     </div>
