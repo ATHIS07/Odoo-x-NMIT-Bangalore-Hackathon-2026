@@ -131,7 +131,7 @@ export const EmployeeDashboardView = ({ onNavigate }) => {
         <Card
           onClick={() => {
             if (confirm('Are you sure you want to sign out of Cognito?')) {
-              localStorage.removeItem('dayflow_auth_user');
+              localStorage.removeItem('odoo_auth_user');
               window.location.reload();
             }
           }}

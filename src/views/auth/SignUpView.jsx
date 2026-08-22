@@ -10,8 +10,8 @@ export const SignUpView = ({ onNavigate }) => {
   const [formData, setFormData] = useState({
     name: 'Julian Hayes',
     employeeId: 'DF-9210',
-    email: 'julian.hayes@dayflow.io',
-    password: 'Dayflow@2026Secure!',
+    email: 'julian.hayes@odoo.com',
+    password: 'Odoo@2026Secure!',
     department: 'Engineering',
     role: 'employee'
   });
@@ -141,10 +141,10 @@ export const SignUpView = ({ onNavigate }) => {
               fontFamily: 'var(--font-sans)'
             }}
           >
-            D
+            O
           </div>
           <span style={{ fontSize: '1rem', fontWeight: 700, color: '#1A1A1A', letterSpacing: '-0.01em' }}>
-            Dayflow
+            Odoo
           </span>
           <span style={{ fontSize: '0.75rem', color: '#8A8A8A', paddingLeft: '0.5rem', borderLeft: '1px solid #E5E5E5' }}>
             Account Provisioning
@@ -154,7 +154,7 @@ export const SignUpView = ({ onNavigate }) => {
         <div style={{ display: 'flex', alignItems: 'center', gap: '1.25rem', fontSize: '0.8125rem', color: '#4C4C4C' }}>
           <span style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', color: '#8A8A8A' }}>
             <Database size={13} color="#714B67" />
-            <span style={{ fontFamily: 'var(--font-sans)' }}>dayflow-enterprise.odoo.com</span>
+            <span style={{ fontFamily: 'var(--font-sans)' }}>enterprise.odoo.com</span>
           </span>
           <span style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', cursor: 'pointer' }}>
             <Globe size={13} />
@@ -206,7 +206,7 @@ export const SignUpView = ({ onNavigate }) => {
                   Create your account
                 </h1>
                 <p style={{ fontSize: '0.875rem', color: '#8A8A8A' }}>
-                  Join your organization's Dayflow workspace
+                  Join your organization's Odoo workspace
                 </p>
               </div>
 
@@ -478,7 +478,7 @@ export const SignUpView = ({ onNavigate }) => {
       {/* Odoo Enterprise Portal Footer */}
       <footer className="odoo-portal-footer">
         <div>
-          Powered by <strong style={{ color: '#714B67' }}>Dayflow Enterprise</strong> • Open Source Business Software
+          Powered by <strong style={{ color: '#714B67' }}>Odoo Enterprise</strong> • Open Source Business Software
         </div>
         <div style={{ display: 'flex', gap: '1rem' }}>
           <a href="#databases" onClick={(e) => e.preventDefault()} style={{ color: '#8A8A8A', textDecoration: 'none' }}>Manage Databases</a>

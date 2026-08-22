@@ -1,5 +1,5 @@
 // ============================================================================
-// DAYFLOW ENTERPRISE HRMS - CORE MOCK DATABASE SEED (INDIA / LOCALIZED)
+// ODOO ENTERPRISE HRMS - CORE MOCK DATABASE SEED (INDIA / LOCALIZED)
 // Real-world enterprise data with complete relational consistency (INR / Indian Hubs)
 // ============================================================================
 
@@ -8,7 +8,7 @@ export const INITIAL_USERS = [
     id: "usr_001",
     employeeId: "DF-8824",
     name: "Sophia Vance",
-    email: "sophia.vance@dayflow.io",
+    email: "sophia.vance@odoo.com",
     role: "employee",
     department: "Engineering",
     designation: "Senior Staff Frontend Architect",
@@ -22,7 +22,7 @@ export const INITIAL_USERS = [
     id: "usr_002",
     employeeId: "DF-1092",
     name: "Marcus Chen",
-    email: "marcus.chen@dayflow.io",
+    email: "marcus.chen@odoo.com",
     role: "hr",
     department: "People & Talent Operations",
     designation: "Lead HR Business Partner",
@@ -36,7 +36,7 @@ export const INITIAL_USERS = [
     id: "usr_003",
     employeeId: "DF-0010",
     name: "Elena Rostova",
-    email: "elena.rostova@dayflow.io",
+    email: "elena.rostova@odoo.com",
     role: "admin",
     department: "Executive Operations",
     designation: "VP of People & Operations",
@@ -50,7 +50,7 @@ export const INITIAL_USERS = [
     id: "usr_004",
     employeeId: "DF-4412",
     name: "Liam Thorne",
-    email: "liam.thorne@dayflow.io",
+    email: "liam.thorne@odoo.com",
     role: "employee",
     department: "Engineering",
     designation: "Distributed Systems Engineer",
@@ -64,7 +64,7 @@ export const INITIAL_USERS = [
     id: "usr_005",
     employeeId: "DF-5529",
     name: "Aria Montgomery",
-    email: "aria.montgomery@dayflow.io",
+    email: "aria.montgomery@odoo.com",
     role: "employee",
     department: "Product Design",
     designation: "Principal UX Systems Designer",
@@ -78,7 +78,7 @@ export const INITIAL_USERS = [
     id: "usr_006",
     employeeId: "DF-6701",
     name: "Devon Brooks",
-    email: "devon.brooks@dayflow.io",
+    email: "devon.brooks@odoo.com",
     role: "employee",
     department: "Product Management",
     designation: "Lead Technical Product Manager",
@@ -92,7 +92,7 @@ export const INITIAL_USERS = [
     id: "usr_007",
     employeeId: "DF-7182",
     name: "Nadia Patel",
-    email: "nadia.patel@dayflow.io",
+    email: "nadia.patel@odoo.com",
     role: "employee",
     department: "Finance & Strategy",
     designation: "Senior Financial Analyst",
@@ -122,7 +122,7 @@ export const INITIAL_PROFILES = {
       department: "Engineering",
       designation: "Senior Staff Frontend Architect",
       manager: "Elena Rostova",
-      workEmail: "sophia.vance@dayflow.io",
+      workEmail: "sophia.vance@odoo.com",
       employmentType: "Full-Time Permanent",
       joiningDate: "2022-03-15",
       shift: "General Core Shift (09:30 AM - 06:00 PM IST)",
@@ -159,7 +159,7 @@ export const INITIAL_PROFILES = {
       compensatory: { total: 5, used: 1, remaining: 4 }
     },
     documents: [
-      { id: "doc_01", name: "Employment_Agreement_Dayflow_Signed.pdf", type: "PDF", size: "2.4 MB", uploadDate: "2022-03-15", s3Key: "s3://dayflow-hr-vault/usr_001/contracts/emp_agreement.pdf" },
+      { id: "doc_01", name: "Employment_Agreement_Odoo_Signed.pdf", type: "PDF", size: "2.4 MB", uploadDate: "2022-03-15", s3Key: "s3://dayflow-hr-vault/usr_001/contracts/emp_agreement.pdf" },
       { id: "doc_02", name: "Form16_Tax_Declaration_2025_26.pdf", type: "PDF", size: "1.1 MB", uploadDate: "2026-01-10", s3Key: "s3://dayflow-hr-vault/usr_001/tax/form16_2026.pdf" },
       { id: "doc_03", name: "Passport_Aadhaar_Identification_Certified.pdf", type: "PDF", size: "3.8 MB", uploadDate: "2022-03-14", s3Key: "s3://dayflow-hr-vault/usr_001/id/id_proof.pdf" },
       { id: "doc_04", name: "AWS_Certified_Solutions_Architect.pdf", type: "PDF", size: "1.6 MB", uploadDate: "2023-08-20", s3Key: "s3://dayflow-hr-vault/usr_001/certs/aws_csa.pdf" }
@@ -182,7 +182,7 @@ export const INITIAL_PROFILES = {
       department: "People & Talent Operations",
       designation: "Lead HR Business Partner",
       manager: "Elena Rostova",
-      workEmail: "marcus.chen@dayflow.io",
+      workEmail: "marcus.chen@odoo.com",
       employmentType: "Full-Time Permanent",
       joiningDate: "2021-08-01",
       shift: "General Core Shift (09:30 AM - 06:00 PM IST)",
@@ -240,7 +240,7 @@ export const INITIAL_PROFILES = {
       department: "Executive Operations",
       designation: "VP of People & Operations",
       manager: "Chief Executive Officer",
-      workEmail: "elena.rostova@dayflow.io",
+      workEmail: "elena.rostova@odoo.com",
       employmentType: "Executive",
       joiningDate: "2020-01-10",
       shift: "Executive Flexible (IST)",

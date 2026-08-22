@@ -9,7 +9,7 @@ export const AuthProvider = ({ children }) => {
   
   // Stored active user or default Sophia (Employee)
   const [currentUser, setCurrentUser] = useState(() => {
-    const saved = localStorage.getItem('dayflow_auth_user');
+    const saved = localStorage.getItem('odoo_auth_user');
     if (saved) {
       try { return JSON.parse(saved); } catch (e) { /* ignore */ }
     }
@@ -22,9 +22,9 @@ export const AuthProvider = ({ children }) => {
   // Sync to local storage
   useEffect(() => {
     if (currentUser) {
-      localStorage.setItem('dayflow_auth_user', JSON.stringify(currentUser));
+      localStorage.setItem('odoo_auth_user', JSON.stringify(currentUser));
     } else {
-      localStorage.removeItem('dayflow_auth_user');
+      localStorage.removeItem('odoo_auth_user');
     }
   }, [currentUser]);
 
@@ -102,7 +102,7 @@ export const AuthProvider = ({ children }) => {
 
     showToast({
       title: 'Cognito Account Confirmed',
-      message: `Welcome to Dayflow, ${verifiedUser.name}!`,
+      message: `Welcome to Odoo, ${verifiedUser.name}!`,
       type: 'success'
     });
 
@@ -194,7 +194,7 @@ export const AuthProvider = ({ children }) => {
     setCurrentUser((prev) => {
       if (!prev) return prev;
       const updated = { ...prev, ...updates };
-      localStorage.setItem('dayflow_auth_user', JSON.stringify(updated));
+      localStorage.setItem('odoo_auth_user', JSON.stringify(updated));
       return updated;
     });
   }, []);

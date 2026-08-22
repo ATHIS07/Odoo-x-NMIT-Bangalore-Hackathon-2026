@@ -116,12 +116,12 @@ export const Sidebar = ({ currentRoute, onRouteChange, onOpenNotifications }) =>
             fontSize: '1.125rem'
           }}
         >
-          D
+          O
         </div>
         <div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
             <span style={{ fontSize: '1.125rem', fontWeight: 700, color: 'var(--color-text-heading)', fontFamily: 'var(--font-sans)' }}>
-              Dayflow
+              Odoo
             </span>
             <span style={{ fontSize: '0.625rem', padding: '1px 5px', borderRadius: '4px', backgroundColor: 'var(--primary-50)', color: 'var(--color-primary)', fontWeight: 600 }}>
               ENTERPRISE

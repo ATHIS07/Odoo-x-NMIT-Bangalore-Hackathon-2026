@@ -97,7 +97,7 @@ export const AttendanceView = () => {
     const encodedUri = encodeURI(csvContent);
     const link = document.createElement('a');
     link.setAttribute('href', encodedUri);
-    link.setAttribute('download', `Dayflow_Attendance_Export_${Date.now()}.csv`);
+    link.setAttribute('download', `Odoo_Attendance_Export_${Date.now()}.csv`);
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);

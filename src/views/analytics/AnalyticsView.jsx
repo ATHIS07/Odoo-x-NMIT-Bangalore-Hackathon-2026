@@ -95,7 +95,7 @@ export const AnalyticsView = () => {
         const jsonContent = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(exportRows, null, 2));
         const link = document.createElement('a');
         link.setAttribute('href', jsonContent);
-        link.setAttribute('download', `Dayflow_Executive_Report_${reportDateRange}_${reportDepartment}.json`);
+        link.setAttribute('download', `Odoo_Executive_Report_${reportDateRange}_${reportDepartment}.json`);
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
@@ -108,7 +108,7 @@ export const AnalyticsView = () => {
         const csvContent = 'data:text/csv;charset=utf-8,' + encodeURIComponent([headers, ...csvRows].join('\n'));
         const link = document.createElement('a');
         link.setAttribute('href', csvContent);
-        link.setAttribute('download', `Dayflow_Executive_Report_${reportDateRange}_${reportDepartment}.csv`);
+        link.setAttribute('download', `Odoo_Executive_Report_${reportDateRange}_${reportDepartment}.csv`);
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
@@ -116,7 +116,7 @@ export const AnalyticsView = () => {
 
       showToast({
         title: 'Executive Report Downloaded',
-        message: `Generated and saved Dayflow_Executive_Report_${reportDateRange}.${reportFormat.toLowerCase()}`,
+        message: `Generated and saved Odoo_Executive_Report_${reportDateRange}.${reportFormat.toLowerCase()}`,
         type: 'success'
       });
     }, 500);

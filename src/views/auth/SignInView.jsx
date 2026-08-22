@@ -6,8 +6,8 @@ import { Button } from '../../components/common/CommonUI';
 
 export const SignInView = ({ onNavigate }) => {
   const { signIn, requestPasswordReset, confirmPasswordReset } = useAuth();
-  const [email, setEmail] = useState('sophia.vance@dayflow.io');
-  const [password, setPassword] = useState('Dayflow@2026!');
+  const [email, setEmail] = useState('sophia.vance@odoo.com');
+  const [password, setPassword] = useState('Odoo@2026!');
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(true);
   const [error, setError] = useState('');
@@ -16,9 +16,9 @@ export const SignInView = ({ onNavigate }) => {
   // Forgot Password Modal State
   const [isForgotModalOpen, setIsForgotModalOpen] = useState(false);
   const [forgotStep, setForgotStep] = useState(1); // 1: Email, 2: OTP + New Password
-  const [forgotEmail, setForgotEmail] = useState('sophia.vance@dayflow.io');
+  const [forgotEmail, setForgotEmail] = useState('sophia.vance@odoo.com');
   const [forgotOtp, setForgotOtp] = useState('932140');
-  const [forgotNewPassword, setForgotNewPassword] = useState('Dayflow@2026Secure!');
+  const [forgotNewPassword, setForgotNewPassword] = useState('Odoo@2026Secure!');
   const [forgotLoading, setForgotLoading] = useState(false);
   const [forgotError, setForgotError] = useState('');
 
@@ -96,10 +96,10 @@ export const SignInView = ({ onNavigate }) => {
               fontFamily: 'var(--font-sans)'
             }}
           >
-            D
+            O
           </div>
           <span style={{ fontSize: '1rem', fontWeight: 700, color: '#1A1A1A', letterSpacing: '-0.01em' }}>
-            Dayflow
+            Odoo
           </span>
           <span style={{ fontSize: '0.75rem', color: '#8A8A8A', paddingLeft: '0.5rem', borderLeft: '1px solid #E5E5E5' }}>
             Enterprise Portal
@@ -109,7 +109,7 @@ export const SignInView = ({ onNavigate }) => {
         <div style={{ display: 'flex', alignItems: 'center', gap: '1.25rem', fontSize: '0.8125rem', color: '#4C4C4C' }}>
           <span style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', color: '#8A8A8A' }}>
             <Database size={13} color="#714B67" />
-            <span style={{ fontFamily: 'var(--font-sans)' }}>dayflow-enterprise.odoo.com</span>
+            <span style={{ fontFamily: 'var(--font-sans)' }}>enterprise.odoo.com</span>
           </span>
           <span style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', cursor: 'pointer' }}>
             <Globe size={13} />
@@ -142,14 +142,14 @@ export const SignInView = ({ onNavigate }) => {
             }}
           >
             <span style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#28A745', display: 'inline-block' }} />
-            Database: dayflow-enterprise
+            Database: odoo-enterprise
           </div>
         </div>
 
         {/* Quiet Heading */}
         <div style={{ textAlign: 'center', marginBottom: '1.75rem' }}>
           <h1 style={{ fontSize: '1.375rem', fontWeight: 600, color: '#1A1A1A', marginBottom: '0.25rem' }}>
-            Sign in to Dayflow
+            Sign in to Odoo
           </h1>
           <p style={{ fontSize: '0.875rem', color: '#8A8A8A' }}>
             Access your employee management workspace
@@ -292,7 +292,7 @@ export const SignInView = ({ onNavigate }) => {
       {/* Odoo Enterprise Portal Footer */}
       <footer className="odoo-portal-footer">
         <div>
-          Powered by <strong style={{ color: '#714B67' }}>Dayflow Enterprise</strong> • Open Source Business Software
+          Powered by <strong style={{ color: '#714B67' }}>Odoo Enterprise</strong> • Open Source Business Software
         </div>
         <div style={{ display: 'flex', gap: '1rem' }}>
           <a href="#databases" onClick={(e) => e.preventDefault()} style={{ color: '#8A8A8A', textDecoration: 'none' }}>Manage Databases</a>

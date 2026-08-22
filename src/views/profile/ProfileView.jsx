@@ -78,7 +78,7 @@ export const ProfileView = ({ onNavigate }) => {
     },
     phone: activeUser.phone,
     documents: [
-      { id: 'doc_01', name: 'Employment_Agreement_Dayflow_Signed.pdf', type: 'PDF', size: '2.4 MB', uploadDate: '2022-03-15', s3Key: `s3://dayflow-hr-vault/${activeUser.id}/contracts/emp_agreement.pdf` },
+      { id: 'doc_01', name: 'Employment_Agreement_Odoo_Signed.pdf', type: 'PDF', size: '2.4 MB', uploadDate: '2022-03-15', s3Key: `s3://odoo-hr-vault/${activeUser.id}/contracts/emp_agreement.pdf` },
       { id: 'doc_02', name: 'Form16_Tax_Declaration_2025_26.pdf', type: 'PDF', size: '1.1 MB', uploadDate: '2026-01-10', s3Key: `s3://dayflow-hr-vault/${activeUser.id}/tax/form16_2026.pdf` },
       { id: 'doc_03', name: 'Passport_Aadhaar_Identification_Certified.pdf', type: 'PDF', size: '3.8 MB', uploadDate: '2022-03-14', s3Key: `s3://dayflow-hr-vault/${activeUser.id}/id/passport.pdf` }
     ]

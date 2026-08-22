@@ -475,7 +475,7 @@ export const PayrollView = () => {
             <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '2px solid var(--border-default)', paddingBottom: '1rem', marginBottom: '1.25rem' }}>
               <div>
                 <div style={{ fontSize: '1.25rem', fontWeight: 800, letterSpacing: '-0.03em', fontFamily: 'var(--font-display)', color: 'var(--primary-600)' }}>
-                  Dayflow Technologies India Pvt. Ltd.
+                  Odoo Technologies India Pvt. Ltd.
                 </div>
                 <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>
                   Prestige Tech Park, Outer Ring Road, Bellandur, Bangalore - 560103, Karnataka

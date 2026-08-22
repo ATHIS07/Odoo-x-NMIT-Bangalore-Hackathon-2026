@@ -71,7 +71,7 @@ export const AdminDashboardView = ({ onNavigate }) => {
               Logged as {activeUser.name} ({activeUser.role.toUpperCase()})
             </span>
           </div>
-          <h1 className="page-title">Dayflow Enterprise Control HQ</h1>
+          <h1 className="page-title">Odoo Enterprise Control HQ</h1>
           <p className="page-subtitle">
             Unified workforce intelligence, sub-second approval pipelines, and organizational governance.
           </p>
