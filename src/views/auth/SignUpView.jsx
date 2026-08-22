@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Eye, EyeOff, AlertCircle, ArrowLeft } from 'lucide-react';
+import { Eye, EyeOff, AlertCircle, ArrowLeft, Database, Globe } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 
 export const SignUpView = ({ onNavigate }) => {
@@ -123,6 +123,47 @@ export const SignUpView = ({ onNavigate }) => {
 
   return (
     <div className="auth-odoo-wrapper">
+      {/* Odoo Enterprise Portal Header Bar */}
+      <header className="odoo-portal-header">
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.625rem' }}>
+          <div
+            style={{
+              width: '28px',
+              height: '28px',
+              borderRadius: '6px',
+              backgroundColor: '#714B67',
+              color: '#FFFFFF',
+              fontWeight: 700,
+              fontSize: '0.9375rem',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontFamily: 'var(--font-sans)'
+            }}
+          >
+            D
+          </div>
+          <span style={{ fontSize: '1rem', fontWeight: 700, color: '#1A1A1A', letterSpacing: '-0.01em' }}>
+            Dayflow
+          </span>
+          <span style={{ fontSize: '0.75rem', color: '#8A8A8A', paddingLeft: '0.5rem', borderLeft: '1px solid #E5E5E5' }}>
+            Account Provisioning
+          </span>
+        </div>
+
+        <div style={{ display: 'flex', alignItems: 'center', gap: '1.25rem', fontSize: '0.8125rem', color: '#4C4C4C' }}>
+          <span style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', color: '#8A8A8A' }}>
+            <Database size={13} color="#714B67" />
+            <span style={{ fontFamily: 'var(--font-sans)' }}>dayflow-enterprise.odoo.com</span>
+          </span>
+          <span style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', cursor: 'pointer' }}>
+            <Globe size={13} />
+            <span>English (US)</span>
+          </span>
+        </div>
+      </header>
+
+      {/* Main Odoo Register Card */}
       <motion.div
         initial={{ opacity: 0, y: 6 }}
         animate={{ opacity: 1, y: 0 }}
@@ -130,29 +171,24 @@ export const SignUpView = ({ onNavigate }) => {
         className="auth-odoo-card"
         style={{ maxWidth: '440px' }}
       >
-        {/* Centered Brand Mark */}
-        <div style={{ textAlign: 'center', marginBottom: '1.5rem' }}>
-          <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.625rem' }}>
-            <div
-              style={{
-                width: '32px',
-                height: '32px',
-                borderRadius: '6px',
-                backgroundColor: '#714B67',
-                color: '#FFFFFF',
-                fontWeight: 700,
-                fontSize: '1.125rem',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                fontFamily: 'var(--font-sans)'
-              }}
-            >
-              D
-            </div>
-            <span style={{ fontSize: '1.25rem', fontWeight: 700, color: '#1A1A1A', letterSpacing: '-0.01em' }}>
-              Dayflow
-            </span>
+        {/* Database Status Tag */}
+        <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '1.5rem' }}>
+          <div
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '0.4rem',
+              padding: '3px 10px',
+              borderRadius: '999px',
+              backgroundColor: '#F5EFF3',
+              border: '1px solid #EADEE7',
+              fontSize: '0.75rem',
+              fontWeight: 500,
+              color: '#714B67'
+            }}
+          >
+            <span style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#28A745', display: 'inline-block' }} />
+            New Identity Provisioning
           </div>
         </div>
 
@@ -190,7 +226,7 @@ export const SignUpView = ({ onNavigate }) => {
                   />
                 </div>
 
-                {/* Employee ID & Email Grid */}
+                {/* Employee ID & Department Grid */}
                 <div className="grid-2" style={{ gap: '0.75rem', marginBottom: '1.25rem' }}>
                   <div>
                     <label style={{ display: 'block', fontSize: '0.8125rem', fontWeight: 500, color: '#4C4C4C', marginBottom: '0.35rem' }}>
@@ -438,6 +474,22 @@ export const SignUpView = ({ onNavigate }) => {
           )}
         </AnimatePresence>
       </motion.div>
+
+      {/* Odoo Enterprise Portal Footer */}
+      <footer className="odoo-portal-footer">
+        <div>
+          Powered by <strong style={{ color: '#714B67' }}>Dayflow Enterprise</strong> • Open Source Business Software
+        </div>
+        <div style={{ display: 'flex', gap: '1rem' }}>
+          <a href="#databases" onClick={(e) => e.preventDefault()} style={{ color: '#8A8A8A', textDecoration: 'none' }}>Manage Databases</a>
+          <span>•</span>
+          <a href="#help" onClick={(e) => e.preventDefault()} style={{ color: '#8A8A8A', textDecoration: 'none' }}>Help</a>
+          <span>•</span>
+          <a href="#terms" onClick={(e) => e.preventDefault()} style={{ color: '#8A8A8A', textDecoration: 'none' }}>Terms</a>
+          <span>•</span>
+          <a href="#privacy" onClick={(e) => e.preventDefault()} style={{ color: '#8A8A8A', textDecoration: 'none' }}>Privacy</a>
+        </div>
+      </footer>
     </div>
   );
 };

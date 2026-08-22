@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Eye, EyeOff, AlertCircle, KeyRound, X } from 'lucide-react';
+import { Eye, EyeOff, AlertCircle, KeyRound, X, Database, Globe, HelpCircle, ExternalLink } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { Button } from '../../components/common/CommonUI';
 
@@ -78,35 +78,71 @@ export const SignInView = ({ onNavigate }) => {
 
   return (
     <div className="auth-odoo-wrapper">
+      {/* Odoo Enterprise Portal Header Bar */}
+      <header className="odoo-portal-header">
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.625rem' }}>
+          <div
+            style={{
+              width: '28px',
+              height: '28px',
+              borderRadius: '6px',
+              backgroundColor: '#714B67',
+              color: '#FFFFFF',
+              fontWeight: 700,
+              fontSize: '0.9375rem',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontFamily: 'var(--font-sans)'
+            }}
+          >
+            D
+          </div>
+          <span style={{ fontSize: '1rem', fontWeight: 700, color: '#1A1A1A', letterSpacing: '-0.01em' }}>
+            Dayflow
+          </span>
+          <span style={{ fontSize: '0.75rem', color: '#8A8A8A', paddingLeft: '0.5rem', borderLeft: '1px solid #E5E5E5' }}>
+            Enterprise Portal
+          </span>
+        </div>
+
+        <div style={{ display: 'flex', alignItems: 'center', gap: '1.25rem', fontSize: '0.8125rem', color: '#4C4C4C' }}>
+          <span style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', color: '#8A8A8A' }}>
+            <Database size={13} color="#714B67" />
+            <span style={{ fontFamily: 'var(--font-sans)' }}>dayflow-enterprise.odoo.com</span>
+          </span>
+          <span style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', cursor: 'pointer' }}>
+            <Globe size={13} />
+            <span>English (US)</span>
+          </span>
+        </div>
+      </header>
+
+      {/* Main Odoo Login Card */}
       <motion.div
-        initial={{ opacity: 0, y: 6 }}
+        initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.2 }}
+        transition={{ duration: 0.25 }}
         className="auth-odoo-card"
       >
-        {/* Centered Brand Mark */}
-        <div style={{ textAlign: 'center', marginBottom: '1.5rem' }}>
-          <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.625rem' }}>
-            <div
-              style={{
-                width: '32px',
-                height: '32px',
-                borderRadius: '6px',
-                backgroundColor: '#714B67',
-                color: '#FFFFFF',
-                fontWeight: 700,
-                fontSize: '1.125rem',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                fontFamily: 'var(--font-sans)'
-              }}
-            >
-              D
-            </div>
-            <span style={{ fontSize: '1.25rem', fontWeight: 700, color: '#1A1A1A', letterSpacing: '-0.01em' }}>
-              Dayflow
-            </span>
+        {/* Database Status Pill Header */}
+        <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '1.5rem' }}>
+          <div
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '0.4rem',
+              padding: '3px 10px',
+              borderRadius: '999px',
+              backgroundColor: '#F5EFF3',
+              border: '1px solid #EADEE7',
+              fontSize: '0.75rem',
+              fontWeight: 500,
+              color: '#714B67'
+            }}
+          >
+            <span style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#28A745', display: 'inline-block' }} />
+            Database: dayflow-enterprise
           </div>
         </div>
 
@@ -116,7 +152,7 @@ export const SignInView = ({ onNavigate }) => {
             Sign in to Dayflow
           </h1>
           <p style={{ fontSize: '0.875rem', color: '#8A8A8A' }}>
-            Continue to your workspace
+            Access your employee management workspace
           </p>
         </div>
 
@@ -253,7 +289,23 @@ export const SignInView = ({ onNavigate }) => {
         </div>
       </motion.div>
 
-      {/* Clean Password Reset Modal */}
+      {/* Odoo Enterprise Portal Footer */}
+      <footer className="odoo-portal-footer">
+        <div>
+          Powered by <strong style={{ color: '#714B67' }}>Dayflow Enterprise</strong> • Open Source Business Software
+        </div>
+        <div style={{ display: 'flex', gap: '1rem' }}>
+          <a href="#databases" onClick={(e) => e.preventDefault()} style={{ color: '#8A8A8A', textDecoration: 'none' }}>Manage Databases</a>
+          <span>•</span>
+          <a href="#help" onClick={(e) => e.preventDefault()} style={{ color: '#8A8A8A', textDecoration: 'none' }}>Help</a>
+          <span>•</span>
+          <a href="#terms" onClick={(e) => e.preventDefault()} style={{ color: '#8A8A8A', textDecoration: 'none' }}>Terms</a>
+          <span>•</span>
+          <a href="#privacy" onClick={(e) => e.preventDefault()} style={{ color: '#8A8A8A', textDecoration: 'none' }}>Privacy</a>
+        </div>
+      </footer>
+
+      {/* Password Reset Modal */}
       <AnimatePresence>
         {isForgotModalOpen && (
           <div className="auth-modal-backdrop" onClick={() => setIsForgotModalOpen(false)}>
@@ -267,7 +319,7 @@ export const SignInView = ({ onNavigate }) => {
             >
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.25rem' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                  <div style={{ width: '32px', height: '32px', borderRadius: '6px', backgroundColor: 'var(--primary-50)', color: 'var(--color-primary)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <div style={{ width: '32px', height: '32px', borderRadius: '6px', backgroundColor: '#F5EFF3', color: '#714B67', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                     <KeyRound size={16} />
                   </div>
                   <h3 style={{ fontSize: '1.125rem', fontWeight: 600, color: '#1A1A1A' }}>Reset Password</h3>
@@ -283,7 +335,7 @@ export const SignInView = ({ onNavigate }) => {
               {forgotStep === 1 ? (
                 <form onSubmit={handleRequestForgot}>
                   <p style={{ fontSize: '0.8125rem', color: '#4C4C4C', marginBottom: '1.25rem', lineHeight: 1.5 }}>
-                    Enter your email address to receive a password reset code.
+                    Enter your registered email address to receive a password reset code.
                   </p>
 
                   <div className="form-group" style={{ marginBottom: '1.25rem' }}>
@@ -314,7 +366,7 @@ export const SignInView = ({ onNavigate }) => {
               ) : (
                 <form onSubmit={handleConfirmForgot}>
                   <p style={{ fontSize: '0.8125rem', color: '#4C4C4C', marginBottom: '1rem' }}>
-                    Code dispatched. Enter the 6-digit code and your new password.
+                    Reset code sent. Enter the 6-digit code and your new password.
                   </p>
 
                   <div className="form-group" style={{ marginBottom: '1rem' }}>
