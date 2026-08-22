@@ -107,18 +107,18 @@ export const AttendanceTrendChart = () => {
 
 export const PayrollExpenseChart = () => {
   const departments = [
-    { name: 'Engineering', amount: 395000, color: 'var(--primary-600)', pct: 48 },
-    { name: 'Product & UX', amount: 185000, color: '#6366F1', pct: 22 },
-    { name: 'Executive & Ops', amount: 140000, color: '#EC4899', pct: 17 },
-    { name: 'Talent & HR', amount: 72000, color: '#10B981', pct: 9 },
-    { name: 'Finance & Legal', amount: 35000, color: '#F59E0B', pct: 4 }
+    { name: 'Engineering', amount: 3950000, color: 'var(--primary-600)', pct: 48 },
+    { name: 'Product & UX', amount: 1850000, color: '#6366F1', pct: 22 },
+    { name: 'Executive & Ops', amount: 1400000, color: '#EC4899', pct: 17 },
+    { name: 'Talent & HR', amount: 720000, color: '#10B981', pct: 9 },
+    { name: 'Finance & Legal', amount: 330000, color: '#F59E0B', pct: 4 }
   ];
 
   return (
     <div>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.25rem' }}>
         <span style={{ fontSize: '0.8125rem', color: 'var(--text-secondary)' }}>Departmental Monthly Payroll Allocation</span>
-        <span style={{ fontSize: '0.875rem', fontWeight: 700, fontFamily: 'var(--font-mono)' }}>$827,000 Total</span>
+        <span style={{ fontSize: '0.875rem', fontWeight: 700, fontFamily: 'var(--font-mono)' }}>₹82,50,000 Total / Month</span>
       </div>
 
       {/* Stacked Progress Bar */}
@@ -126,7 +126,7 @@ export const PayrollExpenseChart = () => {
         {departments.map((dept, i) => (
           <div
             key={i}
-            title={`${dept.name}: $${dept.amount.toLocaleString()} (${dept.pct}%)`}
+            title={`${dept.name}: ₹${(dept.amount / 100000).toFixed(1)}L (${dept.pct}%)`}
             style={{ width: `${dept.pct}%`, backgroundColor: dept.color, height: '100%' }}
           />
         ))}
@@ -140,7 +140,7 @@ export const PayrollExpenseChart = () => {
             <div>
               <div style={{ fontSize: '0.8125rem', fontWeight: 600, color: 'var(--text-primary)' }}>{dept.name}</div>
               <div style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)', fontFamily: 'var(--font-mono)' }}>
-                ${(dept.amount / 1000).toFixed(0)}k • {dept.pct}%
+                ₹{(dept.amount / 100000).toFixed(1)} Lakhs • {dept.pct}%
               </div>
             </div>
           </div>

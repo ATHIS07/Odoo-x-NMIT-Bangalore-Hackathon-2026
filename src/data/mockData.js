@@ -1,6 +1,6 @@
 // ============================================================================
-// DAYFLOW ENTERPRISE HRMS - CORE MOCK DATABASE SEED
-// Real-world enterprise data with complete relational consistency
+// DAYFLOW ENTERPRISE HRMS - CORE MOCK DATABASE SEED (INDIA / LOCALIZED)
+// Real-world enterprise data with complete relational consistency (INR / Indian Hubs)
 // ============================================================================
 
 export const INITIAL_USERS = [
@@ -13,8 +13,8 @@ export const INITIAL_USERS = [
     department: "Engineering",
     designation: "Senior Staff Frontend Architect",
     avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=240&auto=format&fit=crop&q=80",
-    phone: "+1 (555) 234-8901",
-    location: "San Francisco, CA (HQ)",
+    phone: "+91 98450 23891",
+    location: "Bangalore, Karnataka (NMIT / Whitefield HQ)",
     joiningDate: "2022-03-15",
     status: "active"
   },
@@ -27,8 +27,8 @@ export const INITIAL_USERS = [
     department: "People & Talent Operations",
     designation: "Lead HR Business Partner",
     avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=240&auto=format&fit=crop&q=80",
-    phone: "+1 (555) 456-1122",
-    location: "New York, NY",
+    phone: "+91 98201 45611",
+    location: "Mumbai, Maharashtra (BKC Hub)",
     joiningDate: "2021-08-01",
     status: "active"
   },
@@ -41,8 +41,8 @@ export const INITIAL_USERS = [
     department: "Executive Operations",
     designation: "VP of People & Operations",
     avatar: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=240&auto=format&fit=crop&q=80",
-    phone: "+1 (555) 890-3344",
-    location: "San Francisco, CA (HQ)",
+    phone: "+91 98800 89033",
+    location: "Bangalore, Karnataka (NMIT Tech Park HQ)",
     joiningDate: "2020-01-10",
     status: "active"
   },
@@ -55,8 +55,8 @@ export const INITIAL_USERS = [
     department: "Engineering",
     designation: "Distributed Systems Engineer",
     avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=240&auto=format&fit=crop&q=80",
-    phone: "+1 (555) 789-2231",
-    location: "Austin, TX",
+    phone: "+91 97012 78922",
+    location: "Hyderabad, Telangana (HITEC City)",
     joiningDate: "2023-01-20",
     status: "active"
   },
@@ -69,8 +69,8 @@ export const INITIAL_USERS = [
     department: "Product Design",
     designation: "Principal UX Systems Designer",
     avatar: "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=240&auto=format&fit=crop&q=80",
-    phone: "+1 (555) 991-6644",
-    location: "Seattle, WA",
+    phone: "+91 99001 99166",
+    location: "Bangalore, Karnataka (Koramangala)",
     joiningDate: "2022-09-01",
     status: "active"
   },
@@ -83,8 +83,8 @@ export const INITIAL_USERS = [
     department: "Product Management",
     designation: "Lead Technical Product Manager",
     avatar: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=240&auto=format&fit=crop&q=80",
-    phone: "+1 (555) 332-9090",
-    location: "San Francisco, CA (HQ)",
+    phone: "+91 98230 33290",
+    location: "Pune, Maharashtra (Hinjewadi)",
     joiningDate: "2021-11-15",
     status: "active"
   },
@@ -97,8 +97,8 @@ export const INITIAL_USERS = [
     department: "Finance & Strategy",
     designation: "Senior Financial Analyst",
     avatar: "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=240&auto=format&fit=crop&q=80",
-    phone: "+1 (555) 674-8833",
-    location: "New York, NY",
+    phone: "+91 98205 67488",
+    location: "Mumbai, Maharashtra (Lower Parel)",
     joiningDate: "2023-04-10",
     status: "active"
   }
@@ -115,7 +115,7 @@ export const INITIAL_PROFILES = {
       maritalStatus: "Single",
       emergencyContactName: "David Vance",
       emergencyContactRelation: "Father",
-      emergencyContactPhone: "+1 (555) 912-3344"
+      emergencyContactPhone: "+91 98451 91233"
     },
     jobDetails: {
       employeeId: "DF-8824",
@@ -125,31 +125,32 @@ export const INITIAL_PROFILES = {
       workEmail: "sophia.vance@dayflow.io",
       employmentType: "Full-Time Permanent",
       joiningDate: "2022-03-15",
-      shift: "Standard Core (09:00 AM - 05:30 PM PST)",
-      workLocation: "San Francisco HQ (Hybrid 3/2)",
+      shift: "General Core Shift (09:30 AM - 06:00 PM IST)",
+      workLocation: "Bangalore HQ (Outer Ring Road / NMIT)",
       costCenter: "CC-ENG-402"
     },
     address: {
-      street: "742 Montgomery St, Apt 4B",
-      city: "San Francisco",
-      state: "California",
-      postalCode: "94111",
-      country: "United States"
+      street: "74 Outer Ring Road, Bellandur",
+      city: "Bangalore",
+      state: "Karnataka",
+      postalCode: "560103",
+      country: "India"
     },
-    phone: "+1 (555) 234-8901",
+    phone: "+91 98450 23891",
     salaryStructure: {
-      baseSalary: 165000,
-      hra: 35000,
-      specialAllowance: 25000,
-      performanceBonus: 20000,
-      providentFundDeduction: 12000,
+      baseSalary: 1800000,
+      hra: 720000,
+      specialAllowance: 330000,
+      performanceBonus: 250000,
+      providentFundDeduction: 21600,
       professionalTax: 2400,
-      taxDeductionAtSource: 32000,
-      netAnnualSalary: 198600,
-      currency: "USD",
-      bankName: "First Republic / Chase Commercial",
+      taxDeductionAtSource: 180000,
+      netAnnualSalary: 2646000,
+      currency: "INR",
+      currencySymbol: "₹",
+      bankName: "HDFC Bank Ltd. (Commercial Branch)",
       accountNumber: "•••• •••• 6829",
-      routingNumber: "121000358"
+      routingNumber: "HDFC0001234"
     },
     leaveBalance: {
       paid: { total: 20, used: 6, remaining: 14 },
@@ -159,8 +160,8 @@ export const INITIAL_PROFILES = {
     },
     documents: [
       { id: "doc_01", name: "Employment_Agreement_Dayflow_Signed.pdf", type: "PDF", size: "2.4 MB", uploadDate: "2022-03-15", s3Key: "s3://dayflow-hr-vault/usr_001/contracts/emp_agreement.pdf" },
-      { id: "doc_02", name: "W4_Tax_Withholding_2024.pdf", type: "PDF", size: "1.1 MB", uploadDate: "2024-01-10", s3Key: "s3://dayflow-hr-vault/usr_001/tax/w4_2024.pdf" },
-      { id: "doc_03", name: "Passport_Identification_Certified.pdf", type: "PDF", size: "3.8 MB", uploadDate: "2022-03-14", s3Key: "s3://dayflow-hr-vault/usr_001/id/passport.pdf" },
+      { id: "doc_02", name: "Form16_Tax_Declaration_2025_26.pdf", type: "PDF", size: "1.1 MB", uploadDate: "2026-01-10", s3Key: "s3://dayflow-hr-vault/usr_001/tax/form16_2026.pdf" },
+      { id: "doc_03", name: "Passport_Aadhaar_Identification_Certified.pdf", type: "PDF", size: "3.8 MB", uploadDate: "2022-03-14", s3Key: "s3://dayflow-hr-vault/usr_001/id/id_proof.pdf" },
       { id: "doc_04", name: "AWS_Certified_Solutions_Architect.pdf", type: "PDF", size: "1.6 MB", uploadDate: "2023-08-20", s3Key: "s3://dayflow-hr-vault/usr_001/certs/aws_csa.pdf" }
     ]
   },
@@ -174,7 +175,7 @@ export const INITIAL_PROFILES = {
       maritalStatus: "Married",
       emergencyContactName: "Linda Chen",
       emergencyContactRelation: "Spouse",
-      emergencyContactPhone: "+1 (555) 777-8899"
+      emergencyContactPhone: "+91 98209 77788"
     },
     jobDetails: {
       employeeId: "DF-1092",
@@ -184,31 +185,32 @@ export const INITIAL_PROFILES = {
       workEmail: "marcus.chen@dayflow.io",
       employmentType: "Full-Time Permanent",
       joiningDate: "2021-08-01",
-      shift: "Standard Core (09:00 AM - 05:00 PM EST)",
-      workLocation: "New York Hub",
+      shift: "General Core Shift (09:30 AM - 06:00 PM IST)",
+      workLocation: "Mumbai Hub (Bandra Kurla Complex / BKC)",
       costCenter: "CC-HR-101"
     },
     address: {
-      street: "120 Broadway, Suite 1400",
-      city: "New York",
-      state: "New York",
-      postalCode: "10271",
-      country: "United States"
+      street: "Tower 2, Bandra Kurla Complex (BKC)",
+      city: "Mumbai",
+      state: "Maharashtra",
+      postalCode: "400051",
+      country: "India"
     },
-    phone: "+1 (555) 456-1122",
+    phone: "+91 98201 45611",
     salaryStructure: {
-      baseSalary: 140000,
-      hra: 30000,
-      specialAllowance: 18000,
-      performanceBonus: 15000,
-      providentFundDeduction: 10000,
+      baseSalary: 1400000,
+      hra: 560000,
+      specialAllowance: 240000,
+      performanceBonus: 180000,
+      providentFundDeduction: 21600,
       professionalTax: 2400,
-      taxDeductionAtSource: 26000,
-      netAnnualSalary: 164600,
-      currency: "USD",
-      bankName: "Morgan Stanley Private Bank",
+      taxDeductionAtSource: 140000,
+      netAnnualSalary: 2036000,
+      currency: "INR",
+      currencySymbol: "₹",
+      bankName: "ICICI Bank (BKC Towers)",
       accountNumber: "•••• •••• 9104",
-      routingNumber: "021000021"
+      routingNumber: "ICIC0000456"
     },
     leaveBalance: {
       paid: { total: 22, used: 4, remaining: 18 },
@@ -231,7 +233,7 @@ export const INITIAL_PROFILES = {
       maritalStatus: "Married",
       emergencyContactName: "Sergei Rostova",
       emergencyContactRelation: "Spouse",
-      emergencyContactPhone: "+1 (555) 901-2244"
+      emergencyContactPhone: "+91 98801 90122"
     },
     jobDetails: {
       employeeId: "DF-0010",
@@ -241,31 +243,32 @@ export const INITIAL_PROFILES = {
       workEmail: "elena.rostova@dayflow.io",
       employmentType: "Executive",
       joiningDate: "2020-01-10",
-      shift: "Executive Flexible",
-      workLocation: "San Francisco HQ",
+      shift: "Executive Flexible (IST)",
+      workLocation: "Bangalore HQ (NMIT Tech Park)",
       costCenter: "CC-EXEC-001"
     },
     address: {
-      street: "2100 Pacific Avenue",
-      city: "San Francisco",
-      state: "California",
-      postalCode: "94115",
-      country: "United States"
+      street: "12 Lavelle Road, Shanthala Nagar",
+      city: "Bangalore",
+      state: "Karnataka",
+      postalCode: "560001",
+      country: "India"
     },
-    phone: "+1 (555) 890-3344",
+    phone: "+91 98800 89033",
     salaryStructure: {
-      baseSalary: 230000,
-      hra: 50000,
-      specialAllowance: 45000,
-      performanceBonus: 60000,
-      providentFundDeduction: 18000,
+      baseSalary: 2800000,
+      hra: 1120000,
+      specialAllowance: 580000,
+      performanceBonus: 600000,
+      providentFundDeduction: 21600,
       professionalTax: 2400,
-      taxDeductionAtSource: 62000,
-      netAnnualSalary: 302600,
-      currency: "USD",
-      bankName: "Goldman Sachs Private Wealth",
+      taxDeductionAtSource: 380000,
+      netAnnualSalary: 4096000,
+      currency: "INR",
+      currencySymbol: "₹",
+      bankName: "State Bank of India (Corporate Centre)",
       accountNumber: "•••• •••• 4402",
-      routingNumber: "122000496"
+      routingNumber: "SBIN0007890"
     },
     leaveBalance: {
       paid: { total: 25, used: 5, remaining: 20 },
@@ -285,55 +288,55 @@ export const INITIAL_ATTENDANCE = [
     id: "att_01",
     userId: "usr_001",
     date: "2026-08-22",
-    checkIn: "08:54 AM",
+    checkIn: "09:24 AM",
     checkOut: null,
     duration: "Live Active",
     status: "present",
-    location: "SF HQ - Floor 4 (IP: 192.168.10.42)",
-    notes: "On-time check-in via badge NFC reader"
+    location: "Bangalore HQ - Floor 4 (IP: 192.168.10.42)",
+    notes: "On-time biometric check-in via NFC terminal"
   },
   {
     id: "att_02",
     userId: "usr_001",
     date: "2026-08-21",
-    checkIn: "09:02 AM",
-    checkOut: "05:45 PM",
-    duration: "8h 43m",
+    checkIn: "09:30 AM",
+    checkOut: "06:15 PM",
+    duration: "8h 45m",
     status: "present",
-    location: "SF HQ - Desk 402",
+    location: "Bangalore HQ - Desk 402",
     notes: "Core sprint engineering"
   },
   {
     id: "att_03",
     userId: "usr_001",
     date: "2026-08-20",
-    checkIn: "08:48 AM",
-    checkOut: "06:12 PM",
+    checkIn: "09:18 AM",
+    checkOut: "06:42 PM",
     duration: "9h 24m",
     status: "present",
-    location: "Remote - Verified IP (San Francisco)",
-    notes: "Late sprint deployment support"
+    location: "Remote - Verified IP (Bangalore)",
+    notes: "Sprint release deployment support"
   },
   {
     id: "att_04",
     userId: "usr_001",
     date: "2026-08-19",
-    checkIn: "09:15 AM",
-    checkOut: "01:30 PM",
-    duration: "4h 15m",
+    checkIn: "09:30 AM",
+    checkOut: "02:00 PM",
+    duration: "4h 30m",
     status: "half-day",
-    location: "SF HQ",
+    location: "Bangalore HQ",
     notes: "Approved afternoon medical appointment"
   },
   {
     id: "att_05",
     userId: "usr_001",
     date: "2026-08-18",
-    checkIn: "08:50 AM",
-    checkOut: "05:35 PM",
+    checkIn: "09:20 AM",
+    checkOut: "06:05 PM",
     duration: "8h 45m",
     status: "present",
-    location: "SF HQ",
+    location: "Bangalore HQ",
     notes: "Architecture review sync"
   },
   {
@@ -345,28 +348,28 @@ export const INITIAL_ATTENDANCE = [
     duration: "0h",
     status: "leave",
     location: "Out of Office",
-    notes: "Approved Casual Leave"
+    notes: "National Holiday — Independence Day"
   },
   {
     id: "att_07",
     userId: "usr_002",
     date: "2026-08-22",
-    checkIn: "08:45 AM",
+    checkIn: "09:15 AM",
     checkOut: null,
     duration: "Live Active",
     status: "present",
-    location: "New York Hub",
+    location: "Mumbai BKC Hub",
     notes: "Candidate interviews & HR orientation"
   },
   {
     id: "att_08",
     userId: "usr_004",
     date: "2026-08-22",
-    checkIn: "09:30 AM",
+    checkIn: "09:45 AM",
     checkOut: null,
     duration: "Live Active",
     status: "present",
-    location: "Austin, TX (Remote)",
+    location: "Hyderabad HITEC City (Remote)",
     notes: "Database migration sprint"
   },
   {
@@ -384,11 +387,11 @@ export const INITIAL_ATTENDANCE = [
     id: "att_10",
     userId: "usr_006",
     date: "2026-08-22",
-    checkIn: "08:30 AM",
+    checkIn: "09:10 AM",
     checkOut: null,
     duration: "Live Active",
     status: "present",
-    location: "SF HQ",
+    location: "Pune Hinjewadi Hub",
     notes: "Product roadmap council"
   },
   {
@@ -400,7 +403,7 @@ export const INITIAL_ATTENDANCE = [
     duration: "0h",
     status: "absent",
     location: "Unrecorded",
-    notes: "Unexcused absence / pending check-in"
+    notes: "Pending punch-in"
   }
 ];
 
@@ -414,9 +417,9 @@ export const INITIAL_LEAVES = [
     startDate: "2026-09-04",
     endDate: "2026-09-08",
     daysCount: 3,
-    remarks: "Attending React Advanced Global Summit in London. Will be reachable on Slack async.",
+    remarks: "Attending React Advanced Global Summit. Reachable on Slack async.",
     status: "approved",
-    adminComment: "Approved. Enjoy the conference and share takeaways with the team.",
+    adminComment: "Approved. Share learnings with the engineering pod.",
     reviewedBy: "Marcus Chen",
     reviewedAt: "2026-08-18T14:20:00Z",
     submittedAt: "2026-08-17T09:12:00Z"
@@ -430,7 +433,7 @@ export const INITIAL_LEAVES = [
     startDate: "2026-08-28",
     endDate: "2026-09-01",
     daysCount: 3,
-    remarks: "Family vacation and travel out of state.",
+    remarks: "Family travel and outstation personal leave.",
     status: "pending",
     adminComment: null,
     reviewedBy: null,
@@ -446,8 +449,8 @@ export const INITIAL_LEAVES = [
     startDate: "2026-08-22",
     endDate: "2026-08-23",
     daysCount: 2,
-    remarks: "Sudden flu and acute fever. Doctor has advised bed rest. Medical certificate attached.",
-    attachment: "Medical_Prescription_DrDavis.pdf",
+    remarks: "Acute viral fever. Doctor advised 2 days bed rest. Medical prescription attached.",
+    attachment: "Medical_Certificate_Apollo_DrRao.pdf",
     status: "pending",
     adminComment: null,
     reviewedBy: null,
@@ -463,7 +466,7 @@ export const INITIAL_LEAVES = [
     startDate: "2026-09-15",
     endDate: "2026-09-25",
     daysCount: 8,
-    remarks: "Personal sabbatical to complete executive certification capstone.",
+    remarks: "Personal sabbatical for executive management certification.",
     status: "pending",
     adminComment: null,
     reviewedBy: null,
@@ -479,9 +482,9 @@ export const INITIAL_LEAVES = [
     startDate: "2026-08-10",
     endDate: "2026-08-12",
     daysCount: 3,
-    remarks: "Personal relocation and apartment lease signing.",
+    remarks: "Personal relocation in Mumbai.",
     status: "rejected",
-    adminComment: "Rejected due to overlap with Q3 corporate financial audit closure. Please reschedule post August 15.",
+    adminComment: "Rejected due to Q3 corporate financial audit closure. Please reschedule post Aug 15.",
     reviewedBy: "Elena Rostova",
     reviewedAt: "2026-08-05T10:00:00Z",
     submittedAt: "2026-08-04T08:30:00Z"
@@ -497,7 +500,7 @@ export const INITIAL_LEAVES = [
     daysCount: 2,
     remarks: "Dental surgery recovery.",
     status: "approved",
-    adminComment: "Get well soon!",
+    adminComment: "Take care and get well soon!",
     reviewedBy: "Marcus Chen",
     reviewedAt: "2026-07-13T16:10:00Z",
     submittedAt: "2026-07-13T14:00:00Z"
@@ -510,66 +513,69 @@ export const INITIAL_PAYROLL = [
     userId: "usr_001",
     month: "July 2026",
     payDate: "2026-07-31",
-    grossPay: 18750,
-    basic: 13750,
-    hra: 2916,
-    specialAllowance: 2084,
+    grossPay: 237500,
+    basic: 150000,
+    hra: 60000,
+    specialAllowance: 27500,
     bonus: 0,
     deductions: {
-      providentFund: 1000,
-      taxDeduction: 2666,
+      providentFund: 1800,
+      taxDeduction: 15000,
       professionalTax: 200,
-      healthInsurance: 150
+      healthInsurance: 1500
     },
-    totalDeductions: 4016,
-    netPay: 14734,
+    totalDeductions: 18500,
+    netPay: 219000,
     status: "paid",
-    transactionId: "TXN-DF-982104-US",
-    currency: "$"
+    transactionId: "TXN-DF-IN-982104",
+    currency: "₹",
+    currencySymbol: "₹"
   },
   {
     id: "pay_2026_06",
     userId: "usr_001",
     month: "June 2026",
     payDate: "2026-06-30",
-    grossPay: 18750,
-    basic: 13750,
-    hra: 2916,
-    specialAllowance: 2084,
+    grossPay: 237500,
+    basic: 150000,
+    hra: 60000,
+    specialAllowance: 27500,
     bonus: 0,
     deductions: {
-      providentFund: 1000,
-      taxDeduction: 2666,
+      providentFund: 1800,
+      taxDeduction: 15000,
       professionalTax: 200,
-      healthInsurance: 150
+      healthInsurance: 1500
     },
-    totalDeductions: 4016,
-    netPay: 14734,
+    totalDeductions: 18500,
+    netPay: 219000,
     status: "paid",
-    transactionId: "TXN-DF-881902-US",
-    currency: "$"
+    transactionId: "TXN-DF-IN-881902",
+    currency: "₹",
+    currencySymbol: "₹"
   },
   {
     id: "pay_2026_05",
     userId: "usr_001",
     month: "May 2026",
     payDate: "2026-05-31",
-    grossPay: 23750,
-    basic: 13750,
-    hra: 2916,
-    specialAllowance: 2084,
-    bonus: 5000, // Mid-year performance bonus
+    grossPay: 287500,
+    basic: 150000,
+    hra: 60000,
+    specialAllowance: 27500,
+    bonus: 50000, // Annual Performance Appraisal Bonus
     deductions: {
-      providentFund: 1000,
-      taxDeduction: 3950,
+      providentFund: 1800,
+      taxDeduction: 22000,
       professionalTax: 200,
-      healthInsurance: 150
+      healthInsurance: 1500
     },
-    totalDeductions: 5300,
-    netPay: 18450,
+    totalDeductions: 25500,
+    netPay: 262000,
     status: "paid",
-    transactionId: "TXN-DF-771801-US",
-    currency: "$"
+    transactionId: "TXN-DF-IN-771801",
+    currency: "₹",
+    currencySymbol: "₹"
   }
 ];
 
@@ -588,8 +594,8 @@ export const INITIAL_NOTIFICATIONS = [
     id: "notif_02",
     userId: "usr_001",
     type: "payroll",
-    title: "July 2026 Payslip Available",
-    message: "Your compensation slip for July 2026 ($14,734 Net) has been deposited.",
+    title: "July 2026 Salary Slip Disbursed",
+    message: "Your compensation slip for July 2026 (₹2,19,000 Net) has been credited to your HDFC account.",
     read: true,
     timestamp: "3 days ago",
     link: "/payroll"
@@ -598,8 +604,8 @@ export const INITIAL_NOTIFICATIONS = [
     id: "notif_03",
     userId: "usr_001",
     type: "attendance",
-    title: "Punch-In Logged Successfully",
-    message: "Clock-in confirmed at 08:54 AM via SF HQ Floor 4 Terminal.",
+    title: "Biometric Punch Logged Successfully",
+    message: "Clock-in confirmed at 09:24 AM via Bangalore HQ Floor 4 Terminal.",
     read: false,
     timestamp: "2 hours ago",
     link: "/attendance"
@@ -609,7 +615,7 @@ export const INITIAL_NOTIFICATIONS = [
     userId: "usr_002",
     type: "leave_request",
     title: "New Leave Application",
-    message: "Aria Montgomery submitted a Sick Leave request (2 days, flu). Review required.",
+    message: "Aria Montgomery submitted a Sick Leave request (2 days, viral fever). Review required.",
     read: false,
     timestamp: "1 hour ago",
     link: "/leave/approvals"
@@ -619,7 +625,7 @@ export const INITIAL_NOTIFICATIONS = [
     userId: "usr_003",
     type: "payroll_batch",
     title: "August 2026 Payroll Cycle Open",
-    message: "Automated Lambda payroll validation run completed. 100% records reconciled.",
+    message: "Automated Lambda payroll validation run completed. 100% records reconciled across India hubs.",
     read: false,
     timestamp: "4 hours ago",
     link: "/payroll"
@@ -627,9 +633,9 @@ export const INITIAL_NOTIFICATIONS = [
 ];
 
 export const COMPANY_HOLIDAYS = [
-  { name: "Labor Day", date: "2026-09-07", day: "Monday", type: "Federal Public Holiday" },
-  { name: "Indigenous Peoples' Day", date: "2026-10-12", day: "Monday", type: "Federal Public Holiday" },
-  { name: "Veterans Day", date: "2026-11-11", day: "Wednesday", type: "Corporate Holiday" },
-  { name: "Thanksgiving & Autumn Break", date: "2026-11-26", day: "Thursday - Friday", type: "Mandatory Office Closure" },
-  { name: "Winter Solstice & Year-End", date: "2026-12-24", day: "Thursday - Friday", type: "Global Holiday" }
+  { name: "Gandhi Jayanti", date: "2026-10-02", day: "Friday", type: "National Gazetted Holiday" },
+  { name: "Dussehra / Vijayadashami", date: "2026-10-20", day: "Tuesday", type: "Festive Holiday" },
+  { name: "Kannada Rajyotsava", date: "2026-11-01", day: "Sunday", type: "State Public Holiday" },
+  { name: "Diwali & Deepavali Break", date: "2026-11-08", day: "Sunday - Monday", type: "Mandatory Corporate Closure" },
+  { name: "Christmas & Year-End Closure", date: "2026-12-25", day: "Friday", type: "National Holiday" }
 ];

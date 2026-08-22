@@ -35,7 +35,7 @@ export const ProfileView = ({ onNavigate }) => {
       maritalStatus: 'Single',
       emergencyContactName: 'David Vance',
       emergencyContactRelation: 'Father',
-      emergencyContactPhone: '+1 (555) 912-3344'
+      emergencyContactPhone: '+91 98451 91233'
     },
     jobDetails: {
       employeeId: activeUser.employeeId,
@@ -45,36 +45,37 @@ export const ProfileView = ({ onNavigate }) => {
       workEmail: activeUser.email,
       employmentType: 'Full-Time Permanent',
       joiningDate: '2022-03-15',
-      shift: 'Standard Core (09:00 AM - 05:30 PM PST)',
+      shift: 'General Core Shift (09:30 AM - 06:00 PM IST)',
       workLocation: activeUser.location,
       costCenter: 'CC-ENG-402'
     },
     salaryStructure: {
-      baseSalary: 165000,
-      hra: 35000,
-      specialAllowance: 25000,
-      performanceBonus: 20000,
-      providentFundDeduction: 12000,
+      baseSalary: 1800000,
+      hra: 720000,
+      specialAllowance: 330000,
+      performanceBonus: 250000,
+      providentFundDeduction: 21600,
       professionalTax: 2400,
-      taxDeductionAtSource: 32000,
-      netAnnualSalary: 198600,
-      currency: 'USD',
-      bankName: 'First Republic / Chase Commercial',
+      taxDeductionAtSource: 180000,
+      netAnnualSalary: 2646000,
+      currency: 'INR',
+      currencySymbol: '₹',
+      bankName: 'HDFC Bank Ltd. (Commercial Branch)',
       accountNumber: '•••• •••• 6829',
-      routingNumber: '121000358'
+      routingNumber: 'HDFC0001234'
     },
     address: {
-      street: '742 Montgomery St, Apt 4B',
-      city: 'San Francisco',
-      state: 'California',
-      postalCode: '94111',
-      country: 'United States'
+      street: '74 Outer Ring Road, Bellandur',
+      city: 'Bangalore',
+      state: 'Karnataka',
+      postalCode: '560103',
+      country: 'India'
     },
     phone: activeUser.phone,
     documents: [
       { id: 'doc_01', name: 'Employment_Agreement_Dayflow_Signed.pdf', type: 'PDF', size: '2.4 MB', uploadDate: '2022-03-15', s3Key: `s3://dayflow-hr-vault/${activeUser.id}/contracts/emp_agreement.pdf` },
-      { id: 'doc_02', name: 'W4_Tax_Withholding_2024.pdf', type: 'PDF', size: '1.1 MB', uploadDate: '2024-01-10', s3Key: `s3://dayflow-hr-vault/${activeUser.id}/tax/w4_2024.pdf` },
-      { id: 'doc_03', name: 'Passport_Identification_Certified.pdf', type: 'PDF', size: '3.8 MB', uploadDate: '2022-03-14', s3Key: `s3://dayflow-hr-vault/${activeUser.id}/id/passport.pdf` }
+      { id: 'doc_02', name: 'Form16_Tax_Declaration_2025_26.pdf', type: 'PDF', size: '1.1 MB', uploadDate: '2026-01-10', s3Key: `s3://dayflow-hr-vault/${activeUser.id}/tax/form16_2026.pdf` },
+      { id: 'doc_03', name: 'Passport_Aadhaar_Identification_Certified.pdf', type: 'PDF', size: '3.8 MB', uploadDate: '2022-03-14', s3Key: `s3://dayflow-hr-vault/${activeUser.id}/id/passport.pdf` }
     ]
   };
 
@@ -319,24 +320,24 @@ export const ProfileView = ({ onNavigate }) => {
               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.875rem' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                   <span style={{ color: 'var(--text-secondary)', fontSize: '0.875rem' }}>Base Salary</span>
-                  <span style={{ fontWeight: 700, fontFamily: 'var(--font-mono)' }}>${profile.salaryStructure?.baseSalary?.toLocaleString()}</span>
+                  <span style={{ fontWeight: 700, fontFamily: 'var(--font-mono)' }}>₹{profile.salaryStructure?.baseSalary?.toLocaleString()}</span>
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                   <span style={{ color: 'var(--text-secondary)', fontSize: '0.875rem' }}>House Rent Allowance (HRA)</span>
-                  <span style={{ fontWeight: 700, fontFamily: 'var(--font-mono)' }}>${profile.salaryStructure?.hra?.toLocaleString()}</span>
+                  <span style={{ fontWeight: 700, fontFamily: 'var(--font-mono)' }}>₹{profile.salaryStructure?.hra?.toLocaleString()}</span>
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                   <span style={{ color: 'var(--text-secondary)', fontSize: '0.875rem' }}>Special Allowance</span>
-                  <span style={{ fontWeight: 700, fontFamily: 'var(--font-mono)' }}>${profile.salaryStructure?.specialAllowance?.toLocaleString()}</span>
+                  <span style={{ fontWeight: 700, fontFamily: 'var(--font-mono)' }}>₹{profile.salaryStructure?.specialAllowance?.toLocaleString()}</span>
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                   <span style={{ color: 'var(--text-secondary)', fontSize: '0.875rem' }}>Target Performance Bonus</span>
-                  <span style={{ fontWeight: 700, fontFamily: 'var(--font-mono)' }}>${profile.salaryStructure?.performanceBonus?.toLocaleString()}</span>
+                  <span style={{ fontWeight: 700, fontFamily: 'var(--font-mono)' }}>₹{profile.salaryStructure?.performanceBonus?.toLocaleString()}</span>
                 </div>
                 <div style={{ borderTop: '2px dashed var(--border-subtle)', paddingTop: '0.75rem', display: 'flex', justifyContent: 'space-between', fontSize: '1rem' }}>
                   <span style={{ fontWeight: 700 }}>Total Net Annual Take-Home</span>
                   <span style={{ fontWeight: 800, color: 'var(--emerald-600)', fontFamily: 'var(--font-mono)' }}>
-                    ${profile.salaryStructure?.netAnnualSalary?.toLocaleString()} / yr
+                    ₹{profile.salaryStructure?.netAnnualSalary?.toLocaleString()} / yr
                   </span>
                 </div>
               </div>
@@ -356,13 +357,13 @@ export const ProfileView = ({ onNavigate }) => {
                   <span style={{ fontWeight: 600, fontFamily: 'var(--font-mono)' }}>{profile.salaryStructure?.accountNumber}</span>
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                  <span style={{ color: 'var(--text-secondary)', fontSize: '0.875rem' }}>Routing / Sort Code</span>
+                  <span style={{ color: 'var(--text-secondary)', fontSize: '0.875rem' }}>IFSC Code</span>
                   <span style={{ fontWeight: 600, fontFamily: 'var(--font-mono)' }}>{profile.salaryStructure?.routingNumber}</span>
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                  <span style={{ color: 'var(--text-secondary)', fontSize: '0.875rem' }}>Provident Fund Deduction</span>
+                  <span style={{ color: 'var(--text-secondary)', fontSize: '0.875rem' }}>Provident Fund (EPFO) Deduction</span>
                   <span style={{ fontWeight: 600, fontFamily: 'var(--font-mono)', color: 'var(--rose-600)' }}>
-                    -${profile.salaryStructure?.providentFundDeduction?.toLocaleString()} / yr
+                    -₹{profile.salaryStructure?.providentFundDeduction?.toLocaleString()} / yr
                   </span>
                 </div>
               </div>

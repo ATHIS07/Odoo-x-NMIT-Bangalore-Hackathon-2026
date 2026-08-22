@@ -449,29 +449,29 @@ export const HRMSProvider = ({ children }) => {
         userId: 'usr_001',
         month: 'August 2026',
         payDate: '2026-08-31',
-        grossPay: 18750,
-        basic: 13750,
-        hra: 2916,
-        specialAllowance: 2084,
+        grossPay: 237500,
+        basic: 150000,
+        hra: 60000,
+        specialAllowance: 27500,
         bonus: 0,
         deductions: {
-          providentFund: 1000,
-          taxDeduction: 2666,
+          providentFund: 1800,
+          taxDeduction: 15000,
           professionalTax: 200,
-          healthInsurance: 150
+          healthInsurance: 1500
         },
-        totalDeductions: 4016,
-        netPay: 14734,
+        totalDeductions: 18500,
+        netPay: 219000,
         status: 'paid',
-        transactionId: `TXN-DF-AUG26-${Math.floor(100000 + Math.random() * 900000)}`,
-        currency: '$'
+        transactionId: `TXN-DF-AUG26-IN-${Math.floor(100000 + Math.random() * 900000)}`,
+        currency: '₹'
       };
 
       setPayroll((prev) => [augustRun, ...prev]);
 
       showSNSToast({
         title: 'Lambda Batch Job: August Payroll Completed',
-        message: 'Disbursed $118,450 across 7 active employee accounts.',
+        message: 'Disbursed ₹82,50,000 across 7 active employee accounts in India hubs.',
         source: 'AWS Lambda & SNS'
       });
     });

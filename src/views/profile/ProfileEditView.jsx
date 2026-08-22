@@ -17,20 +17,20 @@ export const ProfileEditView = ({ onNavigate }) => {
     name: currentProf.personalDetails?.fullName || activeUser.name,
     phone: currentProf.phone || activeUser.phone,
     avatar: currentProf.avatar || activeUser.avatar,
-    street: currentProf.address?.street || '742 Montgomery St, Apt 4B',
-    city: currentProf.address?.city || 'San Francisco',
-    state: currentProf.address?.state || 'California',
-    postalCode: currentProf.address?.postalCode || '94111',
+    street: currentProf.address?.street || '74 Outer Ring Road, Bellandur',
+    city: currentProf.address?.city || 'Bangalore',
+    state: currentProf.address?.state || 'Karnataka',
+    postalCode: currentProf.address?.postalCode || '560103',
     emergencyName: currentProf.personalDetails?.emergencyContactName || 'David Vance',
     emergencyRelation: currentProf.personalDetails?.emergencyContactRelation || 'Father',
-    emergencyPhone: currentProf.personalDetails?.emergencyContactPhone || '+1 (555) 912-3344',
+    emergencyPhone: currentProf.personalDetails?.emergencyContactPhone || '+91 98451 91233',
     // Admin only fields
     department: currentProf.jobDetails?.department || activeUser.department,
     designation: currentProf.jobDetails?.designation || activeUser.designation,
     manager: currentProf.jobDetails?.manager || 'Elena Rostova',
-    baseSalary: currentProf.salaryStructure?.baseSalary || 165000,
-    hra: currentProf.salaryStructure?.hra || 35000,
-    specialAllowance: currentProf.salaryStructure?.specialAllowance || 25000
+    baseSalary: currentProf.salaryStructure?.baseSalary || 1800000,
+    hra: currentProf.salaryStructure?.hra || 720000,
+    specialAllowance: currentProf.salaryStructure?.specialAllowance || 330000
   });
 
   const [saving, setSaving] = useState(false);
@@ -53,7 +53,7 @@ export const ProfileEditView = ({ onNavigate }) => {
         city: formData.city,
         state: formData.state,
         postalCode: formData.postalCode,
-        country: 'United States'
+        country: 'India'
       }
     };
 
@@ -67,7 +67,7 @@ export const ProfileEditView = ({ onNavigate }) => {
         baseSalary: Number(formData.baseSalary),
         hra: Number(formData.hra),
         specialAllowance: Number(formData.specialAllowance),
-        netAnnualSalary: Number(formData.baseSalary) + Number(formData.hra) + Number(formData.specialAllowance) - 14400
+        netAnnualSalary: Number(formData.baseSalary) + Number(formData.hra) + Number(formData.specialAllowance) - 204000
       };
     }
 
@@ -287,7 +287,7 @@ export const ProfileEditView = ({ onNavigate }) => {
 
               <div className="grid-3">
                 <div className="form-group">
-                  <label className="form-label">Annual Base ($)</label>
+                  <label className="form-label">Annual Base (₹)</label>
                   <input
                     type="number"
                     disabled={!isHRorAdmin}
@@ -298,7 +298,7 @@ export const ProfileEditView = ({ onNavigate }) => {
                 </div>
 
                 <div className="form-group">
-                  <label className="form-label">HRA Allowance ($)</label>
+                  <label className="form-label">HRA Allowance (₹)</label>
                   <input
                     type="number"
                     disabled={!isHRorAdmin}
@@ -309,7 +309,7 @@ export const ProfileEditView = ({ onNavigate }) => {
                 </div>
 
                 <div className="form-group">
-                  <label className="form-label">Special Allowance ($)</label>
+                  <label className="form-label">Special Allowance (₹)</label>
                   <input
                     type="number"
                     disabled={!isHRorAdmin}

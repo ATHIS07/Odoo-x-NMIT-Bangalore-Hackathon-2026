@@ -27,20 +27,20 @@ export const PayrollView = () => {
 
   const [selectedPayslip, setSelectedPayslip] = useState(null);
   const [editingSalaryUser, setEditingSalaryUser] = useState(null);
-  const [salaryForm, setSalaryForm] = useState({ base: 165000, hra: 35000, allowance: 25000 });
+  const [salaryForm, setSalaryForm] = useState({ base: 1800000, hra: 720000, allowance: 330000 });
   const [isProcessingRun, setIsProcessingRun] = useState(false);
 
   const userProfile = profiles[activeUser.id] || {};
   const currentSalary = userProfile.salaryStructure || {
-    baseSalary: 165000,
-    hra: 35000,
-    specialAllowance: 25000,
-    performanceBonus: 20000,
-    providentFundDeduction: 12000,
+    baseSalary: 1800000,
+    hra: 720000,
+    specialAllowance: 330000,
+    performanceBonus: 250000,
+    providentFundDeduction: 21600,
     professionalTax: 2400,
-    taxDeductionAtSource: 32000,
-    netAnnualSalary: 198600,
-    bankName: 'Chase Commercial',
+    taxDeductionAtSource: 180000,
+    netAnnualSalary: 2646000,
+    bankName: 'HDFC Bank Ltd. (Commercial Branch)',
     accountNumber: '•••• •••• 6829'
   };
 
@@ -58,7 +58,7 @@ export const PayrollView = () => {
       baseSalary: Number(salaryForm.base),
       hra: Number(salaryForm.hra),
       specialAllowance: Number(salaryForm.allowance),
-      netAnnualSalary: Number(salaryForm.base) + Number(salaryForm.hra) + Number(salaryForm.allowance) - 14400
+      netAnnualSalary: Number(salaryForm.base) + Number(salaryForm.hra) + Number(salaryForm.allowance) - 204000
     });
     setEditingSalaryUser(null);
   };
@@ -70,7 +70,7 @@ export const PayrollView = () => {
         <div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.25rem' }}>
             <span style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--primary-600)', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
-              Compensation & Payroll OS
+              Compensation & Payroll OS (India)
             </span>
             <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>•</span>
             <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>
@@ -79,7 +79,7 @@ export const PayrollView = () => {
           </div>
           <h1 className="page-title">{isHRorAdmin ? 'Organization Payroll Administration' : 'My Payslips & Compensation'}</h1>
           <p className="page-subtitle">
-            Automated statutory deductions, tax withholding, and direct ACH deposit reconciliation.
+            Automated statutory deductions (EPFO PF, PT, TDS) and direct NEFT/ACH bank disbursement reconciliation.
           </p>
         </div>
 
@@ -99,17 +99,17 @@ export const PayrollView = () => {
       <div className="grid-4" style={{ marginBottom: '1.5rem' }}>
         <MetricCard
           label={isHRorAdmin ? 'Monthly Org Payroll' : 'My Net Take-Home (Monthly)'}
-          value={isHRorAdmin ? '$118,450' : `$${(currentSalary.netAnnualSalary / 12).toFixed(0).toLocaleString()}`}
-          subtitle={isHRorAdmin ? '7 Active accounts reconciled' : 'Direct ACH deposit to bank'}
-          icon={DollarSign}
+          value={isHRorAdmin ? '₹82,50,000' : `₹${Math.round(currentSalary.netAnnualSalary / 12).toLocaleString()}`}
+          subtitle={isHRorAdmin ? '7 Active accounts reconciled' : 'Direct NEFT deposit to HDFC account'}
+          icon={CreditCard}
           iconColor="var(--emerald-600)"
           iconBg="var(--emerald-50)"
         />
 
         <MetricCard
           label={isHRorAdmin ? 'Annual CTC Expense' : 'Annual CTC Compensation'}
-          value={isHRorAdmin ? '$1.42M' : `$${(currentSalary.baseSalary + currentSalary.hra + currentSalary.specialAllowance).toLocaleString()}`}
-          subtitle="Fixed base + HRA + Allowances"
+          value={isHRorAdmin ? '₹2.85 Cr' : `₹${(currentSalary.baseSalary + currentSalary.hra + currentSalary.specialAllowance).toLocaleString()}`}
+          subtitle="Fixed Base + HRA + Special Allowance"
           icon={TrendingUp}
           iconColor="var(--primary-600)"
           iconBg="var(--primary-50)"
@@ -125,8 +125,8 @@ export const PayrollView = () => {
         />
 
         <MetricCard
-          label="Tax Regime / W4"
-          value="Standard Tier"
+          label="Tax Regime"
+          value="New Regime (FY26)"
           subtitle="TDS Withheld at Source"
           icon={CreditCard}
           iconColor="#8B5CF6"
@@ -142,7 +142,7 @@ export const PayrollView = () => {
             <div className="card-header">
               <div className="card-title">
                 <Building2 size={18} color="var(--primary-600)" />
-                Workforce Payroll Distribution
+                Workforce Payroll Distribution (INR)
               </div>
               <Badge variant="active">Reconciled</Badge>
             </div>
@@ -167,9 +167,9 @@ export const PayrollView = () => {
                   <tr>
                     <th>Employee & ID</th>
                     <th>Department</th>
-                    <th>Annual Base ($)</th>
-                    <th>HRA Allowance ($)</th>
-                    <th>Special Allowance ($)</th>
+                    <th>Annual Base (₹)</th>
+                    <th>HRA Allowance (₹)</th>
+                    <th>Special Allowance (₹)</th>
                     <th>Net Annual CTC</th>
                     <th style={{ textAlign: 'right' }}>Actions</th>
                   </tr>
@@ -177,7 +177,7 @@ export const PayrollView = () => {
                 <tbody>
                   {users.map((u) => {
                     const prof = profiles[u.id] || {};
-                    const sal = prof.salaryStructure || { baseSalary: 140000, hra: 30000, specialAllowance: 18000, netAnnualSalary: 173600 };
+                    const sal = prof.salaryStructure || { baseSalary: 1400000, hra: 560000, specialAllowance: 240000, netAnnualSalary: 2036000 };
 
                     return (
                       <tr key={u.id}>
@@ -197,11 +197,11 @@ export const PayrollView = () => {
                           </div>
                         </td>
                         <td>{u.department}</td>
-                        <td style={{ fontFamily: 'var(--font-mono)', fontWeight: 600 }}>${sal.baseSalary?.toLocaleString()}</td>
-                        <td style={{ fontFamily: 'var(--font-mono)' }}>${sal.hra?.toLocaleString()}</td>
-                        <td style={{ fontFamily: 'var(--font-mono)' }}>${sal.specialAllowance?.toLocaleString()}</td>
+                        <td style={{ fontFamily: 'var(--font-mono)', fontWeight: 600 }}>₹{sal.baseSalary?.toLocaleString()}</td>
+                        <td style={{ fontFamily: 'var(--font-mono)' }}>₹{sal.hra?.toLocaleString()}</td>
+                        <td style={{ fontFamily: 'var(--font-mono)' }}>₹{sal.specialAllowance?.toLocaleString()}</td>
                         <td style={{ fontFamily: 'var(--font-mono)', fontWeight: 700, color: 'var(--emerald-600)' }}>
-                          ${sal.netAnnualSalary?.toLocaleString()}
+                          ₹{sal.netAnnualSalary?.toLocaleString()}
                         </td>
                         <td style={{ textAlign: 'right' }}>
                           <Button
@@ -248,15 +248,15 @@ export const PayrollView = () => {
 
               <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.875rem' }}>
                 <span>Basic Salary</span>
-                <span style={{ fontFamily: 'var(--font-mono)', fontWeight: 600 }}>${(currentSalary.baseSalary / 12).toFixed(2)}</span>
+                <span style={{ fontFamily: 'var(--font-mono)', fontWeight: 600 }}>₹{(currentSalary.baseSalary / 12).toFixed(2)}</span>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.875rem' }}>
                 <span>House Rent Allowance (HRA)</span>
-                <span style={{ fontFamily: 'var(--font-mono)', fontWeight: 600 }}>${(currentSalary.hra / 12).toFixed(2)}</span>
+                <span style={{ fontFamily: 'var(--font-mono)', fontWeight: 600 }}>₹{(currentSalary.hra / 12).toFixed(2)}</span>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.875rem' }}>
                 <span>Special Executive Allowance</span>
-                <span style={{ fontFamily: 'var(--font-mono)', fontWeight: 600 }}>${(currentSalary.specialAllowance / 12).toFixed(2)}</span>
+                <span style={{ fontFamily: 'var(--font-mono)', fontWeight: 600 }}>₹{(currentSalary.specialAllowance / 12).toFixed(2)}</span>
               </div>
 
               <div style={{ borderTop: '1px solid var(--border-subtle)', paddingTop: '0.75rem', fontSize: '0.8125rem', fontWeight: 700, color: 'var(--text-tertiary)', textTransform: 'uppercase' }}>
@@ -264,16 +264,16 @@ export const PayrollView = () => {
               </div>
 
               <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.875rem', color: 'var(--rose-600)' }}>
-                <span>Provident Fund (401k / PF)</span>
-                <span style={{ fontFamily: 'var(--font-mono)', fontWeight: 600 }}>-${(currentSalary.providentFundDeduction / 12).toFixed(2)}</span>
+                <span>Provident Fund (EPFO)</span>
+                <span style={{ fontFamily: 'var(--font-mono)', fontWeight: 600 }}>-₹{(currentSalary.providentFundDeduction / 12).toFixed(2)}</span>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.875rem', color: 'var(--rose-600)' }}>
                 <span>Income Tax Withholding (TDS)</span>
-                <span style={{ fontFamily: 'var(--font-mono)', fontWeight: 600 }}>-${(currentSalary.taxDeductionAtSource / 12).toFixed(2)}</span>
+                <span style={{ fontFamily: 'var(--font-mono)', fontWeight: 600 }}>-₹{(currentSalary.taxDeductionAtSource / 12).toFixed(2)}</span>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.875rem', color: 'var(--rose-600)' }}>
-                <span>Professional State Tax</span>
-                <span style={{ fontFamily: 'var(--font-mono)', fontWeight: 600 }}>-${(currentSalary.professionalTax / 12).toFixed(2)}</span>
+                <span>Professional Tax (Karnataka PT)</span>
+                <span style={{ fontFamily: 'var(--font-mono)', fontWeight: 600 }}>-₹{(currentSalary.professionalTax / 12).toFixed(2)}</span>
               </div>
 
               <div
@@ -287,10 +287,10 @@ export const PayrollView = () => {
               >
                 <div>
                   <div style={{ fontWeight: 800, fontSize: '1rem' }}>Net Take-Home Pay</div>
-                  <div style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)' }}>Deposited to {currentSalary.accountNumber}</div>
+                  <div style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)' }}>Deposited to {currentSalary.bankName} {currentSalary.accountNumber}</div>
                 </div>
                 <div style={{ fontSize: '1.375rem', fontWeight: 800, color: 'var(--emerald-600)', fontFamily: 'var(--font-mono)' }}>
-                  ${(currentSalary.netAnnualSalary / 12).toFixed(2)}
+                  ₹{(currentSalary.netAnnualSalary / 12).toFixed(2)}
                 </div>
               </div>
             </div>
@@ -300,7 +300,7 @@ export const PayrollView = () => {
           <Card elevated>
             <div className="card-header">
               <div className="card-title">Historical Payslip Archive</div>
-              <span style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)', fontFamily: 'var(--font-mono)' }}>2026 Fiscal Year</span>
+              <span style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)', fontFamily: 'var(--font-mono)' }}>FY 2026-27</span>
             </div>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.875rem' }}>
@@ -345,7 +345,7 @@ export const PayrollView = () => {
                   <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
                     <div style={{ textAlign: 'right' }}>
                       <div style={{ fontWeight: 800, fontSize: '0.9375rem', color: 'var(--text-primary)', fontFamily: 'var(--font-mono)' }}>
-                        ${p.netPay.toLocaleString()}
+                        ₹{p.netPay.toLocaleString()}
                       </div>
                       <Badge variant="paid">Paid</Badge>
                     </div>
@@ -370,7 +370,7 @@ export const PayrollView = () => {
       <Modal
         isOpen={!!selectedPayslip}
         onClose={() => setSelectedPayslip(null)}
-        title="Official Compensation Payslip"
+        title="Official Compensation Salary Slip (India)"
         maxWidth="680px"
       >
         {selectedPayslip && (
@@ -379,13 +379,13 @@ export const PayrollView = () => {
             <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '2px solid var(--border-default)', paddingBottom: '1rem', marginBottom: '1.25rem' }}>
               <div>
                 <div style={{ fontSize: '1.25rem', fontWeight: 800, letterSpacing: '-0.03em', fontFamily: 'var(--font-display)', color: 'var(--primary-600)' }}>
-                  Dayflow Technologies Inc.
+                  Dayflow Technologies India Pvt. Ltd.
                 </div>
                 <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>
-                  500 Howard Street, Suite 400 • San Francisco, CA 94105
+                  Prestige Tech Park, Outer Ring Road, Bellandur, Bangalore - 560103, Karnataka
                 </div>
                 <div style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)', fontFamily: 'var(--font-mono)' }}>
-                  EIN: 84-2910482 • Corporate Payroll Division
+                  PAN: AABCD1234E • GSTIN: 29AABCD1234E1Z5 • TAN: BLRD01234F
                 </div>
               </div>
               <div style={{ textAlign: 'right' }}>
@@ -408,8 +408,8 @@ export const PayrollView = () => {
                 <div style={{ fontWeight: 700, fontFamily: 'var(--font-mono)' }}>{activeUser.employeeId}</div>
               </div>
               <div>
-                <span style={{ color: 'var(--text-tertiary)' }}>Department:</span>
-                <div style={{ fontWeight: 700 }}>{activeUser.department}</div>
+                <span style={{ color: 'var(--text-tertiary)' }}>Location:</span>
+                <div style={{ fontWeight: 700 }}>Bangalore HQ</div>
               </div>
             </div>
 
@@ -418,56 +418,56 @@ export const PayrollView = () => {
               {/* Earnings */}
               <div style={{ border: '1px solid var(--border-subtle)', borderRadius: '8px', padding: '0.75rem' }}>
                 <div style={{ fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', color: 'var(--text-tertiary)', marginBottom: '0.5rem' }}>
-                  Earnings
+                  Earnings (₹)
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8125rem', marginBottom: '0.35rem' }}>
                   <span>Basic Salary</span>
-                  <span style={{ fontFamily: 'var(--font-mono)' }}>${selectedPayslip.basic.toLocaleString()}</span>
+                  <span style={{ fontFamily: 'var(--font-mono)' }}>₹{selectedPayslip.basic.toLocaleString()}</span>
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8125rem', marginBottom: '0.35rem' }}>
-                  <span>HRA Allowance</span>
-                  <span style={{ fontFamily: 'var(--font-mono)' }}>${selectedPayslip.hra.toLocaleString()}</span>
+                  <span>House Rent Allowance (HRA)</span>
+                  <span style={{ fontFamily: 'var(--font-mono)' }}>₹{selectedPayslip.hra.toLocaleString()}</span>
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8125rem', marginBottom: '0.35rem' }}>
                   <span>Special Allowance</span>
-                  <span style={{ fontFamily: 'var(--font-mono)' }}>${selectedPayslip.specialAllowance.toLocaleString()}</span>
+                  <span style={{ fontFamily: 'var(--font-mono)' }}>₹{selectedPayslip.specialAllowance.toLocaleString()}</span>
                 </div>
                 {selectedPayslip.bonus > 0 && (
                   <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8125rem', color: 'var(--emerald-600)' }}>
                     <span>Performance Bonus</span>
-                    <span style={{ fontFamily: 'var(--font-mono)' }}>+${selectedPayslip.bonus.toLocaleString()}</span>
+                    <span style={{ fontFamily: 'var(--font-mono)' }}>+₹{selectedPayslip.bonus.toLocaleString()}</span>
                   </div>
                 )}
                 <div style={{ borderTop: '1px solid var(--border-subtle)', marginTop: '0.5rem', paddingTop: '0.5rem', display: 'flex', justifyContent: 'space-between', fontWeight: 700, fontSize: '0.875rem' }}>
                   <span>Gross Pay</span>
-                  <span style={{ fontFamily: 'var(--font-mono)' }}>${selectedPayslip.grossPay.toLocaleString()}</span>
+                  <span style={{ fontFamily: 'var(--font-mono)' }}>₹{selectedPayslip.grossPay.toLocaleString()}</span>
                 </div>
               </div>
 
               {/* Deductions */}
               <div style={{ border: '1px solid var(--border-subtle)', borderRadius: '8px', padding: '0.75rem' }}>
                 <div style={{ fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', color: 'var(--text-tertiary)', marginBottom: '0.5rem' }}>
-                  Deductions
+                  Deductions (₹)
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8125rem', marginBottom: '0.35rem' }}>
-                  <span>Provident Fund (PF)</span>
-                  <span style={{ fontFamily: 'var(--font-mono)' }}>${selectedPayslip.deductions.providentFund.toLocaleString()}</span>
+                  <span>Provident Fund (EPFO)</span>
+                  <span style={{ fontFamily: 'var(--font-mono)' }}>₹{selectedPayslip.deductions.providentFund.toLocaleString()}</span>
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8125rem', marginBottom: '0.35rem' }}>
-                  <span>Tax Withholding (TDS)</span>
-                  <span style={{ fontFamily: 'var(--font-mono)' }}>${selectedPayslip.deductions.taxDeduction.toLocaleString()}</span>
+                  <span>Income Tax (TDS)</span>
+                  <span style={{ fontFamily: 'var(--font-mono)' }}>₹{selectedPayslip.deductions.taxDeduction.toLocaleString()}</span>
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8125rem', marginBottom: '0.35rem' }}>
-                  <span>Professional Tax</span>
-                  <span style={{ fontFamily: 'var(--font-mono)' }}>${selectedPayslip.deductions.professionalTax.toLocaleString()}</span>
+                  <span>Professional Tax (PT)</span>
+                  <span style={{ fontFamily: 'var(--font-mono)' }}>₹{selectedPayslip.deductions.professionalTax.toLocaleString()}</span>
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8125rem', marginBottom: '0.35rem' }}>
-                  <span>Medical Premium</span>
-                  <span style={{ fontFamily: 'var(--font-mono)' }}>${selectedPayslip.deductions.healthInsurance.toLocaleString()}</span>
+                  <span>Health Insurance</span>
+                  <span style={{ fontFamily: 'var(--font-mono)' }}>₹{selectedPayslip.deductions.healthInsurance.toLocaleString()}</span>
                 </div>
                 <div style={{ borderTop: '1px solid var(--border-subtle)', marginTop: '0.5rem', paddingTop: '0.5rem', display: 'flex', justifyContent: 'space-between', fontWeight: 700, fontSize: '0.875rem' }}>
                   <span>Total Deductions</span>
-                  <span style={{ fontFamily: 'var(--font-mono)', color: 'var(--rose-600)' }}>-${selectedPayslip.totalDeductions.toLocaleString()}</span>
+                  <span style={{ fontFamily: 'var(--font-mono)', color: 'var(--rose-600)' }}>-₹{selectedPayslip.totalDeductions.toLocaleString()}</span>
                 </div>
               </div>
             </div>
@@ -476,10 +476,10 @@ export const PayrollView = () => {
             <div style={{ backgroundColor: 'var(--primary-50)', border: '1px solid var(--primary-200)', borderRadius: '8px', padding: '1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <div>
                 <div style={{ fontSize: '0.8125rem', fontWeight: 700, color: 'var(--primary-900)' }}>Net Disbursed Take-Home</div>
-                <div style={{ fontSize: '0.75rem', color: 'var(--primary-700)' }}>Paid to Chase Commercial •••• 6829</div>
+                <div style={{ fontSize: '0.75rem', color: 'var(--primary-700)' }}>Credited via NEFT to HDFC Bank •••• 6829</div>
               </div>
               <div style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--primary-700)', fontFamily: 'var(--font-mono)' }}>
-                ${selectedPayslip.netPay.toLocaleString()}
+                ₹{selectedPayslip.netPay.toLocaleString()}
               </div>
             </div>
 
@@ -490,7 +490,7 @@ export const PayrollView = () => {
               <Button
                 variant="primary"
                 icon={Printer}
-                onClick={() => alert('PDF Payslip generated & downloaded from S3 Vault.')}
+                onClick={() => alert('Salary slip downloaded from AWS S3 Encrypted Document Vault.')}
               >
                 Print / Download PDF
               </Button>
@@ -513,7 +513,7 @@ export const PayrollView = () => {
             </div>
 
             <div className="form-group">
-              <label className="form-label">Annual Base Salary ($)</label>
+              <label className="form-label">Annual Base Salary (₹)</label>
               <input
                 type="number"
                 value={salaryForm.base}
@@ -523,7 +523,7 @@ export const PayrollView = () => {
             </div>
 
             <div className="form-group">
-              <label className="form-label">House Rent Allowance (HRA) ($)</label>
+              <label className="form-label">House Rent Allowance (HRA) (₹)</label>
               <input
                 type="number"
                 value={salaryForm.hra}
@@ -533,7 +533,7 @@ export const PayrollView = () => {
             </div>
 
             <div className="form-group">
-              <label className="form-label">Special Executive Allowance ($)</label>
+              <label className="form-label">Special Executive Allowance (₹)</label>
               <input
                 type="number"
                 value={salaryForm.allowance}

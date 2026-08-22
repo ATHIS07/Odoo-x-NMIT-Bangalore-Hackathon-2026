@@ -121,7 +121,7 @@ export const AdminDashboardView = ({ onNavigate }) => {
 
         <MetricCard
           label="Monthly Payroll Run"
-          value="$118,450"
+          value="₹82,50,000"
           subtitle="August 2026 Batch Reconciled"
           icon={CreditCard}
           iconColor="#8B5CF6"

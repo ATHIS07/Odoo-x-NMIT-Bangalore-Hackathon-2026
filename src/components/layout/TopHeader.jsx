@@ -66,7 +66,7 @@ export const TopHeader = ({ onOpenNotifications, onRouteChange }) => {
         {/* Live Clock */}
         <div style={{ fontSize: '0.75rem', fontFamily: 'var(--font-mono)', color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
           <span className="pulse-dot" style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: 'var(--emerald-500)' }} />
-          {currentTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })} PST
+          {currentTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })} IST
         </div>
 
         {/* Lambda Latency Simulation Indicator */}

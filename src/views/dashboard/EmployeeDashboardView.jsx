@@ -171,7 +171,7 @@ export const EmployeeDashboardView = ({ onNavigate }) => {
 
         <MetricCard
           label="Estimated Net Pay"
-          value="$14,734"
+          value="₹2,19,000"
           subtitle="August 2026 Cycle • Depositing Aug 31"
           icon={CreditCard}
           iconColor="var(--emerald-600)"
@@ -180,8 +180,8 @@ export const EmployeeDashboardView = ({ onNavigate }) => {
 
         <MetricCard
           label="Next Holiday"
-          value="Labor Day"
-          subtitle="Mon, Sep 07 (Federal Closure)"
+          value="Gandhi Jayanti"
+          subtitle="Fri, Oct 02 (National Gazetted)"
           icon={Building2}
           iconColor="#8B5CF6"
           iconBg="#F5F3FF"
@@ -229,7 +229,7 @@ export const EmployeeDashboardView = ({ onNavigate }) => {
               </div>
               <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px', marginTop: '0.5rem' }}>
                 <MapPin size={13} color="var(--emerald-600)" />
-                <span>San Francisco HQ Floor 4 Terminal</span>
+                <span>Bangalore HQ (Outer Ring Road / NMIT)</span>
               </div>
             </div>
 

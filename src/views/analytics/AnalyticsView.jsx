@@ -88,7 +88,7 @@ export const AnalyticsView = () => {
 
         <MetricCard
           label="Monthly Payroll Burn"
-          value="$118,450"
+          value="₹82,50,000"
           subtitle="Reconciled & balanced"
           icon={CreditCard}
           iconColor="#8B5CF6"
