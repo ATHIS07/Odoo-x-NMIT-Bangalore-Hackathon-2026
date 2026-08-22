@@ -172,6 +172,7 @@ export const ProfileEditView = ({ onNavigate }) => {
     // Sync AuthContext activeUser state immediately
     if (updateCurrentUser) {
       updateCurrentUser({
+        name: formData.name,
         avatar: formData.avatar,
         phone: formData.phone,
         ...(isHRorAdmin ? { department: formData.department, designation: formData.designation } : {})
@@ -255,12 +256,11 @@ export const ProfileEditView = ({ onNavigate }) => {
                   <label className="form-label">Full Legal Name</label>
                   <input
                     type="text"
-                    disabled={!isHRorAdmin}
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                     className="form-input"
+                    placeholder="Enter your full legal name"
                   />
-                  {!isHRorAdmin && <span className="form-hint">Name changes require HR verification</span>}
                 </div>
 
                 <div className="form-group">
