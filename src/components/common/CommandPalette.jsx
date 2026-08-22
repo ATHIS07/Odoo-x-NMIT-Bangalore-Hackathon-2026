@@ -14,12 +14,13 @@ import {
   RotateCcw,
   ArrowRight,
   Shield,
-  FileText
+  FileText,
+  Compass
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { useHRMS } from '../../context/HRMSContext';
 
-export const CommandPalette = ({ isOpen, onClose, onNavigate }) => {
+export const CommandPalette = ({ isOpen, onClose, onNavigate, onStartTour }) => {
   const { activeUser, switchPersona, isHRorAdmin } = useAuth();
   const { clockIn, clockOut, getTodayAttendance, resetDemoData } = useHRMS();
   
@@ -99,6 +100,17 @@ export const CommandPalette = ({ isOpen, onClose, onNavigate }) => {
         if (isClockedIn) clockOut();
         else clockIn();
         onClose();
+      }
+    },
+    {
+      id: 'act_tour',
+      title: 'Start Interactive Guided Product Tour (Evaluator Walkthrough)',
+      category: 'Quick Actions',
+      icon: Compass,
+      shortcut: '?',
+      action: () => {
+        onClose();
+        onStartTour?.();
       }
     },
     {

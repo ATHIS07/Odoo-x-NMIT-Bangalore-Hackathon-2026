@@ -33,6 +33,7 @@ export const DemoToolbar = ({ currentRoute, onRouteChange }) => {
 
   return (
     <div
+      data-tour="demo-toolbar"
       style={{
         position: 'fixed',
         bottom: '1rem',

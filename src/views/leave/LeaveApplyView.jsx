@@ -127,7 +127,7 @@ export const LeaveApplyView = ({ onNavigate }) => {
       </div>
 
       {/* Quota Metric Tiles */}
-      <div className="grid-4" style={{ marginBottom: '1.5rem' }}>
+      <div className="grid-4" data-tour="leave-apply-quota" style={{ marginBottom: '1.5rem' }}>
         <MetricCard
           label="Paid Leave Balance"
           value={`${balance.paid.remaining} Days`}
@@ -163,7 +163,7 @@ export const LeaveApplyView = ({ onNavigate }) => {
       {/* Main Apply Form & Live Preview */}
       <div style={{ display: 'grid', gridTemplateColumns: '1.4fr 1fr', gap: '1.5rem', marginBottom: '2rem' }}>
         {/* Form Card */}
-        <Card elevated>
+        <Card elevated data-tour="leave-apply-form">
           <div className="card-header">
             <div className="card-title">
               <CalendarDays size={18} color="var(--primary-600)" />
@@ -384,7 +384,7 @@ export const LeaveApplyView = ({ onNavigate }) => {
 
         {/* Live Calculation Preview Card */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-          <Card elevated>
+          <Card elevated data-tour="leave-apply-preview">
             <div className="card-header">
               <div className="card-title">
                 <Sparkles size={16} color="var(--primary-600)" />

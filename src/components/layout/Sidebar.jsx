@@ -74,6 +74,8 @@ export const Sidebar = ({ currentRoute, onRouteChange, onOpenNotifications }) =>
 
   return (
     <aside
+      data-tour="sidebar-nav"
+      className="sidebar"
       style={{
         width: '260px',
         backgroundColor: 'var(--color-bg-secondary)',
@@ -177,6 +179,7 @@ export const Sidebar = ({ currentRoute, onRouteChange, onOpenNotifications }) =>
           return (
             <button
               key={item.id}
+              data-tour={`sidebar-tab-${item.id}`}
               onClick={() => {
                 if (item.id === 'notifications' && onOpenNotifications) {
                   onOpenNotifications();

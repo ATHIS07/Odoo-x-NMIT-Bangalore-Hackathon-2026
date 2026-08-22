@@ -270,6 +270,7 @@ export const PayrollView = () => {
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
           {/* Top YTD Cumulative Banner */}
           <div
+            data-tour="payroll-ytd"
             style={{
               display: 'grid',
               gridTemplateColumns: 'repeat(4, 1fr)',
@@ -308,7 +309,7 @@ export const PayrollView = () => {
 
           <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 1.4fr', gap: '1.5rem' }}>
             {/* Current Month Breakdown Card */}
-            <Card elevated>
+            <Card elevated data-tour="payroll-breakdown">
               <div className="card-header">
                 <div className="card-title">
                   <CreditCard size={18} color="var(--primary-600)" />
@@ -392,7 +393,7 @@ export const PayrollView = () => {
             </Card>
 
             {/* Payslip History List */}
-            <Card elevated>
+            <Card elevated data-tour="payroll-slips">
               <div className="card-header">
                 <div className="card-title">Historical Payslip Archive</div>
                 <span style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)', fontFamily: 'var(--font-mono)' }}>FY 2026-27</span>

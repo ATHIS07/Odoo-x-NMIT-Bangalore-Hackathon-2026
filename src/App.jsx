@@ -10,6 +10,7 @@ import { TopHeader } from './components/layout/TopHeader';
 import { DemoToolbar } from './components/layout/DemoToolbar';
 import { NotificationDrawer } from './components/layout/NotificationDrawer';
 import { CommandPalette } from './components/common/CommandPalette';
+import { ProductTour, TourLauncherButton } from './components/common/ProductTour';
 
 // 12 Required Views
 import { SignInView } from './views/auth/SignInView';
@@ -35,6 +36,12 @@ const MainAppContent = () => {
 
   const [isNotifDrawerOpen, setIsNotifDrawerOpen] = useState(false);
   const [isCommandPaletteOpen, setIsCommandPaletteOpen] = useState(false);
+
+  // Auto-start guided product tour for evaluator on first load
+  const [isTourOpen, setIsTourOpen] = useState(() => {
+    const isDismissed = sessionStorage.getItem('dayflow_tour_session_dismissed');
+    return !isDismissed;
+  });
 
   // Global Ctrl+K / Cmd+K listener
   useEffect(() => {
@@ -185,12 +192,52 @@ const MainAppContent = () => {
       <CommandPalette
         isOpen={isCommandPaletteOpen}
         onClose={() => setIsCommandPaletteOpen(false)}
+        onStartTour={() => setIsTourOpen(true)}
         onNavigate={(routePath) => {
           // Convert route path to internal key
           const cleanRoute = routePath.replace(/^\//, '').replace('/', '-');
           handleNavigate(cleanRoute === 'dashboard' ? 'employee-dashboard' : cleanRoute);
         }}
       />
+
+      {/* Auto-starting Interactive Guided Product Tour */}
+      <ProductTour
+        isOpen={isTourOpen}
+        currentRoute={currentRoute}
+        activeUser={currentUser}
+        onNavigate={handleNavigate}
+        onClose={() => {
+          setIsTourOpen(false);
+          sessionStorage.setItem('dayflow_tour_session_dismissed', 'true');
+        }}
+        onFinish={() => {
+          setIsTourOpen(false);
+          sessionStorage.setItem('dayflow_tour_session_dismissed', 'true');
+          showToast({
+            title: 'Tour Completed',
+            message: 'You can relaunch the tour anytime from the bottom right button or Ctrl+K.',
+            type: 'success'
+          });
+        }}
+      />
+
+      {/* Persistent Floating Product Tour Launcher */}
+      {!isTourOpen && (
+        <TourLauncherButton
+          onClick={() => setIsTourOpen(true)}
+          activeUser={currentUser}
+          currentSectionName={
+            currentRoute === 'employee-dashboard' ? 'Workspace' :
+            currentRoute === 'attendance' ? (currentUser?.role === 'employee' ? 'Attendance' : 'Workforce Roster') :
+            currentRoute === 'leave-apply' ? 'Leave Apply' :
+            currentRoute === 'leave-approvals' ? 'Leave Approvals' :
+            currentRoute === 'payroll' ? (currentUser?.role === 'employee' ? 'Payslips' : 'Org Payroll') :
+            currentRoute === 'profile' ? 'Profile' :
+            currentRoute === 'analytics' ? 'Analytics' :
+            currentRoute === 'admin-dashboard' ? 'Executive HQ' : 'Module'
+          }
+        />
+      )}
 
       {/* Hackathon Judge Toolbar */}
       <DemoToolbar currentRoute={currentRoute} onRouteChange={handleNavigate} />

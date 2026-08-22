@@ -260,7 +260,7 @@ export const ProfileView = ({ onNavigate }) => {
       {activeTab === 'personal' && (
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
           <div className="grid-2">
-            <Card>
+            <Card data-tour="profile-identity">
               <div className="card-header">
                 <div className="card-title">Identity & Bio</div>
               </div>
@@ -288,7 +288,7 @@ export const ProfileView = ({ onNavigate }) => {
               </div>
             </Card>
 
-            <Card>
+            <Card data-tour="profile-emergency">
               <div className="card-header">
                 <div className="card-title">Residential & Emergency Contact</div>
               </div>

@@ -106,7 +106,7 @@ export const AttendanceView = () => {
   return (
     <div className="page-wrapper">
       {/* Header */}
-      <div className="page-header">
+      <div className="page-header" data-tour="attendance-header">
         <div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.25rem' }}>
             <span style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--primary-600)', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
@@ -131,6 +131,7 @@ export const AttendanceView = () => {
             <Button
               variant="secondary"
               icon={CalendarDays}
+              data-tour="attendance-regularize-btn"
               onClick={() => setIsRegularizeModalOpen(true)}
             >
               Request Regularization
@@ -151,7 +152,7 @@ export const AttendanceView = () => {
       </div>
 
       {/* KPI Metrics */}
-      <div className="grid-4" style={{ marginBottom: '1.5rem' }}>
+      <div className="grid-4" data-tour="attendance-metrics" style={{ marginBottom: '1.5rem' }}>
         <MetricCard
           label="Today's Shift Punch"
           value={todayRecord?.checkIn ? todayRecord.checkIn : 'Not Clocked In'}
@@ -192,6 +193,7 @@ export const AttendanceView = () => {
 
       {/* Control Bar: View Switcher, Filter & Search */}
       <div
+        data-tour="attendance-controls"
         style={{
           display: 'flex',
           alignItems: 'center',
@@ -292,7 +294,7 @@ export const AttendanceView = () => {
       {/* Main Content Area */}
       {viewMode === 'daily' ? (
         /* Daily Timeline Table */
-        <Card elevated>
+        <Card elevated data-tour="attendance-roster">
           <div className="table-container">
             <table className="data-table">
               <thead>

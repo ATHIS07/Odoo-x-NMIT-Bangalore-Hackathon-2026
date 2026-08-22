@@ -172,7 +172,7 @@ export const AnalyticsView = () => {
       </div>
 
       {/* KPI Overview Tiles */}
-      <div className="grid-4" style={{ marginBottom: '1.5rem' }}>
+      <div className="grid-4" data-tour="analytics-metrics" style={{ marginBottom: '1.5rem' }}>
         <MetricCard
           label="Average Punctuality"
           value={currentMetrics.punctuality}
@@ -212,7 +212,7 @@ export const AnalyticsView = () => {
       </div>
 
       {/* Charts Grid */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1.4fr 1.2fr', gap: '1.5rem', marginBottom: '1.5rem' }}>
+      <div data-tour="analytics-charts" style={{ display: 'grid', gridTemplateColumns: '1.4fr 1.2fr', gap: '1.5rem', marginBottom: '1.5rem' }}>
         {/* Attendance Trend Line / Bar */}
         <Card elevated>
           <div className="card-header">
@@ -250,7 +250,7 @@ export const AnalyticsView = () => {
       </div>
 
       {/* Custom Report Generator Card */}
-      <Card elevated>
+      <Card elevated data-tour="analytics-export">
         <div className="card-header">
           <div>
             <div className="card-title">

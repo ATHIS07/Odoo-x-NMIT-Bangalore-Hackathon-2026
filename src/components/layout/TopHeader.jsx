@@ -35,6 +35,7 @@ export const TopHeader = ({ onOpenNotifications, onRouteChange, onOpenCommandPal
       {/* Search & Breadcrumbs */}
       <div style={{ display: 'flex', alignItems: 'center', gap: '1.25rem', flex: 1, maxWidth: '480px' }}>
         <div
+          data-tour="top-search"
           onClick={onOpenCommandPalette}
           style={{
             position: 'relative',
@@ -115,6 +116,7 @@ export const TopHeader = ({ onOpenNotifications, onRouteChange, onOpenCommandPal
 
         {/* Notification Bell */}
         <button
+          data-tour="notifications-trigger"
           onClick={onOpenNotifications}
           style={{
             position: 'relative',

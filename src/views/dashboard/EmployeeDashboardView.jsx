@@ -89,7 +89,7 @@ export const EmployeeDashboardView = ({ onNavigate }) => {
       </div>
 
       {/* Quick-Access Navigation Cards Grid (PDF Section 3.2.1 Mandate) */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '1rem', marginBottom: '1.5rem' }}>
+      <div data-tour="quick-actions" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '1rem', marginBottom: '1.5rem' }}>
         <Card
           onClick={() => onNavigate('profile')}
           style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.875rem', padding: '1rem 1.25rem', transition: 'all 0.2s ease' }}
@@ -201,7 +201,7 @@ export const EmployeeDashboardView = ({ onNavigate }) => {
       {/* Main Console Grid */}
       <div style={{ display: 'grid', gridTemplateColumns: '1.4fr 1fr', gap: '1.5rem', marginBottom: '1.5rem' }}>
         {/* Interactive Live Clock-In Console */}
-        <Card elevated>
+        <Card elevated data-tour="punch-console">
           <div className="card-header">
             <div className="card-title">
               <Clock size={20} color="var(--primary-600)" />
@@ -373,7 +373,7 @@ export const EmployeeDashboardView = ({ onNavigate }) => {
         </Card>
 
         {/* Leave Quota Donut Meter */}
-        <Card elevated>
+        <Card elevated data-tour="leave-quota">
           <div className="card-header">
             <div className="card-title">
               <CalendarCheck size={20} color="var(--primary-600)" />
