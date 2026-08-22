@@ -109,6 +109,37 @@ export const AuthProvider = ({ children }) => {
     return verifiedUser;
   }, [pendingVerification, showToast]);
 
+  // Password Reset Flow Mock
+  const requestPasswordReset = useCallback(async (email) => {
+    const matched = INITIAL_USERS.find(
+      (u) => u.email.toLowerCase() === email.trim().toLowerCase()
+    );
+    if (!matched) {
+      throw new Error('Email not found in enterprise identity directory');
+    }
+    showSNSToast({
+      title: 'Cognito Reset OTP Dispatched',
+      message: `Password reset token 932140 dispatched to ${email}`,
+      source: 'AWS Cognito SNS'
+    });
+    return { email, code: '932140' };
+  }, [showSNSToast]);
+
+  const confirmPasswordReset = useCallback(async ({ email, code, newPassword }) => {
+    if (code !== '932140' && code !== '123456') {
+      throw new Error('Invalid or expired reset code. (Demo code: 932140)');
+    }
+    if (newPassword.length < 8) {
+      throw new Error('New password must meet Cognito enterprise criteria (min 8 chars)');
+    }
+    showToast({
+      title: 'Password Updated',
+      message: 'Your Cognito password has been securely reset. Please sign in.',
+      type: 'success'
+    });
+    return true;
+  }, [showToast]);
+
   // Sign Out
   const signOut = useCallback(() => {
     setCurrentUser(null);
@@ -184,6 +215,8 @@ export const AuthProvider = ({ children }) => {
         signIn,
         signUp,
         verifySignUp,
+        requestPasswordReset,
+        confirmPasswordReset,
         signOut,
         switchPersona,
         startImpersonation,
